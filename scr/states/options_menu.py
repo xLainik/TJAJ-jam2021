@@ -13,6 +13,8 @@ class Options_menu(State):
 
         self.game = game
 
+        self.hover = False
+
         self.timer = 0
         
         self.load_sprites()
@@ -34,16 +36,32 @@ class Options_menu(State):
         mx, my = pygame.mouse.get_pos()
         mx, my = int(mx/self.game.SCALE), int(my/self.game.SCALE)
 
-        if self.scale_up_button.collidepoint(mx, my) and self.game.click:
-            self.game.SCALE += 1
-            self.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
-            self.timer = 0
-        if self.scale_down_button.collidepoint(mx, my) and self.game.click:
-            self.game.SCALE -= 1
-            self.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
-            self.timer = 0
-        if self.back_to_menu_button.collidepoint(mx,my) and self.game.click:
-            self.exit_state(restart = True)
+        if self.scale_up_button.collidepoint(mx, my):
+            if not(self.hover):
+                self.game.all_sounds["menu_hover"].play()
+                self.hover = True
+            if self.game.click:
+                self.game.all_sounds["menu_click"].play()
+                self.game.SCALE += 1
+                self.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
+                self.timer = 0
+        elif self.scale_down_button.collidepoint(mx, my):
+            if not(self.hover):
+                self.game.all_sounds["menu_hover"].play()
+                self.hover = True
+            if self.game.click:
+                self.game.all_sounds["menu_click"].play()
+                self.game.SCALE -= 1
+                self.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
+                self.timer = 0
+        elif self.back_to_menu_button.collidepoint(mx,my):
+            if not(self.hover):
+                self.game.all_sounds["menu_hover"].play()
+                self.hover = True
+            if self.game.click:
+                self.game.all_sounds["menu_click"].play()
+                self.exit_state(restart = True)
+        else: self.hover = False
 
         if self.timer < 60:
             self.timer += 1

@@ -20,3 +20,16 @@ with open(os.path.join("scr", "config", "colours.json"), "r") as colours_json_fi
         
         # Make all the lists with RGB values into tuples.
         colours[colour] = tuple(colours[colour])
+
+levels = []
+for lvl_number, level in enumerate(os.listdir(os.path.join("scr", "levels"))):
+    with open(os.path.join("scr", "levels", level, "level_" + str(lvl_number) + ".json"), "r") as level_json_file:
+        levels.append(json.load(level_json_file))
+
+        
+with open(os.path.join("scr", "config", "tiles_color_keys.json"), "r") as tiles_color_keys_json_file:
+    tiles_color_keys = json.load(tiles_color_keys_json_file)
+
+    for tile in tiles_color_keys:
+        # Make all the lists with RGB values into tuples.
+        tiles_color_keys[tile] = tuple(tiles_color_keys[tile])

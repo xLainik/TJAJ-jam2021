@@ -6,6 +6,7 @@ class Game:
     """The game object, used to control the game."""
     def __init__(self) -> None:
         """Initializing the game."""
+        #pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
         pygame.display.set_caption(options["window_title"])
         
@@ -14,6 +15,9 @@ class Game:
         self.SCREEN_SIZE = self.SCREEN_WIDTH, self.SCREEN_HEIGHT = options["game_width"], options["game_height"]
         
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
+
+        icon_img = pygame.image.load(os.path.join("scr", "assets", "icon.png")).convert()
+        pygame.display.set_icon(icon_img)
         
         self.GAME_SIZE = self.GAME_WIDTH, self.GAME_HEIGHT = options["game_width"], options["game_height"]
         self.game_canvas = pygame.Surface(self.GAME_SIZE)
@@ -26,7 +30,6 @@ class Game:
 
         self.click = False
 
-        pygame.mixer.init()
         pygame.mixer.set_num_channels(5)
 
     def new(self):
@@ -83,11 +86,33 @@ class Game:
         self.delta_time *= self.MAX_FPS
         self.previous_time = now
 
+    def load_animations(self, *animation_list):
+        """Loads just the animations needed at the moment."""
+        self.all_animations = {}
+        for animations in os.listdir(self.game.animation_directory):
+            if animations in animation_list:
+                self.all_animations[animations] = []
+                for frames in os.listdir(os.path.join(self.game.animation_directory, animations)):
+                    img = pygame.image.load(os.path.join(self.game.animation_directory, animations, frames)).convert()
+                    img.set_colorkey((0,0,0))
+                    duration = frames.split("_")[-1].split(".")[0]
+                    self.all_animations[animations].append([img, int(duration)])
+
+    def load_sounds(self, *sound_list):
+        """Loads just the sounds needed at the moment."""
+        self.all_sounds = {}
+        for sound in os.listdir(self.sound_directory):
+            if sound in sound_list:
+                self.all_sounds[sound.split(".")[0]] = pygame.mixer.Sound(os.path.join(self.sound_directory, sound))
+
     def setup_directories(self) -> None:
         self.state_directory = os.path.join("scr", "states")
+        self.level_directory = os.path.join("scr", "levels")
+        
         
         self.asset_directory = os.path.join("scr", "assets")
         self.font_directory = os.path.join(self.asset_directory, "fonts")
+        self.tile_directory = os.path.join(self.asset_directory, "tiles")
         self.image_directory = os.path.join(self.asset_directory, "images")
         self.animation_directory = os.path.join(self.asset_directory, "animations")
         self.sound_directory = os.path.join(self.asset_directory, "sounds")

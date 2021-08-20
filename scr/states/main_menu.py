@@ -6,6 +6,8 @@ from scr.states.state import State
 from scr.states.instructions import Instructions
 from scr.states.options_menu import Options_menu
 
+from scr.states.game_world import Game_world
+
 from scr.utility.easying import easeOutBack
 
 class Main_menu(State):
@@ -13,20 +15,17 @@ class Main_menu(State):
     def __init__(self, game):
         """Initialize the menu class."""
         super().__init__(game)
+        
         self.load_sprites()
 
-##        all_animations = {}
-##        for animations in os.listdir(self.game.animation_directory):
-##            all_animations[animations] = []
-##            for frames in os.listdir(os.path.join(self.game.animation_directory, animations)):
-##                img = pygame.image.load(os.path.join(self.game.animation_directory, animations, frames)).convert()
-##                img.set_colorkey((0,0,0))
-##                duration = frames.split("_")[-1].split(".")[0]
-##                all_animations[animations].append([img, int(duration)])
-
-        self.click = False
+        self.hover = False
 
         self.timer = 0
+
+        self.game.load_sounds("menu_hover.wav", "menu_click.wav")
+
+        self.game.all_sounds["menu_hover"].set_volume(0.5)
+        self.game.all_sounds["menu_click"].set_volume(0.5)
 
     def load_sprites(self):
         self.start_button = pygame.Rect(450,100,150,32)
@@ -43,12 +42,24 @@ class Main_menu(State):
         mx, my = pygame.mouse.get_pos()
         mx, my = int(mx/self.game.SCALE), int(my/self.game.SCALE)
 
-        if self.start_button.collidepoint(mx, my) and self.game.click:
-            instructions = Instructions(self.game)
-            instructions.enter_state()
-        if self.options_button.collidepoint(mx,my) and self.game.click:
-            options = Options_menu(self.game)
-            options.enter_state()
+        if self.start_button.collidepoint(mx, my):
+            if not(self.hover):
+                self.game.all_sounds["menu_hover"].play()
+                self.hover = True
+            if self.game.click:
+                self.game.all_sounds["menu_click"].play()
+                game_world = Game_world(self.game)
+                game_world.enter_state()
+        elif self.options_button.collidepoint(mx,my):
+            if not(self.hover):
+                self.game.all_sounds["menu_hover"].play()
+                self.hover = True
+            if self.game.click:
+                self.game.all_sounds["menu_click"].play()
+                options = Options_menu(self.game)
+                options.enter_state()
+        else: self.hover = False
+        
 
         if self.timer < 60:
             self.timer += 1
