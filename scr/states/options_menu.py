@@ -75,30 +75,34 @@ class Options_menu(State):
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
-            if self.game.click and self.game.sfx_global_volume > 0:
+            if self.game.click:
                 self.game.sfx_global_volume -= 0.8
+                if self.game.sfx_global_volume < 0: self.game.sfx_global_volume = 0
                 if self.game.click == 1:
                     self.game.all_sfx["menu_click"].play()
         elif self.sfx_up_button.collidepoint(mx,my):
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
-            if self.game.click and self.game.sfx_global_volume < 100:
+            if self.game.click:
                 self.game.sfx_global_volume += 0.8
+                if self.game.sfx_global_volume > 100: self.game.sfx_global_volume = 100
                 if self.game.click == 1:
                     self.game.all_sfx["menu_click"].play()
         elif self.music_down_button.collidepoint(mx,my):
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
-            if self.game.click and self.game.music_global_volume > 0:
+            if self.game.click:
                 self.game.music_global_volume -= 0.8
+                if self.game.music_global_volume < 0: self.game.music_global_volume = 0
         elif self.music_up_button.collidepoint(mx,my):
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
-            if self.game.click and self.game.music_global_volume < 100:
+            if self.game.click:
                 self.game.music_global_volume += 0.8
+                if self.game.music_global_volume > 100: self.game.music_global_volume = 100
                 
         elif self.back_to_menu_button.collidepoint(mx,my):
             if not(self.hover):
