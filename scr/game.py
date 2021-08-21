@@ -2,6 +2,8 @@ import pygame, time, os, sys, json
 from scr.config.config import options, colours
 from scr.states.main_menu import Main_menu
 
+from scr.sprites.player import Player
+
 class Game:
     """The game object, used to control the game."""
     def __init__(self) -> None:
@@ -36,6 +38,8 @@ class Game:
         self.state_stack = []
 
         self.click = 0
+
+        self.player = Player(self, 0, 0)
 
         pygame.mixer.set_num_channels(5)
         self.sfx_global_volume = options["sfx_volumen"]

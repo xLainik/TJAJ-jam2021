@@ -33,3 +33,10 @@ with open(os.path.join("scr", "config", "tiles_color_keys.json"), "r") as tiles_
     for tile in tiles_color_keys:
         # Make all the lists with RGB values into tuples.
         tiles_color_keys[tile] = tuple(tiles_color_keys[tile])
+
+with open(os.path.join("scr", "config", "entities_color_keys.json"), "r") as entities_color_keys_json_file:
+    entities_color_keys = json.load(entities_color_keys_json_file)
+
+    for entity in entities_color_keys:
+        # Make all the lists with RGB values into tuples.
+        entities_color_keys[entity] = tuple(entities_color_keys[entity])

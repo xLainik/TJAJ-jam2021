@@ -16,7 +16,8 @@ class Game_world(State):
 
         self.levels = {
             0: Level_0(self.game,
-                     pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_tiles.png")), levels[0]
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_tiles.png")),
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_entities.png")), levels[0]
             )
         }
         self.change_level(self.levels[0])
