@@ -1,4 +1,4 @@
-import pygame, time, os, sys
+import pygame, time, os, sys, json
 from scr.config.config import options, colours
 from scr.states.main_menu import Main_menu
 
@@ -16,6 +16,10 @@ class Game:
         
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
 
+        self.high_res_canvas = pygame.Surface((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
+        self.high_res_canvas.fill((0,0,0))
+        self.high_res_canvas.set_colorkey((0,0,0))
+
         icon_img = pygame.image.load(os.path.join("scr", "assets", "icon.png")).convert()
         pygame.display.set_icon(icon_img)
         
@@ -23,14 +27,19 @@ class Game:
         self.game_canvas = pygame.Surface(self.GAME_SIZE)
         self.clock = pygame.time.Clock()
         self.MAX_FPS = options["fps"]
+
+        self.transition_timer = -1
+        
         self.running, self.playing = True, True
 
         self.delta_time, self.previous_time = 0, 0
         self.state_stack = []
 
-        self.click = False
+        self.click = 0
 
         pygame.mixer.set_num_channels(5)
+        self.sfx_global_volume = options["sfx_volumen"]
+        self.music_global_volume = options["music_volumen"]
 
     def new(self):
         """Starting a new game"""
@@ -59,8 +68,19 @@ class Game:
         self.state_stack[-1].render()
 
         self.screen.blit(pygame.transform.scale(self.game_canvas, (self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE)), (0, 0))
+        self.screen.blit(self.high_res_canvas, (0,0))
+        self.transition_screen()
         pygame.display.update()
         self.clock.tick(self.MAX_FPS)
+
+    def transition_screen(self):
+        if self.transition_timer > -1:
+            self.transition_timer += self.delta_time
+            self.transition_img = pygame.Surface((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
+            if self.transition_timer <= 26:
+                self.transition_img.set_alpha(int(255*(1-self.transition_timer/26)))
+            self.screen.blit(self.transition_img, (0,0))
+            if self.transition_timer > 24: self.transition_timer = -1
 
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
@@ -70,10 +90,12 @@ class Game:
             if event.type == pygame.QUIT:
                 self.shut_down()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.click = True
+                self.click += 1
             if event.type == pygame.MOUSEBUTTONUP:
-                self.click = False
+                self.click = 0
 
+        if self.actions[pygame.K_F11]:
+            pygame.display.toggle_fullscreen()
 
     def load_first_state(self) -> None:
         """Loading the first state of the game."""
@@ -98,29 +120,52 @@ class Game:
                     duration = frames.split("_")[-1].split(".")[0]
                     self.all_animations[animations].append([img, int(duration)])
 
-    def load_sounds(self, *sound_list):
-        """Loads just the sounds needed at the moment."""
-        self.all_sounds = {}
-        for sound in os.listdir(self.sound_directory):
-            if sound in sound_list:
-                self.all_sounds[sound.split(".")[0]] = pygame.mixer.Sound(os.path.join(self.sound_directory, sound))
+    def load_music(self, *music_list):
+        """Loads just the songs needed at the moment."""
+        self.all_music = {}
+        for sound in os.listdir(self.music_directory):
+            if sound in music_list:
+                self.all_music[sound.split(".")[0]] = pygame.mixer.Sound(os.path.join(self.music_directory, sound))
+
+    def load_sfx(self, *sfx_list):
+        """Loads just the sound effects needed at the moment."""
+        self.all_sfx = {}
+        for sound in os.listdir(self.sfx_directory):
+            if sound in sfx_list:
+                self.all_sfx[sound.split(".")[0]] = pygame.mixer.Sound(os.path.join(self.sfx_directory, sound))
 
     def setup_directories(self) -> None:
         self.state_directory = os.path.join("scr", "states")
         self.level_directory = os.path.join("scr", "levels")
-        
         
         self.asset_directory = os.path.join("scr", "assets")
         self.font_directory = os.path.join(self.asset_directory, "fonts")
         self.tile_directory = os.path.join(self.asset_directory, "tiles")
         self.image_directory = os.path.join(self.asset_directory, "images")
         self.animation_directory = os.path.join(self.asset_directory, "animations")
+        
         self.sound_directory = os.path.join(self.asset_directory, "sounds")
+        self.sfx_directory = os.path.join(self.sound_directory, "sfx")
+        self.music_directory = os.path.join(self.sound_directory, "music")
         
     def shut_down(self) -> None:
         """Completley shutting down the game."""
         self.playing = False
         self.running = False
+
+        with open(os.path.join("scr", "config", "options.json"), "r") as options_json_file:
+            new_options = json.load(options_json_file)
+    
+            new_options["scale"] = self.SCALE
+            new_options["sfx_volumen"] = self.sfx_global_volume
+            new_options["music_volumen"] = self.music_global_volume
+            
+            options_json_file.close()
+            
+        with open(os.path.join("scr","config", "options.json"), "w") as options_json_file:
+            json.dump(new_options, options_json_file)
+            options_json_file.close()
+        
         pygame.display.quit()
         pygame.quit()
         sys.exit()

@@ -22,18 +22,23 @@ class Main_menu(State):
 
         self.timer = 0
 
-        self.game.load_sounds("menu_hover.wav", "menu_click.wav")
+        self.game.load_sfx("menu_hover.wav", "menu_click.wav")
 
-        self.game.all_sounds["menu_hover"].set_volume(0.5)
-        self.game.all_sounds["menu_click"].set_volume(0.5)
+        self.game.all_sfx["menu_hover"].set_volume(0.5 * self.game.sfx_global_volume/100)
+        self.game.all_sfx["menu_click"].set_volume(0.5 * self.game.sfx_global_volume/100)
+
+        self.game.load_music("android52 - Dancing All Night (Short).mp3")
+        
+        self.game.all_music["android52 - Dancing All Night (Short)"].set_volume(self.game.music_global_volume/100)
+        self.game.all_music["android52 - Dancing All Night (Short)"].play(-1)
 
     def load_sprites(self):
         self.start_button = pygame.Rect(450,100,150,32)
         self.options_button = pygame.Rect(-250,160,150,32)
             
 
-        self.start_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"FreePixel.ttf"), 22, "START", colours["white"], False, self.game.GAME_WIDTH//2, 120, True)
-        self.options_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"FreePixel.ttf"), 22, "OPTIONS", colours["white"], False, self.game.GAME_WIDTH//2, 180, True)
+        self.start_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "START", colours["white"], True, self.game.GAME_WIDTH, 120-4, True, self.game.SCALE)
+        self.options_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "OPTIONS", colours["white"], True, self.game.GAME_WIDTH, 180-4, True, self.game.SCALE)
     
     def update(self):
         """Update the menu state."""
@@ -44,18 +49,20 @@ class Main_menu(State):
 
         if self.start_button.collidepoint(mx, my):
             if not(self.hover):
-                self.game.all_sounds["menu_hover"].play()
+                self.game.all_sfx["menu_hover"].play()
                 self.hover = True
             if self.game.click:
-                self.game.all_sounds["menu_click"].play()
+                self.game.all_sfx["menu_click"].play()
+                self.game.high_res_canvas.fill((0,0,0))
                 game_world = Game_world(self.game)
                 game_world.enter_state()
         elif self.options_button.collidepoint(mx,my):
             if not(self.hover):
-                self.game.all_sounds["menu_hover"].play()
+                self.game.all_sfx["menu_hover"].play()
                 self.hover = True
             if self.game.click:
-                self.game.all_sounds["menu_click"].play()
+                self.game.all_sfx["menu_click"].play()
+                self.game.high_res_canvas.fill((0,0,0))
                 options = Options_menu(self.game)
                 options.enter_state()
         else: self.hover = False
@@ -70,11 +77,12 @@ class Main_menu(State):
     def render(self):
         """Render the menu state."""
         self.game.game_canvas.fill(colours["black"])
+        self.game.high_res_canvas.fill((0,0,0))
 
         pygame.draw.rect(self.game.game_canvas, colours["white"], self.start_button, width=4)
         pygame.draw.rect(self.game.game_canvas, colours["white"], self.options_button, width=4)
 
-        self.start_txt.update(self.game.game_canvas, x = self.start_button.x + 76)
-        self.options_txt.update(self.game.game_canvas, x = self.options_button.x + 75)
+        self.start_txt.update(self.game.high_res_canvas, x = self.start_button.x + 76, scale = self.game.SCALE)
+        self.options_txt.update(self.game.high_res_canvas, x = self.options_button.x + 75, scale = self.game.SCALE)
 
         
