@@ -183,5 +183,6 @@ class Player(pygame.sprite.Sprite):
 ##                if self.current_ani[1] == True:
 ##                    self.ani_timer, self.ani_frame = 0, 0
 ##                else: self.change_animation(self.previous_ani)
+        
         pygame.draw.rect(layer, colours["red"], self.rect)
-        pygame.draw.rect(layer, (0, 255, 0), (self.move_destination[0], self.move_destination[1], 10, 10))
+##        pygame.draw.rect(layer, (0, 255, 0), (self.move_destination[0], self.move_destination[1], 10, 10))
