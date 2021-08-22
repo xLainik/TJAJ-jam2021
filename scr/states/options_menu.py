@@ -22,10 +22,10 @@ class Options_menu(State):
         pygame.mixer.set_num_channels(2)
         
     def load_sprites(self):
-        self.options_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "OPTIONS", colours["white"], True, self.game.SCREEN_WIDTH//2, 28, True, self.game.SCALE)
-        self.scale_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"Monitorica-Bd.ttf"), 22, "Screen Size", colours["white"], True, self.game.SCREEN_WIDTH, 54, False, self.game.SCALE)
-        self.sfx_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"Monitorica-Bd.ttf"), 22, "Sound Effects", colours["white"], True, 20, 102, False, self.game.SCALE)
-        self.music_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"Monitorica-Bd.ttf"), 22, "Music", colours["white"], True, 96-8, 148, False, self.game.SCALE)
+        self.options_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "OPCIONES", colours["white"], True, self.game.SCREEN_WIDTH//2, 28, True, self.game.SCALE)
+        self.scale_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"Monitorica-Bd.ttf"), 22, "Tamaño de Pantalla", colours["white"], True, self.game.SCREEN_WIDTH, 54, False, self.game.SCALE)
+        self.sfx_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"Monitorica-Bd.ttf"), 22, "Efectos de Sonido", colours["white"], True, 20, 102, False, self.game.SCALE)
+        self.music_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"Monitorica-Bd.ttf"), 22, "Musica", colours["white"], True, 96-8, 148, False, self.game.SCALE)
         
         self.scale_down_button = pygame.Rect(-100,50,30,26)
         self.scale_up_button = pygame.Rect(-100,50,30,26)
@@ -140,9 +140,9 @@ class Options_menu(State):
         self.game.high_res_canvas.fill((0,0,0))
 
         self.options_txt.update(self.game.high_res_canvas, scale = self.game.SCALE)    
-        self.scale_txt.update(self.game.high_res_canvas, content = "Screen Size                 x" + str(self.game.SCALE), x = self.scale_down_button.x - 128+14, scale = self.game.SCALE)
-        self.sfx_txt.update(self.game.high_res_canvas, content = "Sound Efects Vol.              " + str(int(self.game.sfx_global_volume)) + "%", x = self.sfx_down_button.x - 160, scale = self.game.SCALE)
-        self.music_txt.update(self.game.high_res_canvas, content = "Music Vol.               " + str(int(self.game.music_global_volume)) + "%", x = self.music_down_button.x - 112+6, scale = self.game.SCALE)
+        self.scale_txt.update(self.game.high_res_canvas, content = "Tamaño de Pantalla           x" + str(self.game.SCALE), x = self.scale_down_button.x - 156, scale = self.game.SCALE)
+        self.sfx_txt.update(self.game.high_res_canvas, content = "Volumen de Efectos         " + str(int(self.game.sfx_global_volume)) + "%", x = self.sfx_down_button.x - 160, scale = self.game.SCALE)
+        self.music_txt.update(self.game.high_res_canvas, content = "Volumen de Música         " + str(int(self.game.music_global_volume)) + "%", x = self.music_down_button.x - 152, scale = self.game.SCALE)
         self.back_txt.update(self.game.high_res_canvas, x = self.back_to_menu_button.x + 78, scale = self.game.SCALE)
         
         pygame.draw.rect(self.game.game_canvas, colours["blue"], self.scale_up_button, width = 2)

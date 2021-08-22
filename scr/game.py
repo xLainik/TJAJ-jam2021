@@ -30,7 +30,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.MAX_FPS = options["fps"]
 
-        self.transition_timer = -1
+        self.transition_timer = -100
         
         self.running, self.playing = True, True
 
@@ -40,6 +40,8 @@ class Game:
         self.click = 0
 
         self.player = Player(self, 0, 0)
+
+        self.current_level = options["current_level"]
 
         pygame.mixer.set_num_channels(5)
         self.sfx_global_volume = options["sfx_volumen"]
@@ -78,13 +80,15 @@ class Game:
         self.clock.tick(self.MAX_FPS)
 
     def transition_screen(self):
-        if self.transition_timer > -1:
+        if self.transition_timer >= 0:
             self.transition_timer += self.delta_time
             self.transition_img = pygame.Surface((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
             if self.transition_timer <= 26:
-                self.transition_img.set_alpha(int(255*(1-self.transition_timer/26)))
+                self.transition_img.set_alpha(int(255*(self.transition_timer/26)))
+            elif self.transition_timer <= 78:
+                self.transition_img.set_alpha(int(255*(1-(self.transition_timer-52)/26)))
             self.screen.blit(self.transition_img, (0,0))
-            if self.transition_timer > 24: self.transition_timer = -1
+            if self.transition_timer > 76: self.transition_timer = -100
 
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
@@ -163,6 +167,7 @@ class Game:
             new_options["scale"] = self.SCALE
             new_options["sfx_volumen"] = self.sfx_global_volume
             new_options["music_volumen"] = self.music_global_volume
+            new_options["current_level"] = self.current_level
             
             options_json_file.close()
             

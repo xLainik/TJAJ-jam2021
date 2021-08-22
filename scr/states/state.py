@@ -11,11 +11,11 @@ class State:
     def enter_state(self):
         if len(self.game.state_stack) > 0:
             self.previous_state = self.game.state_stack[-1]
-        self.game.transition_timer = 0        
+        self.game.transition_timer = 52       
         self.game.state_stack.append(self)        
 
     def exit_state(self, restart = False):
         if restart:
             self.previous_state.__init__(self.game)
-        self.game.transition_timer = 0        
+        self.game.transition_timer = 52        
         self.game.state_stack.pop()

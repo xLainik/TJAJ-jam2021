@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.moving = False
         self.move_destination = 0, 0
 
-        self.restart_timer = 0
+        self.restart_timer = -1
         
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
         self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
@@ -33,6 +33,16 @@ class Player(pygame.sprite.Sprite):
         self.speed_x, self.speed_y = 0, 0
         self.move_destination = x, y
 
+        self.dead = False
+        self.moving = False
+        self.move_destination = 0, 0
+
+        self.restart_timer = -1
+        self.restart_cooldown = -1
+        
+        self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
+        self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
+
     def check_dead(self, enemies):
         for enemy in enemies:
             if self.rect.colliderect(enemy.rect) and not(self.dead):
@@ -41,6 +51,8 @@ class Player(pygame.sprite.Sprite):
     def update(self, entities, player_turn, delta_time):
 
         if player_turn:
+            self.inputs["restart"] = self.game.actions[pygame.K_r]
+            
             if not(self.dead) and not(self.moving):
                 if self.game.actions[pygame.K_RIGHT]:
                     self.speed_x = 1
@@ -62,6 +74,26 @@ class Player(pygame.sprite.Sprite):
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y - 20
                     self.inputs["up"] = True
+
+        # Restart the level
+        if self.inputs["restart"] and self.restart_cooldown == -1:
+            # Start the clock
+            if self.restart_timer == -1:
+                self.restart_timer = 0
+                self.game.transition_timer = 0
+            # Keep pressing r
+            if self.restart_timer >= 0: self.restart_timer += self.game.delta_time
+                
+        if self.restart_timer >= 0:
+            if self.restart_timer > 50: self.game.state_stack[-1].restart_level()
+            if self.inputs["restart"] == False:
+                self.restart_cooldown = 0
+                self.restart_timer = -1
+                self.game.transition_timer = -1
+
+        if self.restart_cooldown >= 0:
+            self.restart_cooldown += self.game.delta_time
+            if self.restart_cooldown >= 100: self.restart_cooldown = -1
 
         # grid movement
         if self.moving:
@@ -106,6 +138,16 @@ class Player(pygame.sprite.Sprite):
                     self.collision_directions["left"] = True
                 self.x = self.rect.x
 
+            # Caja de rebote
+            elif entity.entity_name == "caja" and entity.bouncing:
+                if entity.speed_x != 0:
+                    self.move_destination = (round(self.rect.x//20) * 20) + 5, self.rect.y
+                    self.speed_x *= -1
+                    
+                if entity.speed_y != 0:
+                    self.move_destination = self.rect.x, (round(self.rect.y//20) * 20) + 5
+                    self.speed_y *= -1
+
         self.rect.y = int(self.y)
             
         hit_list = pygame.sprite.spritecollide(self, entities, False)
@@ -121,11 +163,11 @@ class Player(pygame.sprite.Sprite):
                 self.y = self.rect.y
 
         if self.collision_directions["left"] or self.collision_directions["right"]:
-            self.move_destination = ((self.rect.x//20) * 20) + 5, self.rect.y
+            self.move_destination = (round(self.rect.x//20) * 20) + 5, self.rect.y
             self.speed_x *= -1
             
         if self.collision_directions["top"] or self.collision_directions["bottom"]:
-            self.move_destination = self.rect.x, ((self.rect.y//20) * 20) + 5
+            self.move_destination = self.rect.x, (round(self.rect.y//20) * 20) + 5
             self.speed_y *= -1
 
     def change_animation(self, new_ani):

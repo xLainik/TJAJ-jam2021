@@ -39,7 +39,7 @@ class Level():
         self.enemies_turn_timer = 0
     
     def update(self):
-        self.game.player.update(self.entities, self.player_turn, self.game.delta_time)
+        #self.game.player.update(self.entities, self.player_turn, self.game.delta_time)
 
         if not(self.player_turn):
             self.enemies_turn_timer += self.game.delta_time

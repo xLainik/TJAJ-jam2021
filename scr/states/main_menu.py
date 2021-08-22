@@ -37,8 +37,8 @@ class Main_menu(State):
         self.options_button = pygame.Rect(-250,160,150,32)
             
 
-        self.start_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "START", colours["white"], True, self.game.GAME_WIDTH, 120-4, True, self.game.SCALE)
-        self.options_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "OPTIONS", colours["white"], True, self.game.GAME_WIDTH, 180-4, True, self.game.SCALE)
+        self.start_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "JUGAR", colours["white"], True, self.game.GAME_WIDTH, 120-4, True, self.game.SCALE)
+        self.options_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 24, "OPCIONES", colours["white"], True, self.game.GAME_WIDTH, 180-4, True, self.game.SCALE)
     
     def update(self):
         """Update the menu state."""

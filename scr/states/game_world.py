@@ -20,11 +20,15 @@ class Game_world(State):
                        pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_entities.png")), levels[0]
             )
         }
-        self.change_level(self.levels[0])
+        
+        self.change_level(self.levels[self.game.current_level])
         
         
     def change_level(self, new_level):
         self.current_level = new_level
+
+    def restart_level(self):
+        self.__init__(self.game)
 
     def update(self):
         """Update the menu state."""
