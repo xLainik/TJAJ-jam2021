@@ -16,12 +16,16 @@ class Player(pygame.sprite.Sprite):
 
         self.game = game
 
+        self.entity_name = "player"
+
         self.dead = False
         self.moving = False
         self.move_destination = 0, 0
+
+        self.restart_timer = 0
         
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
-        self.inputs = {"right": False, "left": False, "up": False, "down": False}
+        self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
 
     def level_init(self, x, y):
         self.rect.x, self.rect.y = x, y
@@ -34,29 +38,30 @@ class Player(pygame.sprite.Sprite):
             if self.rect.colliderect(enemy.rect) and not(self.dead):
                 self.dead = True
         
-    def update(self, tiles):
-        
-        if not(self.dead) and not(self.moving):
-            if self.game.actions[pygame.K_RIGHT]:
-                self.speed_x = 1
-                self.moving = True
-                self.move_destination = self.rect.x + 20, self.rect.y
-                self.inputs["right"] = True
-            elif self.game.actions[pygame.K_LEFT]:
-                self.speed_x = -1
-                self.moving = True
-                self.move_destination = self.rect.x - 20, self.rect.y
-                self.inputs["left"] = True
-            elif self.game.actions[pygame.K_DOWN]:
-                self.speed_y = 1
-                self.moving = True
-                self.move_destination = self.rect.x, self.rect.y + 20
-                self.inputs["down"] = True
-            elif self.game.actions[pygame.K_UP]:
-                self.speed_y = -1
-                self.moving = True
-                self.move_destination = self.rect.x, self.rect.y - 20
-                self.inputs["up"] = True
+    def update(self, entities, player_turn, delta_time):
+
+        if player_turn:
+            if not(self.dead) and not(self.moving):
+                if self.game.actions[pygame.K_RIGHT]:
+                    self.speed_x = 1
+                    self.moving = True
+                    self.move_destination = self.rect.x + 20, self.rect.y
+                    self.inputs["right"] = True
+                elif self.game.actions[pygame.K_LEFT]:
+                    self.speed_x = -1
+                    self.moving = True
+                    self.move_destination = self.rect.x - 20, self.rect.y
+                    self.inputs["left"] = True
+                elif self.game.actions[pygame.K_DOWN]:
+                    self.speed_y = 1
+                    self.moving = True
+                    self.move_destination = self.rect.x, self.rect.y + 20
+                    self.inputs["down"] = True
+                elif self.game.actions[pygame.K_UP]:
+                    self.speed_y = -1
+                    self.moving = True
+                    self.move_destination = self.rect.x, self.rect.y - 20
+                    self.inputs["up"] = True
 
         # grid movement
         if self.moving:
@@ -74,9 +79,11 @@ class Player(pygame.sprite.Sprite):
                     self.moving = False
                 
             if self.moving == False:
-                self.inputs = {"right": False, "left": False, "up": False, "down": False}
+                self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
                 self.speed_x, self.speed_y = 0, 0
                 self.x, self.y = self.move_destination
+                self.game.state_stack[-1].current_level.player_turn = False
+                self.move_destination = -10, -10
                 
         # Applies the speed to the position
         self.x += self.speed_x * self.game.delta_time
@@ -87,29 +94,29 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.x = int(self.x)
 
-        hit_list = pygame.sprite.spritecollide(self, tiles, False)
+        hit_list = pygame.sprite.spritecollide(self, entities, False)
 
-        for tile in hit_list:
-            if tile.collidable:
+        for entity in hit_list:
+            if entity.entity_name == "barrera":
                 if self.speed_x > 0:
-                    self.rect.right = tile.rect.left
+                    self.rect.right = entity.rect.left
                     self.collision_directions["right"] = True
                 elif self.speed_x < 0:
-                    self.rect.left = tile.rect.right
+                    self.rect.left = entity.rect.right
                     self.collision_directions["left"] = True
                 self.x = self.rect.x
 
         self.rect.y = int(self.y)
             
-        hit_list = pygame.sprite.spritecollide(self, tiles, False)
+        hit_list = pygame.sprite.spritecollide(self, entities, False)
         
-        for tile in hit_list:
-            if tile.collidable:
+        for entity in hit_list:
+            if entity.entity_name == "barrera":
                 if self.speed_y > 0:
-                    self.rect.bottom = tile.rect.top
+                    self.rect.bottom = entity.rect.top
                     self.collision_directions["bottom"] = True
-                elif self.speed_y < 0 and not(self.dead):
-                    self.rect.top = tile.rect.bottom
+                elif self.speed_y < 0:
+                    self.rect.top = entity.rect.bottom
                     self.collision_directions["top"] = True
                 self.y = self.rect.y
 
@@ -143,4 +150,5 @@ class Player(pygame.sprite.Sprite):
 ##                if self.current_ani[1] == True:
 ##                    self.ani_timer, self.ani_frame = 0, 0
 ##                else: self.change_animation(self.previous_ani)
-        pygame.draw.rect(layer, colours["green"], self.rect)
+        pygame.draw.rect(layer, colours["red"], self.rect)
+        pygame.draw.rect(layer, (0, 255, 0), (self.move_destination[0], self.move_destination[1], 10, 10))

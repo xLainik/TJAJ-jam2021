@@ -14,7 +14,7 @@ class Level():
 
         tilemap = Tilemap()
 
-        self.tiles, self.obstacles, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(png_map, png_entities)
+        self.tiles, self.entities, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(png_map, png_entities)
 
         self.tiles_surface = pygame.Surface((self.LEVEL_SIZE))
 
@@ -27,6 +27,7 @@ class Level():
         self.entities_surface.fill((0, 0, 0))
 
         self.game.player.level_init(player_start_x + 5, player_start_y + 5)
+        self.entities.add(self.game.player)
 
         self.camera = Camera(self.game.player, self.tiles_surface, self.game)
         self.camera_surface = pygame.Surface((self.game.SCREEN_SIZE))
@@ -34,10 +35,22 @@ class Level():
         self.camera_surface.set_colorkey((0, 0, 0))
         self.camera_surface.fill((0, 0, 0))
 
-        self.level_turn = ["player", "enemies"]
+        self.player_turn = True
+        self.enemies_turn_timer = 0
     
     def update(self):
-        self.game.player.update(self.tiles)
+        self.game.player.update(self.entities, self.player_turn, self.game.delta_time)
+
+        if not(self.player_turn):
+            self.enemies_turn_timer += self.game.delta_time
+            if self.enemies_turn_timer >= 20:
+                self.player_turn = True
+                self.enemies_turn_timer = 0
+
+        for entity in self.entities:
+            entity.update(self.entities, self.player_turn, self.game.delta_time)
+
+            
         self.camera.update(self.game.player)
 
     def render(self):
@@ -48,10 +61,8 @@ class Level():
 
         self.entities_surface.fill((0,0,0), rect=self.camera.rect)
 
-        for obstacle in self.obstacles:
-            obstacle.draw(self.entities_surface)
-
-        self.game.player.draw(self.entities_surface)
+        for entity in self.entities:
+            entity.draw(self.entities_surface)
 
         self.camera_surface.blit(self.tiles_surface, (0,0), area=(self.camera.rect.x, self.camera.rect.y, self.camera.rect.width, self.camera.rect.height))
         self.camera_surface.blit(self.entities_surface, (0,0), area=(self.camera.rect.x, self.camera.rect.y, self.camera.rect.width, self.camera.rect.height))
