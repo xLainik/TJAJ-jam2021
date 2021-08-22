@@ -23,8 +23,8 @@ class Player(pygame.sprite.Sprite):
         self.move_destination = 0, 0
 
         self.restart_timer = -1
-        
-        self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
+
+        self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}        
         self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
 
     def level_init(self, x, y):
@@ -39,9 +39,10 @@ class Player(pygame.sprite.Sprite):
 
         self.restart_timer = -1
         self.restart_cooldown = -1
-        
+
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
         self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
+        self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
     def check_dead(self, enemies):
         for enemy in enemies:
@@ -129,35 +130,25 @@ class Player(pygame.sprite.Sprite):
         hit_list = pygame.sprite.spritecollide(self, entities, False)
 
         for entity in hit_list:
-            if entity.entity_name == "barrera":
-                if self.speed_x > 0:
+            if not(entity is self):
+                if (entity.push_directions["right"] == False) and self.speed_x > 0:
                     self.rect.right = entity.rect.left
                     self.collision_directions["right"] = True
-                elif self.speed_x < 0:
+                elif (entity.push_directions["left"] == False) and self.speed_x < 0:
                     self.rect.left = entity.rect.right
                     self.collision_directions["left"] = True
                 self.x = self.rect.x
-
-            # Caja de rebote
-            elif entity.entity_name == "caja" and entity.bouncing:
-                if entity.speed_x != 0:
-                    self.move_destination = (round(self.rect.x//20) * 20) + 5, self.rect.y
-                    self.speed_x *= -1
-                    
-                if entity.speed_y != 0:
-                    self.move_destination = self.rect.x, (round(self.rect.y//20) * 20) + 5
-                    self.speed_y *= -1
 
         self.rect.y = int(self.y)
             
         hit_list = pygame.sprite.spritecollide(self, entities, False)
         
         for entity in hit_list:
-            if entity.entity_name == "barrera":
-                if self.speed_y > 0:
+            if not(entity is self):
+                if (entity.push_directions["down"] == False) and self.speed_y > 0:
                     self.rect.bottom = entity.rect.top
                     self.collision_directions["bottom"] = True
-                elif self.speed_y < 0:
+                elif (entity.push_directions["up"] == False) and self.speed_y < 0:
                     self.rect.top = entity.rect.bottom
                     self.collision_directions["top"] = True
                 self.y = self.rect.y

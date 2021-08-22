@@ -29,6 +29,10 @@ class Level():
         self.game.player.level_init(player_start_x + 5, player_start_y + 5)
         self.entities.add(self.game.player)
 
+        for entity in self.entities:
+            if entity.entity_name != "player" and entity.entity_name != "barrera":
+                entity.calculate_push(self.entities)
+
         self.camera = Camera(self.game.player, self.tiles_surface, self.game)
         self.camera_surface = pygame.Surface((self.game.SCREEN_SIZE))
 
