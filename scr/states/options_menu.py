@@ -102,7 +102,7 @@ class Options_menu(State):
                 # Center the window on the screen
                 self.game.window.position = (int(self.game.MONITOR_SIZE[0]/2 - (self.game.SCREEN_WIDTH * self.game.SCALE / 2)), int(self.game.MONITOR_SIZE[1]/2 - (self.game.SCREEN_HEIGHT * self.game.SCALE / 2)))
                 self.__init__(self.game)
-        elif self.sfx_down_button.collidepoint(mx,my):
+        elif self.sfx_down_button.collidepoint(mx,my) and self.game.sfx_global_volume > 0:
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
@@ -112,7 +112,7 @@ class Options_menu(State):
                 if self.game.sfx_global_volume < 0: self.game.sfx_global_volume = 0
                 if self.game.click == 1:
                     self.game.all_sfx["menu_click"].play()
-        elif self.sfx_up_button.collidepoint(mx,my):
+        elif self.sfx_up_button.collidepoint(mx,my) and self.game.sfx_global_volume < 100:
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
@@ -122,7 +122,7 @@ class Options_menu(State):
                 if self.game.sfx_global_volume > 100: self.game.sfx_global_volume = 100
                 if self.game.click == 1:
                     self.game.all_sfx["menu_click"].play()
-        elif self.music_down_button.collidepoint(mx,my):
+        elif self.music_down_button.collidepoint(mx,my) and self.game.music_global_volume > 0:
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
@@ -130,7 +130,7 @@ class Options_menu(State):
             if self.game.click:
                 self.game.music_global_volume -= 0.8
                 if self.game.music_global_volume < 0: self.game.music_global_volume = 0
-        elif self.music_up_button.collidepoint(mx,my):
+        elif self.music_up_button.collidepoint(mx,my) and self.game.music_global_volume < 100:
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
                 self.hover = True
@@ -207,11 +207,15 @@ class Options_menu(State):
         if self.game.SCALE > 1:
             self.game.high_res_canvas.blit(self.scale_arrow_left_button_img, ((self.scale_down_button.x + 3 * self.game.SCALE), (self.scale_down_button.y + 3 * self.game.SCALE)))
 
-        self.game.high_res_canvas.blit(self.sfx_arrow_right_button_img, ((self.sfx_up_button.x + 3 * self.game.SCALE), (self.sfx_up_button.y + 3 * self.game.SCALE)))
-        self.game.high_res_canvas.blit(self.sfx_arrow_left_button_img, ((self.sfx_down_button.x + 3 * self.game.SCALE), (self.sfx_down_button.y + 3 * self.game.SCALE)))
+        if self.game.sfx_global_volume < 100:
+            self.game.high_res_canvas.blit(self.sfx_arrow_right_button_img, ((self.sfx_up_button.x + 3 * self.game.SCALE), (self.sfx_up_button.y + 3 * self.game.SCALE)))
+        if self.game.sfx_global_volume > 0:
+            self.game.high_res_canvas.blit(self.sfx_arrow_left_button_img, ((self.sfx_down_button.x + 3 * self.game.SCALE), (self.sfx_down_button.y + 3 * self.game.SCALE)))
 
-        self.game.high_res_canvas.blit(self.music_arrow_right_button_img, ((self.music_up_button.x + 3 * self.game.SCALE), (self.music_up_button.y + 3 * self.game.SCALE)))
-        self.game.high_res_canvas.blit(self.music_arrow_left_button_img, ((self.music_down_button.x + 3 * self.game.SCALE), (self.music_down_button.y + 3 * self.game.SCALE)))
+        if self.game.music_global_volume < 100:
+            self.game.high_res_canvas.blit(self.music_arrow_right_button_img, ((self.music_up_button.x + 3 * self.game.SCALE), (self.music_up_button.y + 3 * self.game.SCALE)))
+        if self.game.music_global_volume > 0:
+            self.game.high_res_canvas.blit(self.music_arrow_left_button_img, ((self.music_down_button.x + 3 * self.game.SCALE), (self.music_down_button.y + 3 * self.game.SCALE)))
         
 ##        pygame.draw.rect(self.game.game_canvas, colours["red"], self.back_to_menu_button, width = 3)
         self.game.high_res_canvas.blit(self.back_to_menu_button_img, ((self.back_to_menu_button.x - 10 * self.game.SCALE), self.back_to_menu_button.y))
