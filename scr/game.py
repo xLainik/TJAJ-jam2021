@@ -1,4 +1,7 @@
 import pygame, time, os, sys, json
+
+from pygame._sdl2.video import Window
+
 from scr.config.config import options, colours
 from scr.states.main_menu import Main_menu
 
@@ -15,10 +18,17 @@ class Game:
         self.SCALE = options["scale"]
         
         self.SCREEN_SIZE = self.SCREEN_WIDTH, self.SCREEN_HEIGHT = options["game_width"], options["game_height"]
+        self.SCREEN_SIZE_SCALED = self.SCREEN_WIDTH_SCALED, self.SCREEN_HEIGHT_SCALED = self.SCREEN_WIDTH * self.SCALE, self.SCREEN_HEIGHT * self.SCALE 
         
-        self.screen = pygame.display.set_mode((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
+        self.screen = pygame.display.set_mode((self.SCREEN_WIDTH * self.SCALE, self.SCREEN_HEIGHT * self.SCALE), pygame.RESIZABLE)
 
-        self.high_res_canvas = pygame.Surface((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
+        self.window = Window.from_display_module()
+
+        self.MAX_SCALE = int(pygame.display.list_modes(depth=0, flags=pygame.FULLSCREEN, display=0)[0][0] / self.SCREEN_WIDTH)
+
+        self.RESIZED_SCALE_WIDTH, self.RESIZED_SCALE_HEIGHT = self.SCALE, self.SCALE
+
+        self.high_res_canvas = pygame.Surface((self.SCREEN_WIDTH * self.SCALE, self.SCREEN_HEIGHT * self.SCALE))
         self.high_res_canvas.fill((0,0,0))
         self.high_res_canvas.set_colorkey((0,0,0))
 
@@ -31,6 +41,7 @@ class Game:
         self.MAX_FPS = options["fps"]
 
         self.transition_timer = -100
+        self.fullscreen_cooldown = -1
         
         self.running, self.playing = True, True
 
@@ -69,12 +80,16 @@ class Game:
         """Updates the needed opponents according to the current game state with respect for the imputs recived."""
         self.state_stack[-1].update()
 
+        if self.fullscreen_cooldown >= 0:
+            self.fullscreen_cooldown += self.delta_time
+            if self.fullscreen_cooldown >= 100: self.fullscreen_cooldown = -1
+
     def render(self):
         """Renders the needed opponents according to the current game state."""
         self.state_stack[-1].render()
         
-        self.screen.blit(pygame.transform.scale(self.game_canvas, (self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE)), (0, 0))
-        self.screen.blit(self.high_res_canvas, (0,0))
+        self.screen.blit(pygame.transform.scale(self.game_canvas, (int(self.SCREEN_WIDTH * self.RESIZED_SCALE_WIDTH), int(self.SCREEN_HEIGHT * self.RESIZED_SCALE_HEIGHT))), (0, 0))
+        self.screen.blit(pygame.transform.scale(self.high_res_canvas, (int(self.SCREEN_WIDTH * self.RESIZED_SCALE_WIDTH), int(self.SCREEN_HEIGHT * self.RESIZED_SCALE_HEIGHT))), (0,0))
         self.transition_screen()
         pygame.display.update()
         self.clock.tick(self.MAX_FPS)
@@ -82,7 +97,8 @@ class Game:
     def transition_screen(self):
         if self.transition_timer >= 0:
             self.transition_timer += self.delta_time
-            self.transition_img = pygame.Surface((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
+            self.transition_img = pygame.Surface((self.SCREEN_WIDTH*self.RESIZED_SCALE_WIDTH, self.SCREEN_HEIGHT*self.RESIZED_SCALE_HEIGHT))
+            # 0 <- fade in -> 26 <- complete darkness -> 52 <- fade out -> 76
             if self.transition_timer <= 26:
                 self.transition_img.set_alpha(int(255*(self.transition_timer/26)))
             elif self.transition_timer <= 78:
@@ -102,8 +118,20 @@ class Game:
             if event.type == pygame.MOUSEBUTTONUP:
                 self.click = 0
 
-        if self.actions[pygame.K_F11]:
-            pygame.display.toggle_fullscreen()
+            if event.type == pygame.VIDEORESIZE:
+                self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                self.RESIZED_SCALE_WIDTH, self.RESIZED_SCALE_HEIGHT = self.screen.get_width()/self.SCREEN_WIDTH, self.screen.get_height()/self.SCREEN_HEIGHT
+
+        if self.actions[pygame.K_F11] and self.fullscreen_cooldown == -1:
+##            print(pygame.display.list_modes(depth=0, flags=pygame.FULLSCREEN, display=0)[0])
+
+            if self.screen.get_flags() & pygame.FULLSCREEN:
+                self.screen = pygame.display.set_mode((self.SCREEN_WIDTH * self.SCALE, self.SCREEN_HEIGHT * self.SCALE))
+                self.RESIZED_SCALE_WIDTH, self.RESIZED_SCALE_HEIGHT = self.SCALE, self.SCALE
+                self.window.position = (10, 40)
+            else:
+                self.screen = pygame.display.set_mode(pygame.display.list_modes(depth=0, flags=pygame.FULLSCREEN, display=0)[0], pygame.FULLSCREEN)
+            self.fullscreen_cooldown = 0
 
     def load_first_state(self) -> None:
         """Loading the first state of the game."""

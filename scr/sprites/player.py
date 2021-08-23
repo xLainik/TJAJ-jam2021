@@ -18,11 +18,11 @@ class Player(pygame.sprite.Sprite):
 
         self.entity_name = "player"
 
+        self.restart_cooldown = 0
+
         self.dead = False
         self.moving = False
         self.move_destination = 0, 0
-
-        self.restart_timer = -1
 
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}        
         self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
@@ -36,12 +36,11 @@ class Player(pygame.sprite.Sprite):
         self.dead = False
         self.moving = False
         self.move_destination = 0, 0
-
-        self.restart_timer = -1
-        self.restart_cooldown = -1
+        
+        self.restart_cooldown = 0
 
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
-        self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
+        self.inputs = {"right": False, "left": False, "up": False, "down": False, "skip": False, "restart": False}
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
     def check_dead(self, enemies):
@@ -55,22 +54,22 @@ class Player(pygame.sprite.Sprite):
             self.inputs["restart"] = self.game.actions[pygame.K_r]
             
             if not(self.dead) and not(self.moving):
-                if self.game.actions[pygame.K_RIGHT]:
+                if self.game.actions[pygame.K_RIGHT] or self.game.actions[pygame.K_d]:
                     self.speed_x = 1
                     self.moving = True
                     self.move_destination = self.rect.x + 20, self.rect.y
                     self.inputs["right"] = True
-                elif self.game.actions[pygame.K_LEFT]:
+                elif self.game.actions[pygame.K_LEFT] or self.game.actions[pygame.K_a]:
                     self.speed_x = -1
                     self.moving = True
                     self.move_destination = self.rect.x - 20, self.rect.y
                     self.inputs["left"] = True
-                elif self.game.actions[pygame.K_DOWN]:
+                elif self.game.actions[pygame.K_DOWN] or self.game.actions[pygame.K_s]:
                     self.speed_y = 1
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y + 20
                     self.inputs["down"] = True
-                elif self.game.actions[pygame.K_UP]:
+                elif self.game.actions[pygame.K_UP] or self.game.actions[pygame.K_w]:
                     self.speed_y = -1
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y - 20
@@ -78,19 +77,11 @@ class Player(pygame.sprite.Sprite):
 
         # Restart the level
         if self.inputs["restart"] and self.restart_cooldown == -1:
-            # Start the clock
-            if self.restart_timer == -1:
-                self.restart_timer = 0
-                self.game.transition_timer = 0
-            # Keep pressing r
-            if self.restart_timer >= 0: self.restart_timer += self.game.delta_time
+            self.game.transition_timer = 0
+            self.restart_cooldown = 0
                 
-        if self.restart_timer >= 0:
-            if self.restart_timer > 50: self.game.state_stack[-1].restart_level()
-            if self.inputs["restart"] == False:
-                self.restart_cooldown = 0
-                self.restart_timer = -1
-                self.game.transition_timer = -1
+        if self.game.transition_timer >= 26:
+            self.game.state_stack[-1].restart_level()
 
         if self.restart_cooldown >= 0:
             self.restart_cooldown += self.game.delta_time

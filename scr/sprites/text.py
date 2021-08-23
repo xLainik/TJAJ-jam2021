@@ -33,8 +33,8 @@ class Text(pygame.sprite.Sprite):
         self.image = self.font.render(self.content, self.anti_aliasing, self.colour)
 
         if self.is_centered:
-            self.rect = self.image.get_rect(center = (self.x * self.scale, self.y * self.scale))
+            self.rect = self.image.get_rect(center = (self.x, self.y))
         else:
-            self.rect = self.image.get_rect(topleft = (self.x * self.scale, self.y * self.scale))
+            self.rect = self.image.get_rect(topleft = (self.x, self.y))
     
         self.blit_layer.blit(self.font.render(self.content, self.anti_aliasing, self.colour), self.rect)
