@@ -16,6 +16,8 @@ class Text(pygame.sprite.Sprite):
 
         self.font = pygame.font.Font(self.font_path, self.font_size * self.scale)
 
+        self.x, self.y = int(x), int(y)
+
         self.update(content = content, colour = colour, is_centered = is_centered, x = x, y = y, scale = scale)
 
   
@@ -24,8 +26,8 @@ class Text(pygame.sprite.Sprite):
         if content != None: self.content = content
         if colour != None: self.colour = colour
         if is_centered != None: self.is_centered = is_centered
-        if x != None: self.x = x
-        if y != None: self.y = y
+        if x != None: self.x = int(x)
+        if y != None: self.y = int(y)
         if scale != None:
             self.scale = scale
             self.font = pygame.font.Font(self.font_path, self.font_size * self.scale)

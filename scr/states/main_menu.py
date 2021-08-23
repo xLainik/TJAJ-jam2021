@@ -52,7 +52,6 @@ class Main_menu(State):
         self.game.check_inputs()
 
         mx, my = pygame.mouse.get_pos()
-        mx, my = int(mx * self.game.SCALE/ self.game.RESIZED_SCALE_WIDTH), int(my * self.game.SCALE/ self.game.RESIZED_SCALE_HEIGHT)
 
         if self.start_button.collidepoint(mx, my):
             if not(self.hover):

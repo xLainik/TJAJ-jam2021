@@ -71,7 +71,6 @@ class Options_menu(State):
         self.game.check_inputs()
 
         mx, my = pygame.mouse.get_pos()
-        mx, my = int(mx * self.game.SCALE/ self.game.RESIZED_SCALE_WIDTH), int(my * self.game.SCALE/ self.game.RESIZED_SCALE_HEIGHT)
 
         if self.scale_up_button.collidepoint(mx, my) and self.game.SCALE < self.game.MAX_SCALE:
             if not(self.hover):
@@ -81,11 +80,12 @@ class Options_menu(State):
             if self.game.click:
                 self.game.all_sfx["menu_click"].play()
                 self.game.SCALE += 1
-                self.game.RESIZED_SCALE_WIDTH, self.game.RESIZED_SCALE_HEIGHT = self.game.screen.get_width()/self.game.SCREEN_WIDTH, self.game.screen.get_height()/self.game.SCREEN_HEIGHT
-                self.game.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE), pygame.RESIZABLE)
+                self.game.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
                 self.game.high_res_canvas = pygame.Surface((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
                 self.game.high_res_canvas.fill((0,0,0))
                 self.game.high_res_canvas.set_colorkey((0,0,0))
+                # Center the window on the screen
+                self.game.window.position = (int(self.game.MONITOR_SIZE[0]/2 - (self.game.SCREEN_WIDTH * self.game.SCALE / 2)), int(self.game.MONITOR_SIZE[1]/2 - (self.game.SCREEN_HEIGHT * self.game.SCALE / 2)))
                 self.__init__(self.game)
         elif self.scale_down_button.collidepoint(mx, my) and self.game.SCALE > 1:
             if not(self.hover):
@@ -95,11 +95,12 @@ class Options_menu(State):
             if self.game.click:
                 self.game.all_sfx["menu_click"].play()
                 self.game.SCALE -= 1
-                self.game.RESIZED_SCALE_WIDTH, self.game.RESIZED_SCALE_HEIGHT = self.game.screen.get_width()/self.game.SCREEN_WIDTH, self.game.screen.get_height()/self.game.SCREEN_HEIGHT
-                self.game.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE), pygame.RESIZABLE)
+                self.game.screen = pygame.display.set_mode((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
                 self.game.high_res_canvas = pygame.Surface((self.game.SCREEN_WIDTH*self.game.SCALE, self.game.SCREEN_HEIGHT*self.game.SCALE))
                 self.game.high_res_canvas.fill((0,0,0))
                 self.game.high_res_canvas.set_colorkey((0,0,0))
+                # Center the window on the screen
+                self.game.window.position = (int(self.game.MONITOR_SIZE[0]/2 - (self.game.SCREEN_WIDTH * self.game.SCALE / 2)), int(self.game.MONITOR_SIZE[1]/2 - (self.game.SCREEN_HEIGHT * self.game.SCALE / 2)))
                 self.__init__(self.game)
         elif self.sfx_down_button.collidepoint(mx,my):
             if not(self.hover):
