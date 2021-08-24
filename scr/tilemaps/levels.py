@@ -30,8 +30,10 @@ class Level():
         self.entities.add(self.game.player)
 
         for entity in self.entities:
-            if entity.entity_name != "player" and entity.entity_name != "barrera":
+            if entity.entity_name != "player" and entity.entity_name != "barrera" and  entity.entity_name != "guardia":
                 entity.calculate_push(self.entities)
+            elif entity.entity_name == "guardia":
+                entity.create_maze(self.entities, self.game.player.rect)
 
         self.camera = Camera(self.game.player, self.tiles_surface, self.game)
         self.camera_surface = pygame.Surface((self.game.SCREEN_SIZE))
@@ -43,9 +45,15 @@ class Level():
         self.enemies_turn_timer = 0
     
     def update(self):
-        #self.game.player.update(self.entities, self.player_turn, self.game.delta_time)
+        # player turn
+        self.game.player.update(self.entities, self.player_turn, self.game.delta_time)
 
+        # obstacles turn
         if not(self.player_turn):
+            # Enter the turn
+            if self.enemies_turn_timer == 0:
+                 for entity in self.entities:
+                     entity.enter_turn(self.entities, self.game.player.rect)
             self.enemies_turn_timer += self.game.delta_time
             if self.enemies_turn_timer >= 20:
                 self.player_turn = True
@@ -53,7 +61,6 @@ class Level():
 
         for entity in self.entities:
             entity.update(self.entities, self.player_turn, self.game.delta_time)
-
             
         self.camera.update(self.game.player)
 

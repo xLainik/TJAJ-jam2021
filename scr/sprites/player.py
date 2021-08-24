@@ -47,6 +47,9 @@ class Player(pygame.sprite.Sprite):
         for enemy in enemies:
             if self.rect.colliderect(enemy.rect) and not(self.dead):
                 self.dead = True
+
+    def enter_turn(self, entities, player_rect):
+        pass
         
     def update(self, entities, player_turn, delta_time):
 
