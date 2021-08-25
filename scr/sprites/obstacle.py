@@ -396,7 +396,7 @@ class Waiter(Obstacle):
                     self.speed_x, self.speed_y = 0, -3
                     self.move_destination = self.move_destination[0], self.move_destination[1] - 20
                 if self.direction == "D":
-                    elf.speed_x, self.speed_y = 0, 3
+                    self.speed_x, self.speed_y = 0, 3
                     self.move_destination = self.move_destination[0], self.move_destination[1] + 20
                 
         
