@@ -11,10 +11,10 @@ class Level():
         self.game = game
         
         self.json_data = json_data
-
+        
         tilemap = Tilemap()
 
-        self.tiles, self.entities, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(png_map, png_entities)
+        self.tiles, self.entities, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(png_map, png_entities, self.json_data)
 
         self.tiles_surface = pygame.Surface((self.LEVEL_SIZE))
 
@@ -86,7 +86,10 @@ class Level():
                     guard.enter_turn(self.entities, self.game.player.rect)
             counter = 0
             for guard in self.guards:
-                guard.update(self.entities, self.game.delta_time)
+                if guard.active:
+                    guard.update(self.entities, self.game.delta_time)
+                elif guard.spawn_turn == self.turn_counter:
+                    guard.active = True
                 if guard.moves == False:
                     counter += 1
             if counter >= len(self.guards.sprites()) and self.guards_turn_timer < 10: self.guards_turn_timer = 10
@@ -98,12 +101,12 @@ class Level():
 ##                print("# PLAYER'S TURN " + str(self.turn_counter))
                 self.guards_turn_timer = 0
                 for guard in self.guards:
-                    guard.moving = False
-                    guard.speed_x, guard.speed_y = 0, 0
-                    guard.x = guard.rect.x = guard.move_destination[0]
-                    guard.y = guard.rect.y = guard.move_destination[1]
-                    
-        
+                    if guard.active:
+                        guard.moving = False
+                        guard.speed_x, guard.speed_y = 0, 0
+                        guard.x = guard.rect.x = guard.move_destination[0]
+                        guard.y = guard.rect.y = guard.move_destination[1]
+           
         self.camera.update(self.game.player)
 
     def render(self):

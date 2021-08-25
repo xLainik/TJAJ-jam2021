@@ -100,11 +100,10 @@ class Table(Obstacle):
                 self.x, self.y = self.move_destination
                 self.standing = False
                 self.push_directions = {"left": False, "right": False, "down": False, "up": False}
+                self.image = self.down_image
+                self.move_destination = self.x, self.y
 
         if self.standing:
-
-##            print((self.rect.x, self.rect.y), self.move_destination)
-            
             # Applies the speed to the position
             self.x += self.speed_x * delta_time
             self.y += self.speed_y * delta_time
@@ -116,24 +115,23 @@ class Table(Obstacle):
 
             for entity in hit_list:
                 # The player pushed the obstacle
-                if entity.entity_name == "player" and not(entity is self):
+                if entity.entity_name == "player" and not(self.moving):
                     if self.push_directions["right"] and entity.speed_x > 0:
-                        self.speed_x = 3
+                        self.speed_x = 2
                         self.moving = True
                         self.move_destination = self.rect.x + 20, self.rect.y
                     elif self.push_directions["left"] and entity.speed_x < 0:
-                        self.speed_x = -3
+                        self.speed_x = -2
                         self.moving = True
                         self.move_destination = self.rect.x - 20, self.rect.y
                     elif self.push_directions["down"] and entity.speed_y > 0:
-                        self.speed_y = 3
+                        self.speed_y = 2
                         self.moving = True
                         self.move_destination = self.rect.x, self.rect.y + 20
                     elif self.push_directions["up"] and entity.speed_y < 0:
-                        self.speed_y = -3
+                        self.speed_y = -2
                         self.moving = True
                         self.move_destination = self.rect.x, self.rect.y - 20
-                    self.image = self.down_image
         
 
 class Box(Obstacle):
@@ -204,13 +202,17 @@ class Box(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class Guard(Obstacle):
-    def __init__(self, image, x, y, entity_name):
+    def __init__(self, image, x, y, entity_name, spawn, radius):
         super().__init__(image, x, y, entity_name)
 
         self.blue_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia azul.png"))
         self.red_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png"))
 
         self.image = self.blue_image
+
+        self.spawn_turn = spawn
+
+        self.active = False
 
         self.rect = pygame.Rect(x, y, 20, 20)
 
@@ -225,7 +227,7 @@ class Guard(Obstacle):
         self.moves = False
 
         self.circle_color = colours["light gray"]
-        self.circle_radius = 70
+        self.circle_radius = radius
 
     def create_maze(self, entities, player_rect):
         start_x, end_x = self.rect.x//20, player_rect.x//20
@@ -335,5 +337,82 @@ class Guard(Obstacle):
    
                
     def draw(self, layer):
-        layer.blit(self.image, self.rect)
-        pygame.draw.circle(layer, self.circle_color, self.rect.center, self.circle_radius, width = 3)
+        if self.active:
+            layer.blit(self.image, self.rect)
+            pygame.draw.circle(layer, self.circle_color, self.rect.center, self.circle_radius, width = 3)
+
+class Waiter(Obstacle):
+    def __init__(self, image, x, y, entity_name, orientation):
+        super().__init__(image, x, y, entity_name)
+
+        self.orientation = orientation
+        
+        self.rect = pygame.Rect(x, y, 20, 20)
+        self.x, self.y = self.rect.x, self.rect.y
+
+        self.speed_x, self.speed_y = 0, 0
+        self.moving = False
+
+        self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
+        self.push_directions = {"left": False, "right": False, "down": False, "up": False}
+
+        self.move_destination = self.x, self.y
+
+    def update(self, entities, delta_time):
+        # grid movement
+        if self.moving:
+            if self.speed_x > 0:
+                if self.rect.x >= self.move_destination[0]:
+                    self.moving = False
+            elif self.speed_x < 0:
+                if self.rect.x <= self.move_destination[0]:
+                    self.moving = False
+            elif self.speed_y > 0:
+                if self.rect.y >= self.move_destination[1]:
+                    self.moving = False
+            elif self.speed_y < 0:
+                if self.rect.y <= self.move_destination[1]:
+                    self.moving = False
+                
+            if self.moving == False:
+                self.speed_x, self.speed_y = 0, 0
+                self.x, self.y = self.move_destination
+                
+        # Applies the speed to the position
+        self.x += self.speed_x * delta_time
+        self.y += self.speed_y * delta_time
+
+        self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
+
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+        
+        if self.orientation == "horizontal":
+            hit_list = pygame.sprite.spritecollide(self, entities, False)
+
+            for entity in hit_list:
+                if not(entity is self):
+                    if self.speed_x > 0:
+                        self.rect.right = entity.rect.left
+                        self.collision_directions["right"] = True
+                    elif self.speed_x < 0:
+                        self.rect.left = entity.rect.right
+                        self.collision_directions["left"] = True
+                    self.x = self.rect.x
+
+        if self.orientation == "vertical":
+            hit_list = pygame.sprite.spritecollide(self, entities, False)
+            
+            for entity in hit_list:
+                if not(entity is self):
+                    if self.speed_y > 0:
+                        self.rect.bottom = entity.rect.top
+                        self.collision_directions["bottom"] = True
+                    elif self.speed_y < 0:
+                        self.rect.top = entity.rect.bottom
+                        self.collision_directions["top"] = True
+                    self.y = self.rect.y
+            
+    
+    def draw(self, layer):
+        layer.blit(self.image, (self.rect.x, self.rect.y))

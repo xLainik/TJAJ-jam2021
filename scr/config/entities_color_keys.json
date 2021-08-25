@@ -4,5 +4,7 @@
     "player": [0, 255, 0],
     "caja": [236, 217, 149],
     "mesa": [60, 44, 116],
-    "guardia": [255, 0, 0]
+    "guardia": [255, 0, 0],
+    "mesero vertical": [255, 0, 255],
+    "mesero horizontal": [0, 255, 255]
 }

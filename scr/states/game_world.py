@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, configparser
 
 from scr.config.config import colours
 from scr.config.config import levels
