@@ -20,7 +20,7 @@ class Obstacle(pygame.sprite.Sprite):
     def enter_turn(self, entities, player_rect):
         pass
     
-    def update(self, entities, player_turn, delta_time):
+    def update(self, entities, delta_time):
         pass
     
     def draw(self, layer):
@@ -51,10 +51,10 @@ class Barrier(Obstacle):
         super().__init__(image, x, y, entity_name)
         
         self.rect = pygame.Rect(x, y, 20, 20)
-
+        
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
-    def update(self, entities, player_turn, delta_time):
+    def update(self, entities, delta_time):
         pass
 
 class Table(Obstacle):
@@ -65,9 +65,15 @@ class Table(Obstacle):
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
 
+        self.move_destination = self.x, self.y
+
+        self.down_image = pygame.image.load(os.path.join("scr", "assets", "images", "mesa caida.png"))
+
         self.standing = True
 
-    def update(self, entities, player_turn, delta_time):
+    def update(self, entities, delta_time):
+
+        print(self.standing, self.moving, self.push_directions)
 
         if self.standing:
             self.calculate_push(entities)
@@ -92,8 +98,6 @@ class Table(Obstacle):
                 self.x, self.y = self.move_destination
                 self.standing = False
                 self.push_directions = {"left": False, "right": False, "down": False, "up": False}
-                self.image = pygame.image.load(os.path.join("scr", "assets", "images", "mesa caida.png"))
-                self.move_destination = -10, -10
 
         if self.standing:
             # Applies the speed to the position
@@ -107,23 +111,24 @@ class Table(Obstacle):
 
             for entity in hit_list:
                 # The player pushed the obstacle
-                if entity.entity_name == "player" and not(self.moving):
+                if entity.entity_name == "player" and not(entity is self):
                     if self.push_directions["right"] and entity.speed_x > 0:
-                        self.speed_x = 1
+                        self.speed_x = 3
                         self.moving = True
                         self.move_destination = self.rect.x + 20, self.rect.y
                     elif self.push_directions["left"] and entity.speed_x < 0:
-                        self.speed_x = -1
+                        self.speed_x = -3
                         self.moving = True
                         self.move_destination = self.rect.x - 20, self.rect.y
                     elif self.push_directions["down"] and entity.speed_y > 0:
-                        self.speed_y = 1
+                        self.speed_y = 3
                         self.moving = True
                         self.move_destination = self.rect.x, self.rect.y + 20
                     elif self.push_directions["up"] and entity.speed_y < 0:
-                        self.speed_y = -1
+                        self.speed_y = -3
                         self.moving = True
                         self.move_destination = self.rect.x, self.rect.y - 20
+                    self.image = self.down_image
         
 
 class Box(Obstacle):
@@ -136,9 +141,9 @@ class Box(Obstacle):
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
 
-        self.move_destination = -10, -10
+        self.move_destination = self.x, self.y
 
-    def update(self, entities, player_turn, delta_time):
+    def update(self, entities, delta_time):
 
         self.calculate_push(entities)
         
@@ -160,7 +165,6 @@ class Box(Obstacle):
             if self.moving == False:
                 self.speed_x, self.speed_y = 0, 0
                 self.x, self.y = self.move_destination
-                self.move_destination = -10, -10
                 
         # Applies the speed to the position
         self.x += self.speed_x * delta_time
@@ -175,19 +179,19 @@ class Box(Obstacle):
             # The player pushed the obstacle
             if entity.entity_name == "player" and not(self.moving):
                 if self.push_directions["right"] and entity.speed_x > 0:
-                    self.speed_x = 1
+                    self.speed_x = 3
                     self.moving = True
                     self.move_destination = self.rect.x + 20, self.rect.y
                 elif self.push_directions["left"] and entity.speed_x < 0:
-                    self.speed_x = -1
+                    self.speed_x = -3
                     self.moving = True
                     self.move_destination = self.rect.x - 20, self.rect.y
                 elif self.push_directions["down"] and entity.speed_y > 0:
-                    self.speed_y = 1
+                    self.speed_y = 3
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y + 20
                 elif self.push_directions["up"] and entity.speed_y < 0:
-                    self.speed_y = -1
+                    self.speed_y = -3
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y - 20
     
@@ -208,13 +212,12 @@ class Guard(Obstacle):
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
 
-        self.move_destination = -10, -10
+        self.move_destination = self.x, self.y
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
         self.maze = []
         self.moves = False
-        self.start_y, self.start_x = -10, -10
 
     def create_maze(self, entities, player_rect):
         start_x, end_x = self.rect.x//20, player_rect.x//20
@@ -237,7 +240,7 @@ class Guard(Obstacle):
 
     def enter_turn(self, entities, player_rect):
         self.create_maze(entities, player_rect)
-##        print(self.maze)
+        print(self.maze)
 
         nums = queue.Queue()
         nums.put("")
@@ -245,17 +248,17 @@ class Guard(Obstacle):
         moves = False
 
         timer = 0
-        while timer < 200:
+        while timer < 100:
             moves = findEnd(self.maze, add, self.start_x, self.start_y)
-            if moves != False: timer = 200
+            if moves != False: timer = 100
             add = nums.get()
             for j in ["L", "R", "U", "D"]:
                 put = add + j
                 if valid(self.maze, put, self.start_x, self.start_y):
                     nums.put(put)
             timer += 1
-
-##        print(moves)
+            
+        print(moves)
             
         if moves == False:
             self.image = self.blue_image
@@ -265,23 +268,23 @@ class Guard(Obstacle):
             self.moves = tuple(moves)
             
             if self.moves[0] == "R":
-                self.speed_x = 1
+                self.speed_x = 3
                 self.moving = True
                 self.move_destination = self.rect.x + 20, self.rect.y
             elif self.moves[0] == "L":
-                self.speed_x = -1
+                self.speed_x = -3
                 self.moving = True
                 self.move_destination = self.rect.x - 20, self.rect.y
             elif self.moves[0] == "D":
-                self.speed_y = 1
+                self.speed_y = 3
                 self.moving = True
                 self.move_destination = self.rect.x, self.rect.y + 20
             elif self.moves[0] == "U":
-                self.speed_y = -1
+                self.speed_y = -3
                 self.moving = True
                 self.move_destination = self.rect.x, self.rect.y - 20
 
-    def update(self, entities, player_turn, delta_time):
+    def update(self, entities, delta_time):
         if self.moves != False:
             # grid movement
             if self.moving:
@@ -301,11 +304,10 @@ class Guard(Obstacle):
                 if self.moving == False:
                     self.speed_x, self.speed_y = 0, 0
                     self.x, self.y = self.move_destination
-                    self.move_destination = -10, -10
                     
             # Applies the speed to the position
-            self.x += self.speed_x * delta_time
-            self.y += self.speed_y * delta_time
+            self.x += self.speed_x
+            self.y += self.speed_y
 
             self.rect.x = int(self.x)
             self.rect.y = int(self.y)
