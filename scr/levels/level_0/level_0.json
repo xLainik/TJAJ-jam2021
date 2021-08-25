@@ -1,7 +1,6 @@
 {
     "guardia 1 turno spawn": 4,
     "guardia 1 radio vision": 70,
-    "mesero 1 direccion": "arriba",
-    "mesero 2 direccion": "derecha"
+    "mesero 1 direccion": "arriba"
     
 }
