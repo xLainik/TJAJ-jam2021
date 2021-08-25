@@ -44,7 +44,7 @@ class Level():
         self.camera_surface.set_colorkey((0, 0, 0))
         self.camera_surface.fill((0, 0, 0))
 
-        self.player_turn = True
+        self.player_turn = False
         self.player_turn_timer = 0
 
         self.guards_turn_timer = 0
@@ -63,12 +63,13 @@ class Level():
                 for entity in self.entities:
                     if entity.entity_name != "guardia":
                         entity.update(self.entities, self.game.delta_time)
-            if self.player_turn_timer >= 40:
+            if self.player_turn_timer >= 20:
                 self.player_turn = False
                 self.player_turn_timer = 0
                 for entity in self.entities:
                     if entity.entity_name != "guardia" and entity.entity_name != "barrera":
-                        if entity.entity_name == "mesa":
+                        if entity.entity_name == "mesa" and entity.moving == True:
+                            print((entity.rect.x, entity.rect.y), entity.move_destination)
                             entity.standing = False
                             entity.push_directions = {"left": False, "right": False, "down": False, "up": False}
                         entity.moving = False
@@ -80,17 +81,21 @@ class Level():
         if not(self.player_turn):
             # Enter the turn
             if self.guards_turn_timer == 0:
-##                print("GUARDS'S TURN")
+##                print("- GUARDS'S TURN")
                 for guard in self.guards:
                     guard.enter_turn(self.entities, self.game.player.rect)
+            counter = 0
             for guard in self.guards:
                 guard.update(self.entities, self.game.delta_time)
+                if guard.moves == False:
+                    counter += 1
+            if counter >= len(self.guards.sprites()) and self.guards_turn_timer < 10: self.guards_turn_timer = 10
             self.guards_turn_timer += self.game.delta_time
-            if self.guards_turn_timer >= 40:
+            if self.guards_turn_timer >= 20:
                 self.player_turn = True
                 self.game.player.can_move = True
                 self.turn_counter += 1
-##                print("PLAYER'S TURN" + str(self.turn_counter))
+##                print("# PLAYER'S TURN " + str(self.turn_counter))
                 self.guards_turn_timer = 0
                 for guard in self.guards:
                     guard.moving = False

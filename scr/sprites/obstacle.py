@@ -1,7 +1,11 @@
 import pygame, os
+import queue
 
 from scr.utility.bfs_pathfinding import findEnd, valid
-import queue
+
+from scr.utility.useful import center_distance
+
+from scr.config.config import colours
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, image, x, y, entity_name):
@@ -73,8 +77,6 @@ class Table(Obstacle):
 
     def update(self, entities, delta_time):
 
-        print(self.standing, self.moving, self.push_directions)
-
         if self.standing:
             self.calculate_push(entities)
         
@@ -100,6 +102,9 @@ class Table(Obstacle):
                 self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
         if self.standing:
+
+##            print((self.rect.x, self.rect.y), self.move_destination)
+            
             # Applies the speed to the position
             self.x += self.speed_x * delta_time
             self.y += self.speed_y * delta_time
@@ -219,6 +224,9 @@ class Guard(Obstacle):
         self.maze = []
         self.moves = False
 
+        self.circle_color = colours["light gray"]
+        self.circle_radius = 70
+
     def create_maze(self, entities, player_rect):
         start_x, end_x = self.rect.x//20, player_rect.x//20
         start_y, end_y = self.rect.y//20, player_rect.y//20
@@ -233,39 +241,52 @@ class Guard(Obstacle):
                 if entity is self:
                     self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "O"
                     self.start_y, self.start_x = (entity.rect.y - border_y[0])//20, (entity.rect.x - border_x[0])//20
-##                    print(self.start_x, self.start_y)
                 elif entity.entity_name == "player":
                     self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "X"
                 else: self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "#"
 
     def enter_turn(self, entities, player_rect):
+        
         self.create_maze(entities, player_rect)
-        print(self.maze)
 
-        nums = queue.Queue()
-        nums.put("")
-        add = ""
-        moves = False
+        self.circle_color = colours["light gray"]
+        moves = True
+        
+        if center_distance(self.rect, player_rect) < self.circle_radius:
 
-        timer = 0
-        while timer < 100:
-            moves = findEnd(self.maze, add, self.start_x, self.start_y)
-            if moves != False: timer = 100
-            add = nums.get()
-            for j in ["L", "R", "U", "D"]:
-                put = add + j
-                if valid(self.maze, put, self.start_x, self.start_y):
-                    nums.put(put)
-            timer += 1
-            
-        print(moves)
-            
-        if moves == False:
+            if len(self.maze[0]) == 1:
+                for tile in self.maze:
+                    if tile[0] == "#":
+                        moves = False
+            elif len(self.maze) == 1:
+                for tile in self.maze[0]:
+                    if tile == "#":
+                        moves = False
+            if moves == True:
+                nums = queue.Queue()
+                nums.put("")
+                add = ""
+                
+                timer = 0
+                while timer < 100:
+                    moves = findEnd(self.maze, add, self.start_x, self.start_y)
+                    if moves != False: timer = 100
+                    add = nums.get()
+                    for j in ["L", "R", "U", "D"]:
+                        put = add + j
+                        if valid(self.maze, put, self.start_x, self.start_y):
+                            nums.put(put)
+                    timer += 1
+        if type(moves) == bool:
             self.image = self.blue_image
+            if moves == False:
+                self.circle_color = colours["green"]
             self.moves = False
         else:
             self.image = self.red_image
             self.moves = tuple(moves)
+
+            self.circle_color = colours["red"]
             
             if self.moves[0] == "R":
                 self.speed_x = 3
@@ -315,3 +336,4 @@ class Guard(Obstacle):
                
     def draw(self, layer):
         layer.blit(self.image, self.rect)
+        pygame.draw.circle(layer, self.circle_color, self.rect.center, self.circle_radius, width = 3)
