@@ -32,7 +32,7 @@ class Level():
         self.guards = pygame.sprite.Group()
 
         for entity in self.entities:
-            if entity.entity_name != "player" and entity.entity_name != "barrera" and  entity.entity_name != "guardia":
+            if entity.entity_name != "player" and entity.entity_name != "barrera" and entity.entity_name != "mesero" and  entity.entity_name != "guardia":
                 entity.calculate_push(self.entities)
             elif entity.entity_name == "guardia":
                 entity.create_maze(self.entities, self.game.player.rect)
@@ -52,8 +52,6 @@ class Level():
         self.turn_counter = 0
     
     def update(self):
-
-##        print(self.player_turn_timer)
         # player turn
         if self.player_turn:
             if self.player_turn_timer == 0:
@@ -69,13 +67,13 @@ class Level():
                 for entity in self.entities:
                     if entity.entity_name != "guardia" and entity.entity_name != "barrera":
                         if entity.entity_name == "mesa" and entity.moving == True:
-                            print((entity.rect.x, entity.rect.y), entity.move_destination)
                             entity.standing = False
                             entity.push_directions = {"left": False, "right": False, "down": False, "up": False}
                         entity.moving = False
                         entity.speed_x, entity.speed_y = 0, 0
                         entity.x = entity.rect.x = entity.move_destination[0]
                         entity.y = entity.rect.y = entity.move_destination[1]
+                            
 
         # Guards turn
         if not(self.player_turn):
@@ -100,6 +98,9 @@ class Level():
                 self.turn_counter += 1
 ##                print("# PLAYER'S TURN " + str(self.turn_counter))
                 self.guards_turn_timer = 0
+                for entity in self.entities:
+                    if entity.entity_name != "guardia":
+                        entity.enter_turn(self.entities, self.game.player.rect)
                 for guard in self.guards:
                     if guard.active:
                         guard.moving = False

@@ -19,6 +19,7 @@ class Tilemap():
         entities = pygame.sprite.Group()
 
         guard_counter = 1
+        waiter_counter = 1
 
         for x in range(tilesmap_surface.get_width()):
             for y in range(tilesmap_surface.get_height()):
@@ -55,9 +56,13 @@ class Tilemap():
                             entities.add(Guard(pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "guardia", spawn, radius))
                             guard_counter += 1
                         if entity_name == "mesero vertical":
-                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "vertical"))
+                            direction = json_data["mesero " + str(waiter_counter) + " direccion"]
+                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "vertical", direction))
+                            waiter_counter += 1
                         if entity_name == "mesero horizontal":
-                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "horizontal"))
+                            direction = json_data["mesero " + str(guard_counter) + " direccion"]
+                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "horizontal", direction))
+                            waiter_counter += 1
         return tiles, entities, player_start_x, player_start_y, (tilesmap_surface.get_width() * self.TILE_WIDTH, tilesmap_surface.get_height() * self.TILE_HEIGHT)
                         
                     
