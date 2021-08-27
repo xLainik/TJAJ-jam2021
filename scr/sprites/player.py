@@ -128,6 +128,7 @@ class Player(pygame.sprite.Sprite):
 
         for entity in hit_list:
             if not(entity is self):
+                entity.on_collide()
                 if (entity.push_directions["right"] == False) and self.speed_x > 0:
                     self.rect.right = entity.rect.left
                     self.collision_directions["right"] = True
@@ -142,6 +143,7 @@ class Player(pygame.sprite.Sprite):
         
         for entity in hit_list:
             if not(entity is self):
+                entity.on_collide()
                 if (entity.push_directions["down"] == False) and self.speed_y > 0:
                     self.rect.bottom = entity.rect.top
                     self.collision_directions["bottom"] = True

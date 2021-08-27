@@ -6,17 +6,24 @@ from scr.config.config import entities_color_keys
 from scr.config.config import colours
 
 from scr.sprites.tile import Tile
-from scr.sprites.obstacle import Barrier, Table, Box, Guard, Waiter
+from scr.sprites.obstacle import Barrier, Table, Box, Guard, Waiter, NPC
+
+from scr.dialog import Dialog
 
 class Tilemap():
     def __init__(self):
 
         self.TILE_WIDTH, self.TILE_HEIGHT = 20, 20
         
-    def load_tiles_and_entities(self, tilesmap_surface, entities_surface, json_data):
+    def load_tiles_and_entities(self, game, tilesmap_surface, entities_surface, json_data, dialog_data):
 
         tiles = pygame.sprite.Group()
         entities = pygame.sprite.Group()
+
+        dialogs = {}
+
+        for key, dialog_queue in dialog_data.items():
+            dialogs[key] = Dialog(game, dialog_queue, key)
 
         guard_counter = 1
         waiter_counter = 1
@@ -63,7 +70,9 @@ class Tilemap():
                             direction = json_data["mesero " + str(guard_counter) + " direccion"]
                             entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "horizontal", direction))
                             waiter_counter += 1
-        return tiles, entities, player_start_x, player_start_y, (tilesmap_surface.get_width() * self.TILE_WIDTH, tilesmap_surface.get_height() * self.TILE_HEIGHT)
+                        if entity_name == "npc 1":
+                            entities.add(NPC(pygame.image.load(os.path.join("scr", "assets", "images", "npc.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "npc", [dialogs["dialog_0"]]))
+        return tiles, entities, dialogs, player_start_x, player_start_y, (tilesmap_surface.get_width() * self.TILE_WIDTH, tilesmap_surface.get_height() * self.TILE_HEIGHT)
                         
                     
         

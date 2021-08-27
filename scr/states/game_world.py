@@ -14,10 +14,14 @@ class Game_world(State):
         """Initialize the menu class."""
         super().__init__(game)
 
+        # JSON
+        # 0 -> json_data init the level
+        # 1 -> dict with all dialogs for the level
+
         self.levels = {
             0: Level_0(self.game,
                        pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_entities.png")), levels[0]
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_entities.png")), levels[0][0], levels[0][1]
             )
         }
         

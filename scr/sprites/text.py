@@ -7,8 +7,12 @@ class Text(pygame.sprite.Sprite):
         self.font_path = font_path
         self.font_size = font_size
         self.anti_aliasing = anti_ailiasing
+        self.is_centered = is_centered
         self.blit_layer = blit_layer
         self.content = content
+        self.colour = colour
+
+        self.x, self.y = int(x), int(y)
 
         if scale != None:
             self.scale = scale
@@ -16,9 +20,15 @@ class Text(pygame.sprite.Sprite):
 
         self.font = pygame.font.Font(self.font_path, self.font_size * self.scale)
 
-        self.x, self.y = int(x), int(y)
+        self.image = self.font.render(self.content, self.anti_aliasing, self.colour)
 
-        self.update(content = content, colour = colour, is_centered = is_centered, x = x, y = y, scale = scale)
+        if self.is_centered:
+            self.rect = self.image.get_rect(center = (self.x, self.y))
+        else:
+            self.rect = self.image.get_rect(topleft = (self.x, self.y))
+
+        
+##        self.update(content = content, colour = colour, is_centered = is_centered, x = x, y = y, scale = scale)
 
   
     def update(self, blit_layer = None, content = None, colour = None, is_centered = None, x = None, y = None, scale = None):

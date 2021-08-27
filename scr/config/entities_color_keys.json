@@ -6,5 +6,6 @@
     "mesa": [60, 44, 116],
     "guardia": [255, 0, 0],
     "mesero vertical": [255, 0, 255],
-    "mesero horizontal": [0, 255, 255]
+    "mesero horizontal": [0, 255, 255],
+    "npc 1": [140, 235, 122]
 }

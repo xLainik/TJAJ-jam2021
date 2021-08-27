@@ -7,14 +7,14 @@ from scr.camera import Camera
 
 class Level():
     """Level super class"""
-    def __init__(self, game, png_map, png_entities, json_data) -> None:
+    def __init__(self, game, png_map, png_entities, json_data, dialog_data) -> None:
         self.game = game
         
         self.json_data = json_data
         
         tilemap = Tilemap()
 
-        self.tiles, self.entities, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(png_map, png_entities, self.json_data)
+        self.tiles, self.entities, self.dialogs, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(game, png_map, png_entities, self.json_data, dialog_data)
 
         self.tiles_surface = pygame.Surface((self.LEVEL_SIZE))
 
@@ -32,7 +32,7 @@ class Level():
         self.guards = pygame.sprite.Group()
 
         for entity in self.entities:
-            if entity.entity_name != "player" and entity.entity_name != "barrera" and entity.entity_name != "mesero" and  entity.entity_name != "guardia":
+            if entity.entity_name != "player" and entity.entity_name != "barrera" and entity.entity_name != "npc" and entity.entity_name != "mesero" and  entity.entity_name != "guardia":
                 entity.calculate_push(self.entities)
             elif entity.entity_name == "guardia":
                 entity.create_maze(self.entities, self.game.player.rect)
@@ -65,7 +65,7 @@ class Level():
                 self.player_turn = False
                 self.player_turn_timer = 0
                 for entity in self.entities:
-                    if entity.entity_name != "guardia" and entity.entity_name != "barrera":
+                    if entity.entity_name != "guardia" and entity.entity_name != "barrera" and entity.entity_name != "npc":
                         if entity.entity_name == "mesa" and entity.moving == True:
                             entity.standing = False
                             entity.push_directions = {"left": False, "right": False, "down": False, "up": False}
@@ -107,6 +107,10 @@ class Level():
                         guard.speed_x, guard.speed_y = 0, 0
                         guard.x = guard.rect.x = guard.move_destination[0]
                         guard.y = guard.rect.y = guard.move_destination[1]
+
+        for key, dialog in self.dialogs.items():
+            if dialog.active: print("active")
+            dialog.update()
            
         self.camera.update(self.game.player)
 
@@ -127,8 +131,8 @@ class Level():
         self.game.game_canvas.blit(self.camera_surface, (0, 0))
         
 class Level_0(Level):
-    def __init__(self, game, png_map, png_entities, json_data) -> None:
-        super().__init__(game, png_map, png_entities, json_data)
+    def __init__(self, game, png_map, png_entities, json_data, dialog_data) -> None:
+        super().__init__(game, png_map, png_entities, json_data, dialog_data)
 
     def update(self):
         super().update()
