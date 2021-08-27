@@ -24,6 +24,10 @@ class Obstacle(pygame.sprite.Sprite):
     def on_collide(self):
         pass
 
+    def on_action(self):
+        pass
+
+
     def enter_turn(self, entities, player_rect):
         pass
     
@@ -480,10 +484,10 @@ class Waiter(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class NPC(Obstacle):
-    def __init__(self, image, x, y, entity_name, dialogs):
+    def __init__(self, image, x, y, entity_name, dialogs, action_radius):
         super().__init__(image, x, y, entity_name)
 
-##        print(dialog_list)
+        self.action_radius = action_radius
 
         self.dialogs = dialogs
         
@@ -491,11 +495,12 @@ class NPC(Obstacle):
         
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
-    def update(self, entities, delta_time):
-        pass
+    def check_action(self, player_rect):
+        if center_distance(self.rect, player_rect) < self.action_radius:
+            self.dialogs[0].active = True
+        else:
+            self.dialogs[0].active = False
 
-    def on_collide(self):
-
-        print("START DIALOG")
-        
-        self.dialogs[0].active = True
+    def draw(self, layer):
+        layer.blit(self.image, self.rect)
+        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)

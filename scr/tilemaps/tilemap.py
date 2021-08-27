@@ -21,7 +21,7 @@ class Tilemap():
         entities = pygame.sprite.Group()
 
         dialogs = {}
-
+        
         for key, dialog_queue in dialog_data.items():
             dialogs[key] = Dialog(game, dialog_queue, key)
 
@@ -71,7 +71,7 @@ class Tilemap():
                             entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "horizontal", direction))
                             waiter_counter += 1
                         if entity_name == "npc 1":
-                            entities.add(NPC(pygame.image.load(os.path.join("scr", "assets", "images", "npc.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "npc", [dialogs["dialog_0"]]))
+                            entities.add(NPC(pygame.image.load(os.path.join("scr", "assets", "images", "npc.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "npc", [dialogs["dialog_0"]], 30))
         return tiles, entities, dialogs, player_start_x, player_start_y, (tilesmap_surface.get_width() * self.TILE_WIDTH, tilesmap_surface.get_height() * self.TILE_HEIGHT)
                         
                     

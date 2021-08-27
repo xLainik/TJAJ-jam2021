@@ -61,6 +61,8 @@ class Level():
                 for entity in self.entities:
                     if entity.entity_name != "guardia":
                         entity.update(self.entities, self.game.delta_time)
+                        if entity.entity_name == "npc":
+                            entity.check_action(self.game.player.rect)
             if self.player_turn_timer >= 20:
                 self.player_turn = False
                 self.player_turn_timer = 0
@@ -109,7 +111,6 @@ class Level():
                         guard.y = guard.rect.y = guard.move_destination[1]
 
         for key, dialog in self.dialogs.items():
-            if dialog.active: print("active")
             dialog.update()
            
         self.camera.update(self.game.player)

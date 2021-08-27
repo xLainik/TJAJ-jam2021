@@ -29,7 +29,8 @@ for lvl_number, level in enumerate(os.listdir(os.path.join("scr", "levels"))):
     dialogs = {}
     for dialog_num, dialog_queue in enumerate(os.listdir(os.path.join("scr", "levels", level, "level_" + str(lvl_number) + "_dialogs"))):
         with open(os.path.join("scr", "levels", level, "level_" + str(lvl_number) + "_dialogs", "dialog_" + str(dialog_num) + ".json"), "r", encoding="utf-8") as dialog_json_file:
-            dialogs["dialog_" + str(dialog_num)] = json.load(dialog_json_file)
+            up_dict = {"dialog_" + str(dialog_num): json.load(dialog_json_file)}
+            dialogs.update(up_dict)
     dump.append(dialogs)
     levels.append(dump)
         
