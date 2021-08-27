@@ -105,7 +105,8 @@ class Game:
 
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
-        self.actions = pygame.key.get_pressed()
+
+        self.actions = {"up": False, "down": False, "left": False, "right":False, "z": False, "r": False}
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -114,6 +115,20 @@ class Game:
                 self.click += 1
             if event.type == pygame.MOUSEBUTTONUP:
                 self.click = 0
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    self.actions["up"] = True
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    self.actions["down"] = True
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    self.actions["left"] = True
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    self.actions["right"] = True
+                if event.key == pygame.K_z:
+                    self.actions["z"] = True
+                if event.key == pygame.K_r:
+                    self.actions["r"] = True
+##        print(self.actions)
 
     def load_first_state(self) -> None:
         """Loading the first state of the game."""
