@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, random
 import queue
 
 from scr.utility.bfs_pathfinding import findEnd, valid
@@ -27,7 +27,9 @@ class Obstacle(pygame.sprite.Sprite):
     def on_action(self):
         pass
 
-
+    def check_action(self, player_rect):
+        pass
+    
     def enter_turn(self, entities, player_rect):
         pass
     
@@ -68,8 +70,19 @@ class Barrier(Obstacle):
         
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
-    def update(self, entities, delta_time):
-        pass
+class Goal(Obstacle):
+    def __init__(self, image, x, y, entity_name, game):
+        super().__init__(image, x, y, entity_name)
+
+        self.game = game
+        
+        self.rect = pygame.Rect(x, y, 20, 20)
+        
+        self.push_directions = {"left": False, "right": False, "down": False, "up": False}
+
+    def on_collide(self):
+        self.game.current_level += 1
+        self.game.state_stack[-1].restart_level()
 
 class Table(Obstacle):
     def __init__(self, image, x, y, entity_name):
@@ -214,8 +227,10 @@ class Box(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class Guard(Obstacle):
-    def __init__(self, image, x, y, entity_name, spawn, radius):
+    def __init__(self, image, x, y, entity_name, dialogs, spawn, radius, offset):
         super().__init__(image, x, y, entity_name)
+
+        self.dialogs = dialogs
 
         self.blue_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia azul.png"))
         self.red_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png"))
@@ -226,14 +241,14 @@ class Guard(Obstacle):
 
         self.active = False
 
-        self.rect = pygame.Rect(x, y, 20, 20)
+        self.rect = pygame.Rect(x + offset[0], y + offset[1], 20, 20)
 
         self.direction = "R"
 
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
 
-        self.move_destination = self.x, self.y
+        self.move_destination = self.x + offset[0], self.y + offset[1]
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
@@ -262,69 +277,70 @@ class Guard(Obstacle):
                 else: self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "#"
 
     def enter_turn(self, entities, player_rect):
-        
-        self.create_maze(entities, player_rect)
+        if self.active:
+            self.create_maze(entities, player_rect)
 
-        self.circle_color = colours["light gray"]
-        moves = True
-        
-        if center_distance(self.rect, player_rect) < self.circle_radius:
-
-            if len(self.maze[0]) == 1:
-                for tile in self.maze:
-                    if tile[0] == "#":
-                        moves = False
-            elif len(self.maze) == 1:
-                for tile in self.maze[0]:
-                    if tile == "#":
-                        moves = False
-            if moves == True:
-                nums = queue.Queue()
-                nums.put("")
-                add = ""
-                
-                timer = 0
-                while timer < 100:
-                    moves = findEnd(self.maze, add, self.start_x, self.start_y)
-                    if moves != False: timer = 100
-                    add = nums.get()
-                    for j in ["L", "R", "U", "D"]:
-                        put = add + j
-                        if valid(self.maze, put, self.start_x, self.start_y):
-                            nums.put(put)
-                    timer += 1
-        if type(moves) == bool or len(moves) == 0:
-            self.image = self.blue_image
-            if moves == False:
-                self.circle_color = colours["green"]
-            self.moves = False
-        else:
-            self.image = self.red_image
-            self.moves = tuple(moves)
-
-            self.direction = moves[0]
-
-            self.circle_color = colours["red"]
+            self.circle_color = colours["light gray"]
+            moves = True
             
-            if self.moves[0] == "R":
-                self.speed_x = 3
-                self.moving = True
-                self.move_destination = self.rect.x + 20, self.rect.y
-            elif self.moves[0] == "L":
-                self.speed_x = -3
-                self.moving = True
-                self.move_destination = self.rect.x - 20, self.rect.y
-            elif self.moves[0] == "D":
-                self.speed_y = 3
-                self.moving = True
-                self.move_destination = self.rect.x, self.rect.y + 20
-            elif self.moves[0] == "U":
-                self.speed_y = -3
-                self.moving = True
-                self.move_destination = self.rect.x, self.rect.y - 20
+            if center_distance(self.rect, player_rect) < self.circle_radius:
+
+                if len(self.maze[0]) == 1:
+                    for tile in self.maze:
+                        if tile[0] == "#":
+                            moves = False
+                elif len(self.maze) == 1:
+                    for tile in self.maze[0]:
+                        if tile == "#":
+                            moves = False
+                if moves == True:
+                    nums = queue.Queue()
+                    nums.put("")
+                    add = ""
+                    
+                    timer = 0
+                    while timer < 100:
+                        moves = findEnd(self.maze, add, self.start_x, self.start_y)
+                        if moves != False: timer = 100
+                        add = nums.get()
+                        for j in ["L", "R", "U", "D"]:
+                            put = add + j
+                            if valid(self.maze, put, self.start_x, self.start_y):
+                                nums.put(put)
+                        timer += 1
+            if type(moves) == bool or len(moves) == 0:
+                self.image = self.blue_image
+                if moves == False:
+                    self.circle_color = colours["green"]
+                self.moves = False
+            else:
+                self.image = self.red_image
+                self.moves = tuple(moves)
+
+                self.direction = moves[0]
+
+                self.circle_color = colours["red"]
+                
+                if self.moves[0] == "R":
+                    self.speed_x = 3
+                    self.moving = True
+                    self.move_destination = self.rect.x + 20, self.rect.y
+                elif self.moves[0] == "L":
+                    self.speed_x = -3
+                    self.moving = True
+                    self.move_destination = self.rect.x - 20, self.rect.y
+                elif self.moves[0] == "D":
+                    self.speed_y = 3
+                    self.moving = True
+                    self.move_destination = self.rect.x, self.rect.y + 20
+                elif self.moves[0] == "U":
+                    self.speed_y = -3
+                    self.moving = True
+                    self.move_destination = self.rect.x, self.rect.y - 20
 
     def update(self, entities, delta_time):
         if self.moves != False:
+            
             # grid movement
             if self.moving:
                 if self.speed_x > 0:
@@ -350,7 +366,12 @@ class Guard(Obstacle):
 
             self.rect.x = int(self.x)
             self.rect.y = int(self.y)
-   
+
+    def on_collide(self):
+        if self.active:
+            rand_int = random.randint(0, len(self.dialogs) - 1)
+            self.dialogs[rand_int].must_action = False
+            self.dialogs[rand_int].active = True
                
     def draw(self, layer):
         if self.active:
@@ -484,15 +505,39 @@ class Waiter(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class NPC(Obstacle):
-    def __init__(self, image, x, y, entity_name, dialogs, action_radius):
+    def __init__(self, image, x, y, entity_name):
+        super().__init__(image, x, y, entity_name)
+
+        self.rect = pygame.Rect(x, y, 20, 20)
+
+    def draw(self, layer):
+        layer.blit(self.image, self.rect)
+        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
+
+class NPC_0(NPC): # Controles de moverse
+    def __init__(self, image, x, y, entity_name, offset, action_radius):
+        super().__init__(image, x, y, entity_name)
+
+        self.action_radius = action_radius
+        
+        self.rect = pygame.Rect(x, y, 20 - offset[0], 20 - offset[1])
+
+        self.push_directions = {"left": False, "right": False, "down": False, "up": False}
+
+    def draw(self, layer):
+        layer.blit(self.image, self.rect)
+        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
+
+class NPC_1(NPC):
+    def __init__(self, image, x, y, entity_name, dialogs, action_radius, offset):
         super().__init__(image, x, y, entity_name)
 
         self.action_radius = action_radius
 
         self.dialogs = dialogs
         
-        self.rect = pygame.Rect(x, y, 20, 20)
-        
+        self.rect = pygame.Rect(x, y, 20 - offset[0], 20 - offset[1])
+
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
     def check_action(self, player_rect):

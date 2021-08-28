@@ -45,11 +45,6 @@ class Player(pygame.sprite.Sprite):
         self.inputs = {"right": False, "left": False, "up": False, "down": False, "skip": False, "restart": False}
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
-    def check_dead(self, enemies):
-        for enemy in enemies:
-            if self.rect.colliderect(enemy.rect) and not(self.dead):
-                self.dead = True
-
     def enter_turn(self, entities, player_rect):
         pass
         
@@ -129,13 +124,15 @@ class Player(pygame.sprite.Sprite):
         for entity in hit_list:
             if not(entity is self):
                 entity.on_collide()
-                if (entity.push_directions["right"] == False) and self.speed_x > 0:
-                    self.rect.right = entity.rect.left
-                    self.collision_directions["right"] = True
-                elif (entity.push_directions["left"] == False) and self.speed_x < 0:
-                    self.rect.left = entity.rect.right
-                    self.collision_directions["left"] = True
-                self.x = self.rect.x
+                if entity.entity_name != "guardia":
+                    if (entity.push_directions["right"] == False) and self.speed_x > 0:
+                        self.rect.right = entity.rect.left
+                        self.collision_directions["right"] = True
+                    elif (entity.push_directions["left"] == False) and self.speed_x < 0:
+                        self.rect.left = entity.rect.right
+                        self.collision_directions["left"] = True
+                    self.x = self.rect.x
+                else: self.dead = True
 
         self.rect.y = int(self.y)
             
@@ -144,13 +141,16 @@ class Player(pygame.sprite.Sprite):
         for entity in hit_list:
             if not(entity is self):
                 entity.on_collide()
-                if (entity.push_directions["down"] == False) and self.speed_y > 0:
-                    self.rect.bottom = entity.rect.top
-                    self.collision_directions["bottom"] = True
-                elif (entity.push_directions["up"] == False) and self.speed_y < 0:
-                    self.rect.top = entity.rect.bottom
-                    self.collision_directions["top"] = True
-                self.y = self.rect.y
+                if entity.entity_name != "guardia":
+                    if (entity.push_directions["down"] == False) and self.speed_y > 0:
+                        self.rect.bottom = entity.rect.top
+                        self.collision_directions["bottom"] = True
+                    elif (entity.push_directions["up"] == False) and self.speed_y < 0:
+                        self.rect.top = entity.rect.bottom
+                        self.collision_directions["top"] = True
+                    self.y = self.rect.y
+                else:
+                    self.dead = True
 
         if self.collision_directions["left"] or self.collision_directions["right"]:
             self.move_destination = (round(self.rect.x//20) * 20) + 5, self.rect.y

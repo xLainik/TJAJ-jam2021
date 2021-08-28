@@ -128,6 +128,19 @@ class Game:
                     self.actions["z"] = True
                 if event.key == pygame.K_r:
                     self.actions["r"] = True
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    self.actions["up"] = False
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    self.actions["down"] = False
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    self.actions["left"] = False
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    self.actions["right"] = False
+                if event.key == pygame.K_z:
+                    self.actions["z"] = False
+                if event.key == pygame.K_r:
+                    self.actions["r"] = False
 ##        print(self.actions)
 
     def load_first_state(self) -> None:

@@ -7,12 +7,14 @@ from scr.camera import Camera
 
 class Level():
     """Level super class"""
-    def __init__(self, game, png_map, png_entities, json_data, dialog_data) -> None:
+    def __init__(self, game, png_map, png_entities, json_data, dialog_data, level_number) -> None:
         self.game = game
         
         self.json_data = json_data
         
         tilemap = Tilemap()
+
+        self.level_number = level_number
 
         self.tiles, self.entities, self.dialogs, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(game, png_map, png_entities, self.json_data, dialog_data)
 
@@ -26,13 +28,14 @@ class Level():
         self.entities_surface.set_colorkey((0, 0, 0))
         self.entities_surface.fill((0, 0, 0))
 
-        self.game.player.level_init(player_start_x + 5, player_start_y + 5)
+        if self.level_number == self.game.current_level:
+            self.game.player.level_init(player_start_x + 5, player_start_y + 5)
         self.entities.add(self.game.player)
 
         self.guards = pygame.sprite.Group()
 
         for entity in self.entities:
-            if entity.entity_name != "player" and entity.entity_name != "barrera" and entity.entity_name != "npc" and entity.entity_name != "mesero" and  entity.entity_name != "guardia":
+            if entity.entity_name != "player" and entity.entity_name != "barrera" and entity.entity_name != "meta" and entity.entity_name != "npc" and entity.entity_name != "mesero" and  entity.entity_name != "guardia":
                 entity.calculate_push(self.entities)
             elif entity.entity_name == "guardia":
                 entity.create_maze(self.entities, self.game.player.rect)
@@ -67,7 +70,7 @@ class Level():
                 self.player_turn = False
                 self.player_turn_timer = 0
                 for entity in self.entities:
-                    if entity.entity_name != "guardia" and entity.entity_name != "barrera" and entity.entity_name != "npc":
+                    if entity.entity_name != "guardia" and entity.entity_name != "meta" and entity.entity_name != "barrera" and entity.entity_name != "npc":
                         if entity.entity_name == "mesa" and entity.moving == True:
                             entity.standing = False
                             entity.push_directions = {"left": False, "right": False, "down": False, "up": False}
@@ -112,6 +115,9 @@ class Level():
 
         for key, dialog in self.dialogs.items():
             dialog.update()
+
+        if self.game.player.dead:
+            self.game.state_stack[-1].restart_level()
            
         self.camera.update(self.game.player)
 
@@ -132,8 +138,18 @@ class Level():
         self.game.game_canvas.blit(self.camera_surface, (0, 0))
         
 class Level_0(Level):
-    def __init__(self, game, png_map, png_entities, json_data, dialog_data) -> None:
-        super().__init__(game, png_map, png_entities, json_data, dialog_data)
+    def __init__(self, game, png_map, png_entities, json_data, dialog_data, lvl_number) -> None:
+        super().__init__(game, png_map, png_entities, json_data, dialog_data, lvl_number)
+
+    def update(self):
+        super().update()
+
+    def render(self):
+        super().render()
+
+class Level_1(Level):
+    def __init__(self, game, png_map, png_entities, json_data, dialog_data, lvl_number) -> None:
+        super().__init__(game, png_map, png_entities, json_data, dialog_data, lvl_number)
 
     def update(self):
         super().update()

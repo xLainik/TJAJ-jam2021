@@ -1,9 +1,9 @@
 {
     "guardia 1 turno spawn": 4,
     "guardia 1 radio vision": 70,
-    "guardia 1 offset": [0, 0],
+    "guardia 1 offset": [20, 0],
     "mesero 1 direccion": "arriba",
-    "npc 1 offset": [0, 0],
-    "npc 1 radio vision": 30
+    "npc 0 offset": [-20, 0],
+    "npc 0 radio vision": 90
     
 }

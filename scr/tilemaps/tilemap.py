@@ -6,7 +6,7 @@ from scr.config.config import entities_color_keys
 from scr.config.config import colours
 
 from scr.sprites.tile import Tile
-from scr.sprites.obstacle import Barrier, Table, Box, Guard, Waiter, NPC
+from scr.sprites.obstacle import Barrier, Table, Box, Guard, Waiter, NPC_0, NPC_1, Goal
 
 from scr.dialog import Dialog
 
@@ -60,7 +60,9 @@ class Tilemap():
                         if entity_name == "guardia":
                             spawn = json_data["guardia " + str(guard_counter) + " turno spawn"]
                             radius = json_data["guardia " + str(guard_counter) + " radio vision"]
-                            entities.add(Guard(pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "guardia", spawn, radius))
+                            offset = json_data["guardia " + str(guard_counter) + " offset"]
+                            entities.add(Guard(pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "guardia", [dialogs["dialog_0"], dialogs["dialog_1"],
+                                                                                                                                                                                          dialogs["dialog_4"]], spawn, radius, offset))
                             guard_counter += 1
                         if entity_name == "mesero vertical":
                             direction = json_data["mesero " + str(waiter_counter) + " direccion"]
@@ -70,8 +72,12 @@ class Tilemap():
                             direction = json_data["mesero " + str(guard_counter) + " direccion"]
                             entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "horizontal", direction))
                             waiter_counter += 1
-                        if entity_name == "npc 1":
-                            entities.add(NPC(pygame.image.load(os.path.join("scr", "assets", "images", "npc.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "npc", [dialogs["dialog_0"]], 30))
+                        if entity_name == "npc 0": # Controles de movimiento
+                            entities.add(NPC_0(pygame.image.load(os.path.join("scr", "assets", "images", "invisible.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "npc", json_data["npc 0 offset"], json_data["npc 0 radio vision"]))
+                        if entity_name == "npc 1": # NPC 1
+                            entities.add(NPC_1(pygame.image.load(os.path.join("scr", "assets", "images", "npc.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "npc", [dialogs["dialog_5"]], json_data["npc 1 radio vision"], json_data["npc 1 offset"]))
+                        if entity_name == "meta":
+                            entities.add(Goal(pygame.image.load(os.path.join("scr", "assets", "images", "meta.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "meta", game))
         return tiles, entities, dialogs, player_start_x, player_start_y, (tilesmap_surface.get_width() * self.TILE_WIDTH, tilesmap_surface.get_height() * self.TILE_HEIGHT)
                         
                     
