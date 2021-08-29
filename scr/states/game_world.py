@@ -26,6 +26,22 @@ class Game_world(State):
             1: Level_1(self.game,
                        pygame.image.load(os.path.join(self.game.level_directory, "level_1", "level_1_tiles.png")),
                        pygame.image.load(os.path.join(self.game.level_directory, "level_1", "level_1_entities.png")), levels[1][0], levels[1][1], 1
+            ),
+            2: Level_1(self.game,
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_tiles.png")),
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_entities.png")), levels[2][0], levels[2][1], 2
+            ),
+            3: Level_1(self.game,
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_tiles.png")),
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_entities.png")), levels[3][0], levels[3][1], 3
+            ),
+            4: Level_1(self.game,
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_tiles.png")),
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_entities.png")), levels[4][0], levels[4][1], 4
+            ),
+            5: Level_1(self.game,
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_tiles.png")),
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_entities.png")), levels[5][0], levels[5][1], 5
             )
         }
         

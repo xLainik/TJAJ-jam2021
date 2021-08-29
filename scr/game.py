@@ -87,8 +87,6 @@ class Game:
     def render(self):
         """Renders the needed opponents according to the current game state."""
         self.state_stack[-1].render()
-
-        self.screen.fill((0, 0, 0))
         
         self.screen.blit(pygame.transform.scale(self.game_canvas, (self.SCREEN_WIDTH * self.SCALE, self.SCREEN_HEIGHT * self.SCALE)), (0, 0))
         self.screen.blit(self.high_res_canvas, (0,0))

@@ -135,6 +135,8 @@ class Level():
 ##            pause.enter_state()
 
     def render(self):
+        self.game.game_canvas.fill((0, 0, 0))
+        
         self.tiles_surface.fill((0, 0, 0), rect=self.camera.rect)
     
         for tile in self.tiles:
@@ -144,6 +146,8 @@ class Level():
 
         for entity in self.entities:
             entity.draw(self.entities_surface)
+
+        self.camera_surface.fill((0, 0, 0))
 
         self.camera_surface.blit(self.tiles_surface, (0,0), area=(self.camera.rect.x, self.camera.rect.y, self.camera.rect.width, self.camera.rect.height))
         self.camera_surface.blit(self.entities_surface, (0,0), area=(self.camera.rect.x, self.camera.rect.y, self.camera.rect.width, self.camera.rect.height))
