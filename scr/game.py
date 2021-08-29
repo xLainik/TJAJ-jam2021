@@ -11,7 +11,6 @@ class Game:
     """The game object, used to control the game."""
     def __init__(self) -> None:
         """Initializing the game."""
-        #pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
         pygame.display.set_caption(options["window_title"])
         
@@ -27,7 +26,7 @@ class Game:
         if self.MAX_SCALE > 4: self.MAX_SCALE = 4
 
         self.window = Window.from_display_module()
-        # Center the window on the screen
+        # Center the window on the screen no matter the screen scale choosen
         self.window.position = (int(self.MONITOR_SIZE[0]/2 - (self.SCREEN_WIDTH * self.SCALE / 2)), int(self.MONITOR_SIZE[1]/2 - (self.SCREEN_HEIGHT * self.SCALE / 2)))
 
         self.high_res_canvas = pygame.Surface((self.SCREEN_WIDTH * self.SCALE, self.SCREEN_HEIGHT * self.SCALE))
@@ -70,7 +69,7 @@ class Game:
         self.game_loop()
 
     def restart(self):
-        self.__init__
+        self.__init__()
         self.new()
 
     def game_loop(self) -> None:
@@ -88,6 +87,8 @@ class Game:
     def render(self):
         """Renders the needed opponents according to the current game state."""
         self.state_stack[-1].render()
+
+        self.screen.fill((0, 0, 0))
         
         self.screen.blit(pygame.transform.scale(self.game_canvas, (self.SCREEN_WIDTH * self.SCALE, self.SCREEN_HEIGHT * self.SCALE)), (0, 0))
         self.screen.blit(self.high_res_canvas, (0,0))
@@ -102,23 +103,18 @@ class Game:
             # 0 <- fade in -> 26 <- complete darkness -> 52 <- fade out -> 78
             if self.transition_timer <= 26:
                 alpha = int(255*(self.transition_timer/26))
-##                print(alpha)
                 self.transition_img.set_alpha(alpha)
             elif self.transition_timer <= 52:
                 alpha = 255
-##                print(alpha)
                 self.transition_img.set_alpha(alpha)
             elif self.transition_timer <= 78:
                 alpha = int(255*(1 - (self.transition_timer - 52)/26))
-##                print(alpha)
                 self.transition_img.set_alpha(alpha)
             self.screen.blit(self.transition_img, (0,0))
             if self.transition_timer > 76: self.transition_timer = -1
 
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
-
-        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -213,6 +209,8 @@ class Game:
         """Completley shutting down the game."""
         self.playing = False
         self.running = False
+
+        # Saving some settings and progress before closing the game
 
         with open(os.path.join("scr", "config", "options.json"), "r") as options_json_file:
             new_options = json.load(options_json_file)

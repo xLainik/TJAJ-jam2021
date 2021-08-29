@@ -70,7 +70,7 @@ class Level():
                         entity.update(self.entities, self.game.delta_time)
                         if entity.entity_name == "npc":
                             entity.check_action(self.game.player.rect)
-            if self.player_turn_timer >= 20:
+            if self.player_turn_timer >= 16:
                 self.player_turn = False
                 self.player_turn_timer = 0
                 for entity in self.entities:
@@ -101,7 +101,7 @@ class Level():
                     counter += 1
             if counter >= len(self.guards.sprites()) and self.guards_turn_timer < 10: self.guards_turn_timer = 10
             self.guards_turn_timer += self.game.delta_time
-            if self.guards_turn_timer >= 20:
+            if self.guards_turn_timer >= 16:
                 self.player_turn = True
                 self.game.player.can_move = True
                 self.turn_counter += 1
@@ -135,7 +135,7 @@ class Level():
 ##            pause.enter_state()
 
     def render(self):
-        self.tiles_surface.fill(colours["black"], rect=self.camera.rect)
+        self.tiles_surface.fill((0, 0, 0), rect=self.camera.rect)
     
         for tile in self.tiles:
             tile.draw(self.tiles_surface)
