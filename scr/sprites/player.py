@@ -84,7 +84,7 @@ class Player(pygame.sprite.Sprite):
             self.restart_cooldown = 0
                 
         if self.game.transition_timer >= 26:
-            self.game.state_stack[-1].restart_level()
+            self.dead = True
 
         if self.restart_cooldown >= 0:
             self.restart_cooldown += self.game.delta_time
@@ -119,9 +119,9 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.x = int(self.x)
 
-        hit_list = pygame.sprite.spritecollide(self, entities, False)
+        hit_list_1 = pygame.sprite.spritecollide(self, entities, False)
 
-        for entity in hit_list:
+        for entity in hit_list_1:
             if not(entity is self):
                 entity.on_collide()
                 if entity.entity_name != "guardia":
@@ -132,14 +132,13 @@ class Player(pygame.sprite.Sprite):
                         self.rect.left = entity.rect.right
                         self.collision_directions["left"] = True
                     self.x = self.rect.x
-                else: self.dead = True
-
+                elif entity.active: self.dead = True
         self.rect.y = int(self.y)
             
-        hit_list = pygame.sprite.spritecollide(self, entities, False)
+        hit_list_2 = pygame.sprite.spritecollide(self, entities, False)
         
-        for entity in hit_list:
-            if not(entity is self):
+        for entity in hit_list_2:
+            if not(entity in hit_list_1) and not(entity is self):
                 entity.on_collide()
                 if entity.entity_name != "guardia":
                     if (entity.push_directions["down"] == False) and self.speed_y > 0:
@@ -149,8 +148,7 @@ class Player(pygame.sprite.Sprite):
                         self.rect.top = entity.rect.bottom
                         self.collision_directions["top"] = True
                     self.y = self.rect.y
-                else:
-                    self.dead = True
+                elif entity.active: self.dead = True
 
         if self.collision_directions["left"] or self.collision_directions["right"]:
             self.move_destination = (round(self.rect.x//20) * 20) + 5, self.rect.y

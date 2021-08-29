@@ -3,7 +3,6 @@ import pygame, os
 from scr.config.config import colours
 from scr.sprites.text import Text
 from scr.states.state import State
-from scr.states.instructions import Instructions
 from scr.states.options_menu import Options_menu
 
 from scr.states.game_world import Game_world
@@ -49,7 +48,6 @@ class Main_menu(State):
     
     def update(self):
         """Update the menu state."""
-        self.game.check_inputs()
 
         mx, my = pygame.mouse.get_pos()
 

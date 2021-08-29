@@ -42,7 +42,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.MAX_FPS = options["fps"]
 
-        self.transition_timer = -100
+        self.transition_timer = -1
         
         self.running, self.playing = True, True
 
@@ -54,6 +54,10 @@ class Game:
         self.player = Player(self, 0, 0)
 
         self.current_level = options["current_level"]
+
+        pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP])
+
+        self.actions = {"up": False, "down": False, "left": False, "right":False, "space": False, "r": False, "escape": False}
 
         pygame.mixer.set_num_channels(5)
         self.sfx_global_volume = options["sfx_volumen"]
@@ -95,24 +99,32 @@ class Game:
         if self.transition_timer >= 0:
             self.transition_timer += self.delta_time
             self.transition_img = pygame.Surface((self.SCREEN_WIDTH*self.SCALE, self.SCREEN_HEIGHT*self.SCALE))
-            # 0 <- fade in -> 26 <- complete darkness -> 52 <- fade out -> 76
+            # 0 <- fade in -> 26 <- complete darkness -> 52 <- fade out -> 78
             if self.transition_timer <= 26:
-                self.transition_img.set_alpha(int(255*(self.transition_timer/26)))
+                alpha = int(255*(self.transition_timer/26))
+##                print(alpha)
+                self.transition_img.set_alpha(alpha)
+            elif self.transition_timer <= 52:
+                alpha = 255
+##                print(alpha)
+                self.transition_img.set_alpha(alpha)
             elif self.transition_timer <= 78:
-                self.transition_img.set_alpha(int(255*(1-(self.transition_timer-52)/26)))
+                alpha = int(255*(1 - (self.transition_timer - 52)/26))
+##                print(alpha)
+                self.transition_img.set_alpha(alpha)
             self.screen.blit(self.transition_img, (0,0))
-            if self.transition_timer > 76: self.transition_timer = -100
+            if self.transition_timer > 76: self.transition_timer = -1
 
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
 
-        self.actions = {"up": False, "down": False, "left": False, "right":False, "z": False, "r": False}
+        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.shut_down()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.click += 1
+                self.click = 1
             if event.type == pygame.MOUSEBUTTONUP:
                 self.click = 0
             if event.type == pygame.KEYDOWN:
@@ -124,10 +136,12 @@ class Game:
                     self.actions["left"] = True
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     self.actions["right"] = True
-                if event.key == pygame.K_z:
-                    self.actions["z"] = True
+                if event.key == pygame.K_SPACE:
+                    self.actions["space"] = True
                 if event.key == pygame.K_r:
                     self.actions["r"] = True
+                if event.key == pygame.K_ESCAPE:
+                    self.actions["escape"] = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.actions["up"] = False
@@ -137,11 +151,12 @@ class Game:
                     self.actions["left"] = False
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     self.actions["right"] = False
-                if event.key == pygame.K_z:
-                    self.actions["z"] = False
+                if event.key == pygame.K_SPACE:
+                    self.actions["space"] = False
                 if event.key == pygame.K_r:
                     self.actions["r"] = False
-##        print(self.actions)
+                if event.key == pygame.K_ESCAPE:
+                    self.actions["escape"] = False
 
     def load_first_state(self) -> None:
         """Loading the first state of the game."""

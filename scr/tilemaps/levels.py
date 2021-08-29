@@ -5,10 +5,14 @@ from scr.tilemaps.tilemap import Tilemap
 
 from scr.camera import Camera
 
+from scr.states.pause import Pause
+
 class Level():
     """Level super class"""
     def __init__(self, game, png_map, png_entities, json_data, dialog_data, level_number) -> None:
         self.game = game
+
+        self.game.transition_timer = -1
         
         self.json_data = json_data
         
@@ -113,13 +117,22 @@ class Level():
                         guard.x = guard.rect.x = guard.move_destination[0]
                         guard.y = guard.rect.y = guard.move_destination[1]
 
+        
+
         for key, dialog in self.dialogs.items():
-            dialog.update()
+            if dialog.active:
+                dialog.update()
+                if self.game.player.dead:
+                    break
 
         if self.game.player.dead:
             self.game.state_stack[-1].restart_level()
            
         self.camera.update(self.game.player)
+
+##        if self.game.actions["escape"]:
+##            pause = Pause(self.game)
+##            pause.enter_state()
 
     def render(self):
         self.tiles_surface.fill(colours["black"], rect=self.camera.rect)

@@ -520,7 +520,7 @@ class NPC_0(NPC): # Controles de moverse
 
         self.action_radius = action_radius
         
-        self.rect = pygame.Rect(x, y, 20 - offset[0], 20 - offset[1])
+        self.rect = pygame.Rect(x, y, 20 + offset[0], 20 + offset[1])
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
@@ -536,7 +536,7 @@ class NPC_1(NPC):
 
         self.dialogs = dialogs
         
-        self.rect = pygame.Rect(x, y, 20 - offset[0], 20 - offset[1])
+        self.rect = pygame.Rect(x, y, 20 + offset[0], 20 + offset[1])
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
