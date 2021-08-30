@@ -2,14 +2,15 @@ Juego creado para "Tu juego a juicio Jam 2021".
 
 Integrantes del equipo:
 xLainik
-GhostBogard
+GhostBogard (Instagram de Arte -> @ghostbogard)
 
 Objetivo del juego:
-No te dejes atrapar y llega a la puerta para avanzar al siguiente nivel.
+Sigue el ritmo de la música y no te dejes atrapar. 
+Llega a la puerta para avanzar al siguiente nivel.
 
 Controles:
 WASD ó Flechas de dirección -> Moverse
-Espacio -> Hablar/ Saltar diálogo
+Espacio -> Hablar/ Adelantar diálogo
 R -> Reiniciar nivel
 
 Gracias por jugar!

@@ -18,6 +18,8 @@ class Player(pygame.sprite.Sprite):
 
         self.speed = 0
 
+        self.miss_beat = False
+
         self.entity_name = "player"
 
         self.restart_cooldown = 0
@@ -51,38 +53,49 @@ class Player(pygame.sprite.Sprite):
 
     def enter_turn(self, entities, player_rect):
         pass
-        
-    def update(self, entities, delta_time):
 
+    def check_inputs(self, player_turn):
         self.inputs["restart"] = self.game.actions["r"]
         
-        if not(self.dead) and self.can_move:
-            if self.game.actions["right"]:
-                self.speed_x = self.speed
-                self.moving = True
-                self.move_destination = self.rect.x + 20, self.rect.y
-                self.inputs["right"] = True
-                self.can_move = False
-            elif self.game.actions["left"]:
-                self.speed_x = -self.speed
-                self.moving = True
-                self.move_destination = self.rect.x - 20, self.rect.y
-                self.inputs["left"] = True
-                self.can_move = False
-            elif self.game.actions["down"]:
-                self.speed_y = self.speed
-                self.moving = True
-                self.move_destination = self.rect.x, self.rect.y + 20
-                self.inputs["down"] = True
-                self.can_move = False
-            elif self.game.actions["up"]:
-                self.speed_y = -self.speed
-                self.moving = True
-                self.move_destination = self.rect.x, self.rect.y - 20
-                self.inputs["up"] = True
-                self.can_move = False
+        if not(self.dead):
+            if self.game.actions["right"] and not(self.miss_beat):
+                if not(player_turn):
+                    self.miss_beat = True
+                elif self.can_move:
+                    self.speed_x = self.speed
+                    self.moving = True
+                    self.move_destination = self.rect.x + 20, self.rect.y
+                    self.inputs["right"] = True
+                    self.can_move = False
+            elif self.game.actions["left"] and not(self.miss_beat):
+                if not(player_turn):
+                    self.miss_beat = True
+                elif self.can_move:
+                    self.speed_x = -self.speed
+                    self.moving = True
+                    self.move_destination = self.rect.x - 20, self.rect.y
+                    self.inputs["left"] = True
+                    self.can_move = False
+            elif self.game.actions["down"] and not(self.miss_beat):
+                if not(player_turn):
+                    self.miss_beat = True
+                elif self.can_move:
+                    self.speed_y = self.speed
+                    self.moving = True
+                    self.move_destination = self.rect.x, self.rect.y + 20
+                    self.inputs["down"] = True
+                    self.can_move = False
+            elif self.game.actions["up"] and not(self.miss_beat):
+                if not(player_turn):
+                    self.miss_beat = True
+                elif self.can_move:
+                    self.speed_y = -self.speed
+                    self.moving = True
+                    self.move_destination = self.rect.x, self.rect.y - 20
+                    self.inputs["up"] = True
+                    self.can_move = False
 
-        # Restart the level
+            # Restart the level
         if self.inputs["restart"] and self.restart_cooldown == -1:
             self.game.transition_timer = 0
             self.restart_cooldown = 0
@@ -93,6 +106,38 @@ class Player(pygame.sprite.Sprite):
         if self.restart_cooldown >= 0:
             self.restart_cooldown += self.game.delta_time
             if self.restart_cooldown >= 100: self.restart_cooldown = -1
+        
+    def update(self, entities, delta_time):
+
+##        self.inputs["restart"] = self.game.actions["r"]
+##        
+##        if not(self.dead) and self.can_move:
+##            if self.game.actions["right"]:
+##                self.speed_x = self.speed
+##                self.moving = True
+##                self.move_destination = self.rect.x + 20, self.rect.y
+##                self.inputs["right"] = True
+##                self.can_move = False
+##            elif self.game.actions["left"]:
+##                self.speed_x = -self.speed
+##                self.moving = True
+##                self.move_destination = self.rect.x - 20, self.rect.y
+##                self.inputs["left"] = True
+##                self.can_move = False
+##            elif self.game.actions["down"]:
+##                self.speed_y = self.speed
+##                self.moving = True
+##                self.move_destination = self.rect.x, self.rect.y + 20
+##                self.inputs["down"] = True
+##                self.can_move = False
+##            elif self.game.actions["up"]:
+##                self.speed_y = -self.speed
+##                self.moving = True
+##                self.move_destination = self.rect.x, self.rect.y - 20
+##                self.inputs["up"] = True
+##                self.can_move = False
+
+        
 
         # grid movement
         if self.moving:

@@ -82,7 +82,7 @@ class Goal(Obstacle):
 
     def on_collide(self):
         self.game.current_level += 1
-        self.game.state_stack[-1].restart_level()
+        self.game.player.dead = True
 
 class Table(Obstacle):
     def __init__(self, image, x, y, entity_name, speed):
@@ -210,7 +210,6 @@ class Box(Obstacle):
         for entity in hit_list:
             # The player pushed the obstacle
             if entity.entity_name == "player" and not(self.moving):
-                print("hola")
                 if self.push_directions["right"] and entity.speed_x > 0:
                     self.speed_x = self.speed
                     self.moving = True
@@ -330,19 +329,19 @@ class Guard(Obstacle):
                 self.circle_color = colours["red"]
                 
                 if self.moves[0] == "R":
-                    self.speed_x = 3
+                    self.speed_x = self.speed
                     self.moving = True
                     self.move_destination = self.rect.x + 20, self.rect.y
                 elif self.moves[0] == "L":
-                    self.speed_x = -3
+                    self.speed_x = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x - 20, self.rect.y
                 elif self.moves[0] == "D":
-                    self.speed_y = 3
+                    self.speed_y = self.speed
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y + 20
                 elif self.moves[0] == "U":
-                    self.speed_y = -3
+                    self.speed_y = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y - 20
 
