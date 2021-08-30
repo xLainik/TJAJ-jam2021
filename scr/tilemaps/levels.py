@@ -52,6 +52,7 @@ class Level():
             # Iniciar timer                 
             if self.game.player.moving and not(self.timer_active):
                 self.game.enter_beat = True
+                self.game.play_beat = True
                 pygame.time.set_timer(self.game.BEAT_EVENT, int((60/self.BPM)*1000/4))
                 self.timer_active = True
         
@@ -76,7 +77,7 @@ class Level():
                 for entity in self.entities:
                     entity.enter_turn(self.entities, self.game.player.rect)
         
-        # Obstacles' TURN
+        # Guards' TURN
         if self.game.beat_counter in [4, 5]:        
             for entity in self.entities:
                 if entity.entity_name == "guardia":
@@ -117,8 +118,11 @@ class Level():
                 if self.game.player.dead:
                     break
 
+        # Condición de perder
         if self.game.player.dead:
-            self.game.BEAT_EVENT = pygame.USEREVENT + 1
+            self.game.enter_beat = False
+            self.game.play_beat = False
+            self.game.beat_counter = 0
             pygame.time.set_timer(self.game.BEAT_EVENT, 0)
             self.game.state_stack[-1].restart_level()
            

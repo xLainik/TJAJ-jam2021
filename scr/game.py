@@ -55,7 +55,9 @@ class Game:
         self.current_level = options["current_level"]
 
         self.BEAT_EVENT = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.BEAT_EVENT, 0)
+
+        self.play_beat = False
+        
         self.beat_counter = 0
         self.enter_beat = False
 
@@ -150,7 +152,7 @@ class Game:
                     self.actions["r"] = False
                 if event.key == pygame.K_ESCAPE:
                     self.actions["escape"] = False
-            if event.type == self.BEAT_EVENT:
+            if self.play_beat and event.type == self.BEAT_EVENT:
                 self.enter_beat = True
                 
                 if self.beat_counter == 7:
