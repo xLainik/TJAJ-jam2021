@@ -28,11 +28,6 @@ class Main_menu(State):
         self.game.all_sfx["menu_hover"].set_volume(0.5 * self.game.sfx_global_volume/100)
         self.game.all_sfx["menu_click"].set_volume(0.5 * self.game.sfx_global_volume/100)
 
-        self.game.load_music("android52 - Dancing All Night (Short).mp3")
-        
-        self.game.all_music["android52 - Dancing All Night (Short)"].set_volume(self.game.music_global_volume/100)
-        self.game.all_music["android52 - Dancing All Night (Short)"].play(-1)
-
     def load_sprites(self):
         self.start_button = pygame.Rect(450 * self.game.SCALE,84 * self.game.SCALE,150 * self.game.SCALE,32 * self.game.SCALE)
         self.options_button = pygame.Rect(-250 * self.game.SCALE,144 * self.game.SCALE,150 * self.game.SCALE,32 * self.game.SCALE)

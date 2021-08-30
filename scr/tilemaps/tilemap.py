@@ -15,7 +15,7 @@ class Tilemap():
 
         self.TILE_WIDTH, self.TILE_HEIGHT = 20, 20
         
-    def load_tiles_and_entities(self, game, tilesmap_surface, entities_surface, json_data, dialog_data):
+    def load_tiles_and_entities(self, game, speed, tilesmap_surface, entities_surface, json_data, dialog_data):
 
         tiles = pygame.sprite.Group()
         entities = pygame.sprite.Group()
@@ -53,24 +53,25 @@ class Tilemap():
                         if entity_name == "player":
                             player_start_x = x * self.TILE_WIDTH
                             player_start_y = y * self.TILE_HEIGHT
+
                         if entity_name == "caja":
-                            entities.add(Box(pygame.image.load(os.path.join("scr", "assets", "images", "caja.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "caja"))
+                            entities.add(Box(pygame.image.load(os.path.join("scr", "assets", "images", "caja.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "caja", speed))
                         if entity_name == "mesa":
-                            entities.add(Table(pygame.image.load(os.path.join("scr", "assets", "images", "mesa.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesa"))
+                            entities.add(Table(pygame.image.load(os.path.join("scr", "assets", "images", "mesa.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesa", speed))
                         if entity_name == "guardia":
                             spawn = json_data["guardia " + str(guard_counter) + " turno spawn"]
                             radius = json_data["guardia " + str(guard_counter) + " radio vision"]
                             offset = json_data["guardia " + str(guard_counter) + " offset"]
                             entities.add(Guard(pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "guardia", [dialogs["dialog_0"], dialogs["dialog_1"],
-                                                                                                                                                                                          dialogs["dialog_4"]], spawn, radius, offset))
+                                                                                                                                                                                          dialogs["dialog_4"]], spawn, radius, offset, speed))
                             guard_counter += 1
                         if entity_name == "mesero vertical":
                             direction = json_data["mesero " + str(waiter_counter) + " direccion"]
-                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "vertical", direction))
+                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "vertical", direction, speed))
                             waiter_counter += 1
                         if entity_name == "mesero horizontal":
                             direction = json_data["mesero " + str(guard_counter) + " direccion"]
-                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "horizontal", direction))
+                            entities.add(Waiter(pygame.image.load(os.path.join("scr", "assets", "images", "mesero.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "mesero", "horizontal", direction, speed))
                             waiter_counter += 1
                         if entity_name == "npc 0": # Controles de movimiento
                             entities.add(NPC_0(pygame.image.load(os.path.join("scr", "assets", "images", "invisible.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, "npc", json_data["npc 0 offset"], json_data["npc 0 radio vision"]))

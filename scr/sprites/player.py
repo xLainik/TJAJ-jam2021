@@ -16,6 +16,8 @@ class Player(pygame.sprite.Sprite):
 
         self.game = game
 
+        self.speed = 0
+
         self.entity_name = "player"
 
         self.restart_cooldown = 0
@@ -27,11 +29,13 @@ class Player(pygame.sprite.Sprite):
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}        
         self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
 
-    def level_init(self, x, y):
+    def level_init(self, x, y, speed):
         self.rect.x, self.rect.y = x, y
         self.x, self.y = float(x), float(y)
         self.speed_x, self.speed_y = 0, 0
         self.move_destination = x, y
+
+        self.speed = speed
 
         self.dead = False
         self.moving = False
@@ -54,25 +58,25 @@ class Player(pygame.sprite.Sprite):
         
         if not(self.dead) and self.can_move:
             if self.game.actions["right"]:
-                self.speed_x = 3
+                self.speed_x = self.speed
                 self.moving = True
                 self.move_destination = self.rect.x + 20, self.rect.y
                 self.inputs["right"] = True
                 self.can_move = False
             elif self.game.actions["left"]:
-                self.speed_x = -3
+                self.speed_x = -self.speed
                 self.moving = True
                 self.move_destination = self.rect.x - 20, self.rect.y
                 self.inputs["left"] = True
                 self.can_move = False
             elif self.game.actions["down"]:
-                self.speed_y = 3
+                self.speed_y = self.speed
                 self.moving = True
                 self.move_destination = self.rect.x, self.rect.y + 20
                 self.inputs["down"] = True
                 self.can_move = False
             elif self.game.actions["up"]:
-                self.speed_y = -3
+                self.speed_y = -self.speed
                 self.moving = True
                 self.move_destination = self.rect.x, self.rect.y - 20
                 self.inputs["up"] = True

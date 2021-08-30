@@ -4,7 +4,7 @@ from scr.config.config import colours
 from scr.config.config import levels
 
 from scr.states.state import State
-from scr.tilemaps.levels import Level_0, Level_1
+from scr.tilemaps.levels import Level_1, Level_2
 
 from scr.utility.easying import easeOutBack
 
@@ -19,7 +19,7 @@ class Game_world(State):
         # 1 -> dict with all dialogs for the level
 
         self.levels = {
-            0: Level_0(self.game,
+            0: Level_1(self.game,
                        pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_tiles.png")),
                        pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_entities.png")), levels[0][0], levels[0][1], 0
             ),

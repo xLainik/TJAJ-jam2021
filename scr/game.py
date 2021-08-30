@@ -54,7 +54,12 @@ class Game:
 
         self.current_level = options["current_level"]
 
-        pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP])
+        self.BEAT_EVENT = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.BEAT_EVENT, 0)
+        self.beat_counter = 0
+        self.enter_beat = False
+
+        pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, self.BEAT_EVENT])
 
         self.actions = {"up": False, "down": False, "left": False, "right":False, "space": False, "r": False, "escape": False}
 
@@ -114,6 +119,8 @@ class Game:
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
 
+        self.actions["up"] = self.actions["down"] = self.actions["left"] = self.actions["right"] = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.shut_down()
@@ -137,20 +144,20 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.actions["escape"] = True
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_UP or event.key == pygame.K_w:
-                    self.actions["up"] = False
-                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                    self.actions["down"] = False
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    self.actions["left"] = False
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    self.actions["right"] = False
                 if event.key == pygame.K_SPACE:
                     self.actions["space"] = False
                 if event.key == pygame.K_r:
                     self.actions["r"] = False
                 if event.key == pygame.K_ESCAPE:
                     self.actions["escape"] = False
+            if event.type == self.BEAT_EVENT:
+                self.enter_beat = True
+                
+                if self.beat_counter == 7:
+                    self.beat_counter = 0
+                else:
+                    self.beat_counter += 1
+                    
 
     def load_first_state(self) -> None:
         """Loading the first state of the game."""

@@ -85,9 +85,11 @@ class Goal(Obstacle):
         self.game.state_stack[-1].restart_level()
 
 class Table(Obstacle):
-    def __init__(self, image, x, y, entity_name):
+    def __init__(self, image, x, y, entity_name, speed):
         super().__init__(image, x, y, entity_name)
 
+        self.speed = speed
+        
         self.rect = pygame.Rect(x, y, 20, 20)
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
@@ -141,27 +143,29 @@ class Table(Obstacle):
                 # The player pushed the obstacle
                 if entity.entity_name == "player" and not(self.moving):
                     if self.push_directions["right"] and entity.speed_x > 0:
-                        self.speed_x = 2
+                        self.speed_x = self.speed
                         self.moving = True
                         self.move_destination = self.rect.x + 20, self.rect.y
                     elif self.push_directions["left"] and entity.speed_x < 0:
-                        self.speed_x = -2
+                        self.speed_x = -self.speed
                         self.moving = True
                         self.move_destination = self.rect.x - 20, self.rect.y
                     elif self.push_directions["down"] and entity.speed_y > 0:
-                        self.speed_y = 2
+                        self.speed_y = self.speed
                         self.moving = True
                         self.move_destination = self.rect.x, self.rect.y + 20
                     elif self.push_directions["up"] and entity.speed_y < 0:
-                        self.speed_y = -2
+                        self.speed_y = -self.speed
                         self.moving = True
                         self.move_destination = self.rect.x, self.rect.y - 20
         
 
 class Box(Obstacle):
-    def __init__(self, image, x, y, entity_name):
+    def __init__(self, image, x, y, entity_name, speed):
         super().__init__(image, x, y, entity_name)
 
+        self.speed = speed
+        
         self.rect = pygame.Rect(x, y, 20, 20)
         self.x, self.y = self.rect.x, self.rect.y
 
@@ -206,20 +210,21 @@ class Box(Obstacle):
         for entity in hit_list:
             # The player pushed the obstacle
             if entity.entity_name == "player" and not(self.moving):
+                print("hola")
                 if self.push_directions["right"] and entity.speed_x > 0:
-                    self.speed_x = 3
+                    self.speed_x = self.speed
                     self.moving = True
                     self.move_destination = self.rect.x + 20, self.rect.y
                 elif self.push_directions["left"] and entity.speed_x < 0:
-                    self.speed_x = -3
+                    self.speed_x = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x - 20, self.rect.y
                 elif self.push_directions["down"] and entity.speed_y > 0:
-                    self.speed_y = 3
+                    self.speed_y = self.speed
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y + 20
                 elif self.push_directions["up"] and entity.speed_y < 0:
-                    self.speed_y = -3
+                    self.speed_y = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y - 20
     
@@ -227,10 +232,12 @@ class Box(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class Guard(Obstacle):
-    def __init__(self, image, x, y, entity_name, dialogs, spawn, radius, offset):
+    def __init__(self, image, x, y, entity_name, dialogs, spawn, radius, offset, speed):
         super().__init__(image, x, y, entity_name)
 
         self.dialogs = dialogs
+
+        self.speed = speed
 
         self.blue_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia azul.png"))
         self.red_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png"))
@@ -273,11 +280,12 @@ class Guard(Obstacle):
                     self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "O"
                     self.start_y, self.start_x = (entity.rect.y - border_y[0])//20, (entity.rect.x - border_x[0])//20
                 elif entity.entity_name == "player":
-                    self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "X"
-                else: self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "#"
+                    self.maze[round((entity.rect.y - border_y[0])/20)][round((entity.rect.x - border_x[0])/20)] = "X"
+                else: self.maze[round((entity.rect.y - border_y[0])/20)][round((entity.rect.x - border_x[0])/20)] = "#"
 
     def enter_turn(self, entities, player_rect):
         if self.active:
+            
             self.create_maze(entities, player_rect)
 
             self.circle_color = colours["light gray"]
@@ -379,10 +387,12 @@ class Guard(Obstacle):
             pygame.draw.circle(layer, self.circle_color, self.rect.center, self.circle_radius, width = 3)
 
 class Waiter(Obstacle):
-    def __init__(self, image, x, y, entity_name, orientation, direction):
+    def __init__(self, image, x, y, entity_name, orientation, direction, speed):
         super().__init__(image, x, y, entity_name)
 
         self.orientation = orientation
+
+        self.speed = speed
         
         self.rect = pygame.Rect(x, y, 20, 20)
         self.x, self.y = self.rect.x, self.rect.y
@@ -395,16 +405,16 @@ class Waiter(Obstacle):
 
         if direction == "izquierda":
             self.direction = "L"
-            self.speed_x, self.speed_y = -3, 0
+            self.speed_x, self.speed_y = -self.speed, 0
         if direction == "derecha":
             self.direction = "R"
-            self.speed_x, self.speed_y = 3, 0
+            self.speed_x, self.speed_y = self.speed, 0
         if direction == "arriba":
             self.direction = "U"
-            self.speed_x, self.speed_y = 0, -3
+            self.speed_x, self.speed_y = 0, -self.speed
         if direction == "abajo":
             self.direction = "D"
-            self.speed_x, self.speed_y = 0, 3
+            self.speed_x, self.speed_y = 0, self.speed
 
     def enter_turn(self, entities, player_rect):
         self.moving = True
@@ -414,20 +424,19 @@ class Waiter(Obstacle):
         if abs(self.move_destination[0] - self.rect.x) < 10 and abs(self.move_destination[1] - self.rect.y) < 10:
             if self.orientation == "horizontal":
                 if self.direction == "L":
-                    self.speed_x, self.speed_y = -3, 0
+                    self.speed_x, self.speed_y = -self.speed, 0
                     self.move_destination = self.move_destination[0] - 20, self.move_destination[1]
                 if self.direction == "R":
-                    self.speed_x, self.speed_y = 3, 0
+                    self.speed_x, self.speed_y = self.speed, 0
                     self.move_destination = self.move_destination[0] + 20, self.move_destination[1]
             else:
                 if self.direction == "U":
-                    self.speed_x, self.speed_y = 0, -3
+                    self.speed_x, self.speed_y = 0, -self.speed
                     self.move_destination = self.move_destination[0], self.move_destination[1] - 20
                 if self.direction == "D":
-                    self.speed_x, self.speed_y = 0, 3
+                    self.speed_x, self.speed_y = 0, self.speed
                     self.move_destination = self.move_destination[0], self.move_destination[1] + 20
                 
-        
         
     def update(self, entities, delta_time):        
         # grid movement
