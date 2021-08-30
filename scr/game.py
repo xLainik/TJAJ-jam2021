@@ -50,7 +50,10 @@ class Game:
 
         self.click = 0
 
-        self.player = Player(self, 0, 0)
+        self.setup_directories()
+
+        self.load_animations("jugador")
+        self.player = Player(self, [self.all_animations["jugador"]], 0, 0, (-5, -15))
 
         self.current_level = options["current_level"]
 
@@ -175,14 +178,39 @@ class Game:
     def load_animations(self, *animation_list):
         """Loads just the animations needed at the moment."""
         self.all_animations = {}
-        for animations in os.listdir(self.game.animation_directory):
+        for animation in os.listdir(self.animation_directory):
+            if animation in animation_list:
+                ani_dict = {}
+                for frame in os.listdir(os.path.join(self.animation_directory, animation)):
+                    img = pygame.image.load(os.path.join(self.animation_directory, animation, frame)).convert()
+                    img.set_colorkey((0,0,0))
+                    duration = frame.split("_")[-1].split(".")[0]
+                    ani_dict[str(duration)] = img
+                self.all_animations[animation] = ani_dict
+
+    def load_full_animations(self, *animation_list):
+        """Loads non-frame restricted animations (for particles and effects)."""
+        self.all_full_animations = {}
+        for animations in os.listdir(self.animation_directory):
             if animations in animation_list:
-                self.all_animations[animations] = []
-                for frames in os.listdir(os.path.join(self.game.animation_directory, animations)):
-                    img = pygame.image.load(os.path.join(self.game.animation_directory, animations, frames)).convert()
+                self.all_full_animations[animations] = []
+                for frames in os.listdir(os.path.join(self.animation_directory, animations)):
+                    img = pygame.image.load(os.path.join(self.animation_directory, animations, frames)).convert()
                     img.set_colorkey((0,0,0))
                     duration = frames.split("_")[-1].split(".")[0]
-                    self.all_animations[animations].append([img, int(duration)])
+                    self.all_full_animations[animations].append([img, int(duration)])
+
+    def load_ani_tiles(self, *animation_list):
+        self.all_tiles = {}
+        for ani_tile in os.listdir(self.tile_directory):
+            if ani_tile in animation_list:
+                ani_dict = {}
+                for frame in os.listdir(os.path.join(self.tile_directory, ani_tile)):
+                    img = pygame.image.load(os.path.join(self.tile_directory, ani_tile, frame)).convert()
+                    img.set_colorkey((0,0,0))
+                    duration = frame.split("_")[-1].split(".")[0]
+                    ani_dict[str(duration)] = img
+                self.all_tiles[ani_tile] = ani_dict
 
     def load_music(self, *music_list):
         """Loads just the songs needed at the moment."""

@@ -8,18 +8,34 @@ from scr.utility.useful import center_distance
 from scr.config.config import colours
 
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, image, x, y, entity_name):
+    def __init__(self, image, x, y, img_offset, entity_name):
         super().__init__()
         pygame.sprite.Sprite.__init__(self)
-        self.image = image
-        self.rect = self.image.get_rect(topleft = (x, y))
+
+        self.rect = pygame.Rect(x, y, 20, 20)
+        
         self.x, self.y = self.rect.x, self.rect.y
+
+        self.img_offset = img_offset
+
+        self.flip = False
 
         self.collided, self.moving = False, False
 
         self.push_directions = {"left": True, "right": True, "down": True, "up": True}
 
         self.entity_name = entity_name
+
+        if type(image) == list:
+            # [{ani_1}, {ani_2}, etc]
+            self.animations = image
+            self.current_ani = self.animations[0]
+            self.image = self.current_ani["0"]
+        else:
+            # single img to blit (no animation)
+            self.image = image
+            self.animations = None
+            
 
     def on_collide(self):
         pass
@@ -37,7 +53,12 @@ class Obstacle(pygame.sprite.Sprite):
         pass
     
     def draw(self, layer):
-        layer.blit(self.image, (self.rect.x, self.rect.y))
+        layer.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x + self.img_offset[0], self.rect.y + self.img_offset[1]))
+
+    def change_frame(self, current_beat):
+        for key, frame in self.current_ani.items():
+            if int(key) == current_beat:
+                self.image = frame
 
     def calculate_push(self, entities):
 
@@ -63,20 +84,16 @@ class Obstacle(pygame.sprite.Sprite):
                 # WIP
                 
 class Barrier(Obstacle):
-    def __init__(self, image, x, y, entity_name):
-        super().__init__(image, x, y, entity_name)
-        
-        self.rect = pygame.Rect(x, y, 20, 20)
+    def __init__(self, image, x, y, img_offset, entity_name):
+        super().__init__(image, x, y, img_offset, entity_name)
         
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
 class Goal(Obstacle):
-    def __init__(self, image, x, y, entity_name, game):
-        super().__init__(image, x, y, entity_name)
+    def __init__(self, image, x, y, img_offset, entity_name, game):
+        super().__init__(image, x, y, img_offset, entity_name)
 
         self.game = game
-        
-        self.rect = pygame.Rect(x, y, 20, 20)
         
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
@@ -85,12 +102,11 @@ class Goal(Obstacle):
         self.game.player.dead = True
 
 class Table(Obstacle):
-    def __init__(self, image, x, y, entity_name, speed):
-        super().__init__(image, x, y, entity_name)
+    def __init__(self, image, x, y, img_offset, entity_name, speed):
+        super().__init__(image, x, y, img_offset, entity_name)
 
         self.speed = speed
         
-        self.rect = pygame.Rect(x, y, 20, 20)
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
 
@@ -161,13 +177,10 @@ class Table(Obstacle):
         
 
 class Box(Obstacle):
-    def __init__(self, image, x, y, entity_name, speed):
-        super().__init__(image, x, y, entity_name)
+    def __init__(self, image, x, y, img_offset, entity_name, speed):
+        super().__init__(image, x, y, img_offset, entity_name)
 
         self.speed = speed
-        
-        self.rect = pygame.Rect(x, y, 20, 20)
-        self.x, self.y = self.rect.x, self.rect.y
 
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
@@ -231,23 +244,19 @@ class Box(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class Guard(Obstacle):
-    def __init__(self, image, x, y, entity_name, dialogs, spawn, radius, offset, speed):
-        super().__init__(image, x, y, entity_name)
+    def __init__(self, image, x, y, img_offset, entity_name, dialogs, spawn, radius, offset, speed, flip):
+        super().__init__(image, x, y, img_offset, entity_name)
 
         self.dialogs = dialogs
 
         self.speed = speed
-
-        self.blue_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia azul.png"))
-        self.red_image = pygame.image.load(os.path.join("scr", "assets", "images", "guardia.png"))
-
-        self.image = self.blue_image
 
         self.spawn_turn = spawn
 
         self.active = False
 
         self.rect = pygame.Rect(x + offset[0], y + offset[1], 20, 20)
+        self.x, self.y = float(self.rect.x), float(self.rect.y)
 
         self.direction = "R"
 
@@ -316,12 +325,12 @@ class Guard(Obstacle):
                                 nums.put(put)
                         timer += 1
             if type(moves) == bool or len(moves) == 0:
-                self.image = self.blue_image
+                self.current_ani = self.animations[0]
                 if moves == False:
                     self.circle_color = colours["green"]
                 self.moves = False
             else:
-                self.image = self.red_image
+                self.current_ani = self.animations[1]
                 self.moves = tuple(moves)
 
                 self.direction = moves[0]
@@ -386,15 +395,14 @@ class Guard(Obstacle):
             pygame.draw.circle(layer, self.circle_color, self.rect.center, self.circle_radius, width = 3)
 
 class Waiter(Obstacle):
-    def __init__(self, image, x, y, entity_name, orientation, direction, speed):
-        super().__init__(image, x, y, entity_name)
+    def __init__(self, image, x, y, img_offset, entity_name, orientation, direction, speed, flip):
+        super().__init__(image, x, y, img_offset, entity_name)
 
         self.orientation = orientation
 
         self.speed = speed
-        
-        self.rect = pygame.Rect(x, y, 20, 20)
-        self.x, self.y = self.rect.x, self.rect.y
+
+        self.active = False
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
@@ -420,24 +428,24 @@ class Waiter(Obstacle):
 
 ##        print((self.rect.x, self.rect.y), self.move_destination)
 
-        if abs(self.move_destination[0] - self.rect.x) < 10 and abs(self.move_destination[1] - self.rect.y) < 10:
-            if self.orientation == "horizontal":
-                if self.direction == "L":
-                    self.speed_x, self.speed_y = -self.speed, 0
-                    self.move_destination = self.move_destination[0] - 20, self.move_destination[1]
-                if self.direction == "R":
-                    self.speed_x, self.speed_y = self.speed, 0
-                    self.move_destination = self.move_destination[0] + 20, self.move_destination[1]
-            else:
-                if self.direction == "U":
-                    self.speed_x, self.speed_y = 0, -self.speed
-                    self.move_destination = self.move_destination[0], self.move_destination[1] - 20
-                if self.direction == "D":
-                    self.speed_x, self.speed_y = 0, self.speed
-                    self.move_destination = self.move_destination[0], self.move_destination[1] + 20
+        if self.orientation == "horizontal":
+            if self.direction == "L":
+                self.speed_x, self.speed_y = -self.speed, 0
+                self.move_destination = self.move_destination[0] - 20, self.move_destination[1]
+            if self.direction == "R":
+                self.speed_x, self.speed_y = self.speed, 0
+                self.move_destination = self.move_destination[0] + 20, self.move_destination[1]
+        else:
+            if self.direction == "U":
+                self.speed_x, self.speed_y = 0, -self.speed
+                self.move_destination = self.move_destination[0], self.move_destination[1] - 20
+            if self.direction == "D":
+                self.speed_x, self.speed_y = 0, self.speed
+                self.move_destination = self.move_destination[0], self.move_destination[1] + 20
                 
         
-    def update(self, entities, delta_time):        
+    def update(self, entities, delta_time):
+        
         # grid movement
         if self.moving:
             if self.speed_x > 0:
@@ -456,11 +464,12 @@ class Waiter(Obstacle):
             if self.moving == False:
                 self.x, self.y = self.move_destination
                 self.speed_x, self.speed_y = 0, 0
+                self.active = False
                 
-                
-        # Applies the speed to the position
-        self.x += self.speed_x * delta_time
-        self.y += self.speed_y * delta_time
+        if self.active:
+            # Applies the speed to the position
+            self.x += self.speed_x * delta_time
+            self.y += self.speed_y * delta_time
 
         # Collision direction from the player reference point
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
@@ -513,18 +522,16 @@ class Waiter(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class NPC(Obstacle):
-    def __init__(self, image, x, y, entity_name):
-        super().__init__(image, x, y, entity_name)
-
-        self.rect = pygame.Rect(x, y, 20, 20)
+    def __init__(self, image, x, y, img_offset, entity_name):
+        super().__init__(image, x, y, img_offset, entity_name)
 
     def draw(self, layer):
         layer.blit(self.image, self.rect)
         pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
 
 class NPC_0(NPC): # Controles de moverse
-    def __init__(self, image, x, y, entity_name, offset, action_radius):
-        super().__init__(image, x, y, entity_name)
+    def __init__(self, image, x, y, img_offset, entity_name, offset, action_radius):
+        super().__init__(image, x, y, img_offset, entity_name)
 
         self.action_radius = action_radius
         
@@ -536,9 +543,9 @@ class NPC_0(NPC): # Controles de moverse
         layer.blit(self.image, self.rect)
         pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
 
-class NPC_1(NPC):
-    def __init__(self, image, x, y, entity_name, dialogs, action_radius, offset):
-        super().__init__(image, x, y, entity_name)
+class NPC_2(NPC): # Camarero echando carro
+    def __init__(self, image, x, y, img_offset, entity_name, dialogs, action_radius, offset, flip):
+        super().__init__(image, x, y, img_offset, entity_name)
 
         self.action_radius = action_radius
 

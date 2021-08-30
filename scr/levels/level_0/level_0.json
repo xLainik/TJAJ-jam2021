@@ -1,9 +1,12 @@
 {
+    "jugador flip": "True",
     "guardia 1 turno spawn": 4,
     "guardia 1 radio vision": 70,
     "guardia 1 offset": [0, 0],
+    "guardia 1 flip": "False",
     "mesero 1 direccion": "arriba",
-    "npc 1 offset": [0, 0],
-    "npc 1 radio vision": 30
+    "npc 2 offset": [0, 0],
+    "npc 2 radio vision": 30,
+    "npc 2 flip": "True"
     
 }

@@ -4,17 +4,23 @@ from scr.config.config import colours
 from scr.utility.easying import easeInOutExpo
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, x , y):
+    def __init__(self, game, image, x , y, img_offset):
         super().__init__()
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10, 10))
-        self.image.fill(colours["green"])
-        self.rect = self.image.get_rect()
+        self.rect = pygame.Rect((x + 5, y + 5, 10, 10))
         self.rect.x, self.rect.y = x, y
         self.x, self.y = float(x), float(y)
         self.speed_x, self.speed_y = 0, 0
 
         self.game = game
+
+        self.img_offset = img_offset
+
+        self.animations = image
+        self.current_ani = self.animations[0]
+        self.image = self.current_ani["0"]
+
+        self.flip = False
 
         self.speed = 0
 
@@ -31,13 +37,15 @@ class Player(pygame.sprite.Sprite):
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}        
         self.inputs = {"right": False, "left": False, "up": False, "down": False, "space": False, "restart": False}
 
-    def level_init(self, x, y, speed):
+    def level_init(self, x, y, speed, flip):
         self.rect.x, self.rect.y = x, y
         self.x, self.y = float(x), float(y)
         self.speed_x, self.speed_y = 0, 0
         self.move_destination = x, y
 
         self.speed = speed
+
+        self.flip = flip
 
         self.dead = False
         self.moving = False
@@ -64,6 +72,7 @@ class Player(pygame.sprite.Sprite):
                 elif self.can_move:
                     self.speed_x = self.speed
                     self.moving = True
+                    self.flip = False
                     self.move_destination = self.rect.x + 20, self.rect.y
                     self.inputs["right"] = True
                     self.can_move = False
@@ -73,6 +82,7 @@ class Player(pygame.sprite.Sprite):
                 elif self.can_move:
                     self.speed_x = -self.speed
                     self.moving = True
+                    self.flip = True
                     self.move_destination = self.rect.x - 20, self.rect.y
                     self.inputs["left"] = True
                     self.can_move = False
@@ -108,36 +118,6 @@ class Player(pygame.sprite.Sprite):
             if self.restart_cooldown >= 100: self.restart_cooldown = -1
         
     def update(self, entities, delta_time):
-
-##        self.inputs["restart"] = self.game.actions["r"]
-##        
-##        if not(self.dead) and self.can_move:
-##            if self.game.actions["right"]:
-##                self.speed_x = self.speed
-##                self.moving = True
-##                self.move_destination = self.rect.x + 20, self.rect.y
-##                self.inputs["right"] = True
-##                self.can_move = False
-##            elif self.game.actions["left"]:
-##                self.speed_x = -self.speed
-##                self.moving = True
-##                self.move_destination = self.rect.x - 20, self.rect.y
-##                self.inputs["left"] = True
-##                self.can_move = False
-##            elif self.game.actions["down"]:
-##                self.speed_y = self.speed
-##                self.moving = True
-##                self.move_destination = self.rect.x, self.rect.y + 20
-##                self.inputs["down"] = True
-##                self.can_move = False
-##            elif self.game.actions["up"]:
-##                self.speed_y = -self.speed
-##                self.moving = True
-##                self.move_destination = self.rect.x, self.rect.y - 20
-##                self.inputs["up"] = True
-##                self.can_move = False
-
-        
 
         # grid movement
         if self.moving:
@@ -207,28 +187,12 @@ class Player(pygame.sprite.Sprite):
             self.move_destination = self.rect.x, (round(self.rect.y//20) * 20) + 5
             self.speed_y *= -1
 
-    def change_animation(self, new_ani):
-        if self.current_ani != new_ani:
-            self.previous_ani = self.current_ani
-            self.ani_timer = 0
-            self.ani_frame = 0
-            self.current_ani = new_ani
-
     def draw(self, layer):
+        layer.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x + self.img_offset[0], self.rect.y + self.img_offset[1]))
+##        pygame.draw.rect(layer, colours["red"], self.rect, width=2)
 
-##        if self.current_ani[0][0][1] == 0: # no animation
-##            layer.blit(pygame.transform.flip(self.current_ani[0][0][0], self.flip, False), (self.rect.x-self.current_ani[2][0],self.rect.y-self.current_ani[2][1]))
-##        else:
-##            layer.blit(pygame.transform.flip(self.current_ani[0][self.ani_frame][0], self.flip, False), (self.rect.x-self.current_ani[2][0],self.rect.y-self.current_ani[2][1]))
-##            if self.ani_timer < self.current_ani[0][self.ani_frame][1]:
-##                self.ani_timer += self.game.delta_time
-##            else:
-##                self.ani_timer = 0
-##                self.ani_frame += 1
-##            if self.ani_frame >= len(self.current_ani[0]):
-##                if self.current_ani[1] == True:
-##                    self.ani_timer, self.ani_frame = 0, 0
-##                else: self.change_animation(self.previous_ani)
+    def change_frame(self, current_beat):
+        for key, frame in self.current_ani.items():
+            if int(key) == current_beat:
+                self.image = frame
         
-        pygame.draw.rect(layer, colours["red"], self.rect)
-##        pygame.draw.rect(layer, (0, 255, 0), (self.move_destination[0], self.move_destination[1], 10, 10))

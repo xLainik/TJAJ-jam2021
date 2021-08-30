@@ -96,13 +96,8 @@ class Level():
                 for entity in self.entities:
                     if entity.entity_name != "guardia":
                         entity.enter_turn(self.entities, self.game.player.rect)
-
-        # Marcar el ritmo con sonidos
-        if self.drum_beat[self.game.beat_counter] != None:
-            if self.game.enter_beat:
-                self.drum_beat[self.game.beat_counter].play()
-                self.game.enter_beat = False
-
+                    if entity.entity_name == "mesero":
+                        entity.active = True
 
         for key, dialog in self.dialogs.items():
             if dialog.active:
@@ -129,6 +124,18 @@ class Level():
         self.game.game_canvas.fill((0, 0, 0))
         
         self.tiles_surface.fill((0, 0, 0), rect=self.camera.rect)
+
+        # Marcar el ritmo con sonidos / cambiar frame al ritmo de la música
+        if self.game.enter_beat:
+            if self.drum_beat[self.game.beat_counter] != None:
+                self.drum_beat[self.game.beat_counter].play()
+            for tile in self.tiles:
+                if tile.animations != None:
+                    tile.change_frame(self.game.beat_counter)
+            for entity in self.entities:
+                if entity.animations != None:
+                    entity.change_frame(self.game.beat_counter)
+            self.game.enter_beat = False
     
         for tile in self.tiles:
             tile.draw(self.tiles_surface)
@@ -188,7 +195,7 @@ class Level_1(Level):
         self.guards = pygame.sprite.Group()
         
         if self.level_number == self.game.current_level:
-            self.game.player.level_init(player_start_x + 5, player_start_y + 5, self.speed*2)
+            self.game.player.level_init(player_start_x + 5, player_start_y + 5, self.speed*2, bool(self.json_data["jugador flip"] == "True"))
             self.entities.add(self.game.player)
 
         for entity in self.entities:

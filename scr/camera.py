@@ -25,7 +25,7 @@ class Camera:
         # Level shorter that camera in the Y axis
         if self.level_height + 1 < game.SCREEN_HEIGHT:
             self.vertical_scroll = False
-            self.rect.centerx = level_surface.get_rect().centerx
+            self.rect.centery = level_surface.get_rect().centery
         
 
     def update(self, player):
