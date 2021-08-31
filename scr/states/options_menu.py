@@ -162,7 +162,6 @@ class Options_menu(State):
 
         self.game.all_sfx["menu_hover"].set_volume(0.5 * self.game.sfx_global_volume/100)
         self.game.all_sfx["menu_click"].set_volume(0.25 * self.game.sfx_global_volume/100)
-        self.game.all_music["android52 - Dancing All Night (Short)"].set_volume(self.game.music_global_volume/100)
 
         if self.timer < 60:
             self.timer += self.game.delta_time

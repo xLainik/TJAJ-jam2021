@@ -15,7 +15,7 @@ class Tilemap():
 
         self.TILE_WIDTH, self.TILE_HEIGHT = 20, 20
         
-    def load_tiles_and_entities(self, game, speed, tilesmap_surface, entities_surface, json_data, dialog_data):
+    def load_tiles_and_entities(self, game, speed, tilesmap_surface, entities_surface, json_data, dialog_data, lvl_number):
 
         tiles = pygame.sprite.Group()
         entities = pygame.sprite.Group()
@@ -23,7 +23,7 @@ class Tilemap():
         dialogs = {}
         
         for key, dialog_queue in dialog_data.items():
-            dialogs[key] = Dialog(game, dialog_queue, key)
+            dialogs[key] = Dialog(game, dialog_queue, key, lvl_number, dialog_queue[str(len(dialog_queue) - 1)][4])
 
         guard_counter = 1
         waiter_counter = 1

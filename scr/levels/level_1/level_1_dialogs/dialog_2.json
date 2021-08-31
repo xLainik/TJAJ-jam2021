@@ -1,5 +1,5 @@
 {
     "0": [20, "GUARDIA", [240, 20, 20], "No me pagan lo suficiente para esto.", " "],
-    "1": [100, " ", [70, 210, 20], " ", " "]
+    "1": [100, " ", [70, 210, 20], "level_1", "dialog_0_images.json"]
 
 }

@@ -44,6 +44,7 @@ class Level():
             for entity in self.entities:
                 if entity.entity_name != "player":
                     entity.update(self.entities, self.game.delta_time)
+                    entity.check_action(self.game.player.rect)
 
             if self.game.beat_counter in [0, 1, 7]:
                 self.player_turn = True
@@ -180,7 +181,7 @@ class Level_1(Level):
 
         self.level_number = level_number
 
-        self.tiles, self.entities, self.dialogs, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(game, self.speed*3, png_map, png_entities, self.json_data, dialog_data)
+        self.tiles, self.entities, self.dialogs, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(game, self.speed*3, png_map, png_entities, self.json_data, dialog_data, level_number)
 
         self.tiles_surface = pygame.Surface((self.LEVEL_SIZE))
 

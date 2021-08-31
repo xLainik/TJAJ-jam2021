@@ -6,7 +6,7 @@
     "guardia 1 flip": "False",
     "mesero 1 direccion": "arriba",
     "npc 2 offset": [0, 0],
-    "npc 2 radio vision": 30,
+    "npc 2 radio vision": 40,
     "npc 2 flip": "True"
     
 }

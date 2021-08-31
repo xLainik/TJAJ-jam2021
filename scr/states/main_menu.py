@@ -29,8 +29,10 @@ class Main_menu(State):
         self.game.all_sfx["menu_click"].set_volume(0.5 * self.game.sfx_global_volume/100)
 
     def load_sprites(self):
-        self.start_button = pygame.Rect(450 * self.game.SCALE,84 * self.game.SCALE,150 * self.game.SCALE,32 * self.game.SCALE)
-        self.options_button = pygame.Rect(-250 * self.game.SCALE,144 * self.game.SCALE,150 * self.game.SCALE,32 * self.game.SCALE)
+
+        self.bg_img = resize(pygame.image.load(os.path.join(self.game.image_directory, "fondo 2.png")), self.game.SCALE, 4)
+        self.start_button = pygame.Rect(450 * self.game.SCALE,94 * self.game.SCALE,150 * self.game.SCALE,32 * self.game.SCALE)
+        self.options_button = pygame.Rect(-250 * self.game.SCALE,154 * self.game.SCALE,150 * self.game.SCALE,32 * self.game.SCALE)
 
         self.inactive_button_img = resize(pygame.image.load(os.path.join(self.game.image_directory, "boton apagado.png")), self.game.SCALE, 4)
         self.active_button_img = resize(pygame.image.load(os.path.join(self.game.image_directory, "boton activo.png")), self.game.SCALE, 4)
@@ -38,8 +40,8 @@ class Main_menu(State):
         self.start_button_img = self.inactive_button_img
         self.options_button_img = self.inactive_button_img
 
-        self.start_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 16, "JUGAR", colours["white"], True, (self.game.GAME_WIDTH * self.game.SCALE), 100 * self.game.SCALE, True, self.game.SCALE)
-        self.options_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 16, "OPCIONES", colours["white"], True, (self.game.GAME_WIDTH * self.game.SCALE), 160 * self.game.SCALE, True, self.game.SCALE)
+        self.start_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 16, "JUGAR", colours["white"], True, (self.game.GAME_WIDTH * self.game.SCALE), 110 * self.game.SCALE, True, self.game.SCALE)
+        self.options_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 16, "OPCIONES", colours["white"], True, (self.game.GAME_WIDTH * self.game.SCALE), 170 * self.game.SCALE, True, self.game.SCALE)
     
     def update(self):
         """Update the menu state."""
@@ -79,8 +81,8 @@ class Main_menu(State):
         
     def render(self):
         """Render the menu state."""
-        self.game.high_res_canvas.fill(colours["black"])
 
+        self.game.high_res_canvas.blit(self.bg_img, (0,0))
         
         self.game.high_res_canvas.blit(self.start_button_img, ((self.start_button.x-10), self.start_button.y))
         self.game.high_res_canvas.blit(self.options_button_img, ((self.options_button.x-10), self.options_button.y))

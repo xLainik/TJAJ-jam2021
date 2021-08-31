@@ -534,24 +534,36 @@ class NPC_0(NPC): # Controles de moverse
         super().__init__(image, x, y, img_offset, entity_name)
 
         self.action_radius = action_radius
+
+        self.popup = pygame.image.load(os.path.join("scr", "assets", "images", "burbuja 0.png")).convert()
+
+        self.popup_active = False
         
-        self.rect = pygame.Rect(x, y, 20 + offset[0], 20 + offset[1])
+        self.rect = pygame.Rect(x + offset[0], y + offset[0], 20, 20)
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
     def draw(self, layer):
-        layer.blit(self.image, self.rect)
-        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
+##        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
+        if self.popup_active:
+            layer.blit(self.popup, (self.rect.x-2, self.rect.y-24))
+
+    def check_action(self, player_rect):
+        if center_distance(self.rect, player_rect) < self.action_radius:
+            self.popup_active = True
+        else: self.popup_active = False
 
 class NPC_2(NPC): # Camarero echando carro
     def __init__(self, image, x, y, img_offset, entity_name, dialogs, action_radius, offset, flip):
         super().__init__(image, x, y, img_offset, entity_name)
 
+        self.flip = flip
+
         self.action_radius = action_radius
 
         self.dialogs = dialogs
         
-        self.rect = pygame.Rect(x, y, 20 + offset[0], 20 + offset[1])
+        self.rect = pygame.Rect(x + offset[0], y + offset[1], 20, 20)
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
@@ -562,5 +574,5 @@ class NPC_2(NPC): # Camarero echando carro
             self.dialogs[0].active = False
 
     def draw(self, layer):
-        layer.blit(self.image, self.rect)
+        layer.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
         pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
