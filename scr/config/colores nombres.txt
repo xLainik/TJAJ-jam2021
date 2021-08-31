@@ -1,0 +1,12 @@
+guardia 238, 24, 65
+angel 98, 184, 36
+celular 95, 95, 236
+sofía 250, 170, 67
+
+
+amarillo 250, 170, 67
+rosa 255, 139, 151
+morado 202, 62, 203
+cyan 86, 207, 222
+marron claro 189, 56, 43
+verde claro 201, 22, 62

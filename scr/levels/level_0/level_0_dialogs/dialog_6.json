@@ -1,0 +1,14 @@
+{
+    "0": [260, "ÁNGEL", [98, 184, 36], "Llevo haciendo fila desde las 2 y apenas veo la entrada a la disco.", "Esta fila está DEMACIADO LARGA."],
+    "1": [350, "CELULAR", [95, 95, 236], "*Biiip*", ">> MENSAJE NUEVO DE ''AMIGO JUANCHO'' <<"],
+    "2": [500, "MENSAJE", [95, 95, 236], ">> Mensaje de Juancho: Hey bro, dónde estás??", "Nosotros ya entramos, solo faltas tú."],
+    "3": [700, "MENSAJE", [95, 95, 236], "No creerás quien está aquí también... Se nos acercó a preguntar por tí, pero", "le dimos una pésima excusa. Aparece yaa!!"],
+    "4": [740, "ÁNGEL", [98, 184, 36], "¿¡QUÉ!?", " "],
+    "5": [860, "ÁNGEL", [98, 184, 36], "¿¡Sofía, preguntando por mí!?", "He estado enamorado de ella como desde 3er grado."],
+    "6": [970, "ÁNGEL", [98, 184, 36], "Ya está...", "Tengo que entra como sea, para poder estar con ella."],
+    "7": [1520, "ÁNGEL", [98, 184, 36], "Mmm... Creo que hoy es mi día de suerte.", " "],
+    "8": [1620, "GUARDIA", [238, 24, 65], "¡¡Hey, tú!!", "¿¡A dónde crees que vas!?."],
+    "9": [1720, "ÁNGEL", [98, 184, 36], "Genial. Si no termino preso, al menos habré hecho un buen", "ejercicio de piernas."],
+    "10": [1800, "ÁNGEL", [98, 184, 36], "Ahora sí.. ¡¡A correr!!.", " "],
+    "11": [3000, " ", [0, 0, 0], "level_0", "dialog_6_images.json"]
+}

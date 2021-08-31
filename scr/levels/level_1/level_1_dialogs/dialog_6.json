@@ -1,0 +1,18 @@
+{
+    "0": [140, "none", [98, 184, 36], " ", " "],
+    "1": [360, "ÁNGEL", [98, 184, 36], "Uff.. creo que ya perdí al guardia. Vaya hombre tan", "dedicado. Espero no le pongan la queja por mi culpa."],
+    "2": [500, "none", [98, 184, 36], " ", " "],
+    "3": [540, "ÁNGEL", [98, 184, 36], "Hola..", " "],
+    "4": [600, "SOFÍA", [250, 170, 67], "¡Heyyy!.", "Hola, Angel. Al fin te veo hoy."],
+    "5": [700, "SOFÍA", [250, 170, 67], "Pensé que te habías colado para entrar y un guardia te persiguió hasta acá.", "Pero bueno, al menos no te perdiste."],
+    "6": [780, "ÁNGEL", [98, 184, 36], "Sí, algo así. Ajajaja. Estaba un poco perdido.", "Oye, me preguntaba si querrías bailar conmigo."],
+    "7": [790, "SOFÍA", [250, 170, 67], "¿Contigo?. Claro, me encantaría.", " "],
+    "8": [900, "SOFÍA", [250, 170, 67], " Por cierto, creo que tus amigos están por allá, aunque no se me", " ocurrió preguntarles por tí... Vaya despiste. Ajaja."],
+    "9": [970, "ÁNGEL", [98, 184, 36], "Jaja, en serio?. Luego hablaré con ellos... Ah, y antes que se me olvide: ten.", "Te traje estas flores, espero que te gusten."],
+    "10": [1100, "none", [98, 184, 36], " ", " "],
+    "11": [1180, "SOFÍA", [250, 170, 67], "Wowww. ¡Gracias!. Están precisosas.", "Disculpa, eh... Yo no te traje nada, es decir..."],
+    "12": [1320, "ÁNGEL", [98, 184, 36], "¡Tranquila!.", "Ven. Basta de hablar y bailemos."],
+    "13": [1990, "none", [98, 184, 36], " ", " "],
+    "14": [1320, "FIN", [250, 170, 67], "                        Gracias por jugar!! (^:", " "],
+    "15": [3000, " ", [0, 0, 0], "level_1", "dialog_6_images.json"]
+}

@@ -6,6 +6,7 @@ from scr.states.state import State
 from scr.states.options_menu import Options_menu
 
 from scr.states.game_world import Game_world
+from scr.states.cutscenes import Cutscene_1, Cutscene_2
 
 from scr.utility.easying import easeOutBack
 

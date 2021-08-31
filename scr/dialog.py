@@ -24,6 +24,16 @@ class Dialog():
 
         self.bg = bg
 
+        if self.bg == False:
+            pass
+        else:
+            self.bg_pos = 0
+            self.max_bg_pos = len(self.bg) - 1
+            self.current_bg = self.bg[self.bg_pos]
+            if self.bg_pos < self.max_bg_pos:
+                self.next_bg = self.bg[self.bg_pos + 1]
+
+
         self.gameplay_screen = self.game.screen.copy()
         
         self.black_bg_img = pygame.Surface((game.SCREEN_WIDTH*game.SCALE, game.SCREEN_HEIGHT*game.SCALE))
@@ -75,11 +85,12 @@ class Dialog():
         if (self.must_action and self.game.actions["space"]) or (self.must_action == False):
             
             while self.timer < self.max_timer:
+                self.game.get_delta_time()
+                self.game.check_inputs()
                 if self.timer < self.current_line[0]:
                     self.timer += self.game.delta_time
                 else:
-                    self.game.check_inputs()
-                    if bool(self.game.actions["space"]):
+                    if bool(self.game.actions["space"]) or self.current_line[1] == "none":
                         if not(self.next_line[1] == " "):
                             self.current_line = self.next_line
                             self.next_line = self.dialog_queue[str(self.current_line_int + 1)]
@@ -88,28 +99,44 @@ class Dialog():
                             self.second_line_txt.update(content = self.current_line[4])
                             self.current_line_int += 1
                         else:
+                            # Finish
                             self.timer = self.max_timer
-                    
+                # Background timing:
+                if self.bg != False and self.timer >= self.current_bg[0]:
+                    if self.bg_pos < self.max_bg_pos + 1:
+                        self.bg_pos += 1
+                        self.current_bg = self.next_bg
+                        if self.bg_pos < self.max_bg_pos:
+                            self.next_bg = self.bg[self.bg_pos + 1]
+                  
                 # mostrar dialogo actual
-                self.game.screen.blit(pygame.transform.scale(self.game.game_canvas, (self.game.SCREEN_WIDTH * self.game.SCALE, self.game.SCREEN_HEIGHT * self.game.SCALE)), (0, 0))
-                
-                self.game.high_res_canvas.blit(self.current_img_left, (-58 * self.game.SCALE, 30 * self.game.SCALE))
-
-                self.game.high_res_canvas.blit(self.current_img_right, (220 * self.game.SCALE, 30 * self.game.SCALE))
-                
                 if self.bg == False:
-                    self.game.screen.blit(self.black_bg_img, (0, 0))
-                pygame.draw.rect(self.game.high_res_canvas, (20,20,20), self.black_rect)
-                pygame.draw.rect(self.game.high_res_canvas, (100, 100, 100), self.black_rect, width = (2 * self.game.SCALE))
-                self.name_txt.update()
-                self.first_line_txt.update()
-                self.second_line_txt.update()
+                    self.game.screen.blit(pygame.transform.scale(self.game.game_canvas, (self.game.SCREEN_WIDTH * self.game.SCALE, self.game.SCREEN_HEIGHT * self.game.SCALE)), (0, 0))
+                    self.game.screen.blit(self.black_bg_img, (0, 0))                    
+                else:
+                    self.game.high_res_canvas.fill((20, 20, 20))
+                    self.game.high_res_canvas.blit(self.current_bg[1], ((self.game.high_res_canvas.get_width() - self.current_bg[1].get_width())//2, 0))
 
+                if self.bg == False:
+                    self.game.high_res_canvas.blit(self.current_img_left, (-58 * self.game.SCALE, 30 * self.game.SCALE))
+                    self.game.high_res_canvas.blit(self.current_img_right, (220 * self.game.SCALE, 30 * self.game.SCALE))
+                
+                if self.current_line[1] != "none":
+                    pygame.draw.rect(self.game.high_res_canvas, (20,20,20), self.black_rect)
+                    pygame.draw.rect(self.game.high_res_canvas, (100, 100, 100), self.black_rect, width = (2 * self.game.SCALE))
+                    self.name_txt.update()
+                    self.first_line_txt.update()
+                    self.second_line_txt.update()
+                else:
+                    pygame.draw.rect(self.game.high_res_canvas, (20,20,20), self.black_rect)
+                    
                 # Skip button
                 if self.timer >= self.current_line[0]:
-                    pygame.draw.rect(self.game.high_res_canvas, (255,149,0), self.black_rect, width = (2 * self.game.SCALE))
-                    self.game.high_res_canvas.blit(self.skip_arrow_img, (434 * self.game.SCALE, 240 * self.game.SCALE))
+                    if self.current_line[1] != "none":
+                        pygame.draw.rect(self.game.high_res_canvas, (255,149,0), self.black_rect, width = (2 * self.game.SCALE))
                     self.espacio_txt.update()
+                    self.game.high_res_canvas.blit(self.skip_arrow_img, (434 * self.game.SCALE, 240 * self.game.SCALE))
+                    
 
                 self.game.screen.blit(self.game.high_res_canvas, (0,0))
 

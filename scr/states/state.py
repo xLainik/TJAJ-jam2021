@@ -17,6 +17,5 @@ class State:
     def exit_state(self, restart = False):
         if restart:
             self.previous_state.__init__(self.game)
-            print("COÑO")
         self.game.transition_timer = 50        
         self.game.state_stack.pop()

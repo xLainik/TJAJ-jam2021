@@ -1,0 +1,19 @@
+{
+    "0": [240, "none", [98, 184, 36], " ", " "],
+    "1": [260, "ÁNGEL", [98, 184, 36], "Llevo haciendo fila desde las 2 y apenas veo la entrada a la disco.", "Esta fila está DEMACIADO LARGA."],
+    "2": [350, "CELULAR", [95, 95, 236], "*Biiip*", ">> MENSAJE NUEVO DE ''AMIGO JUANCHO'' <<"],
+    "3": [500, "MENSAJE", [95, 95, 236], ">> Mensaje de Juancho:", "Hey bro, dónde estás?? Nosotros ya entramos, solo faltas tú."],
+    "4": [700, "MENSAJE", [95, 95, 236], "No creerás quien está aquí también... Se nos acercó a preguntar por tí, pero", "le dimos una pésima excusa. Aparece yaa!!"],
+    "5": [740, "ÁNGEL", [98, 184, 36], "¿¡QUÉ!?", " "],
+    "6": [860, "ÁNGEL", [98, 184, 36], "¿¡Sofía, preguntando por mí!?", "He estado enamorado de ella como desde 3er grado."],
+    "7": [970, "ÁNGEL", [98, 184, 36], "Ya está...", "Tengo que entrar como sea, para poder estar con ella."],
+    "8": [1100, "none", [98, 184, 36], " ", " "],
+    "9": [1270, "ÁNGEL", [98, 184, 36], "Mmm... Creo que hoy es mi día de suerte.", " "],
+    "10": [1500, "none", [98, 184, 36], " ", " "],
+    "11": [1640, "GUARDIA", [238, 24, 65], "¡¡Hey, tú!!", "¿¡A dónde crees que vas!?."],
+    "12": [1820, "none", [98, 184, 36], " ", " "],
+    "13": [1910, "ÁNGEL", [98, 184, 36], "Genial. Si no termino preso, al menos habré hecho un buen", "ejercicio de piernas."],
+    "14": [1950, "ÁNGEL", [98, 184, 36], "Ahora sí.. ¡¡A correr!!.", " "],
+    "15": [2050, "none", [98, 184, 36], " ", " "],
+    "16": [3000, " ", [0, 0, 0], "level_1", "dialog_5_images.json"]
+}

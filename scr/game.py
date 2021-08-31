@@ -124,7 +124,7 @@ class Game:
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
 
-        self.actions["up"] = self.actions["down"] = self.actions["left"] = self.actions["right"] = False
+        self.actions["up"] = self.actions["down"] = self.actions["left"] = self.actions["right"] = self.actions["space"] = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -149,8 +149,6 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.actions["escape"] = True
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
-                    self.actions["space"] = False
                 if event.key == pygame.K_r:
                     self.actions["r"] = False
                 if event.key == pygame.K_ESCAPE:

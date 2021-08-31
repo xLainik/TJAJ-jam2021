@@ -6,6 +6,8 @@ from scr.config.config import levels
 from scr.states.state import State
 from scr.tilemaps.levels import Level_1, Level_2
 
+from scr.states.cutscenes import Cutscene_1, Cutscene_2
+
 from scr.utility.easying import easeOutBack
 
 class Game_world(State):
@@ -17,6 +19,14 @@ class Game_world(State):
         # JSON
         # 0 -> json_data init the level
         # 1 -> dict with all dialogs for the level
+
+        if self.game.current_level == 0:
+            cutscene_1 = Cutscene_1(self.game)
+            cutscene_1.enter_state()
+
+        if self.game.current_level == 2:
+            cutscene_2 = Cutscene_2(self.game)
+            cutscene_2.enter_state()
 
         self.levels = {
             0: Level_1(self.game,

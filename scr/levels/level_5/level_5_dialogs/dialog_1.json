@@ -1,5 +1,5 @@
 {
-    "0": [20, "GUARDIA", [240, 20, 20], "Pensé que llegarías más lejos.", " "],
-    "1": [100, " ", [70, 210, 20], "level_3", "dialog_0_images.json"]
+    "0": [10, "GUARDIA", [238, 24, 65], "Pensé que llegarías más lejos.", " "],
+    "1": [100, " ", [70, 210, 20], "level_0", "dialog_0_images.json"]
 
 }
