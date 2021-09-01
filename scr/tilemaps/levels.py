@@ -159,15 +159,15 @@ class Level_1(Level):
     def __init__(self, game, png_map, png_entities, json_data, dialog_data, level_number) -> None:
         super().__init__(game, png_map, png_entities, json_data, dialog_data, level_number)
 
-        self.game.load_sfx("kick_2.wav", "shaker_2.wav", "clap_2.wav")
+        self.game.load_sfx("kick_1.wav", "shaker_1.wav", "clap_1.wav")
 
-        self.game.all_sfx["kick_2"].set_volume(self.game.sfx_global_volume/100)
-        self.game.all_sfx["shaker_2"].set_volume(0.5 * self.game.sfx_global_volume/100)
-        self.game.all_sfx["clap_2"].set_volume(self.game.sfx_global_volume/100)    
+        self.game.all_sfx["kick_1"].set_volume(self.game.sfx_global_volume/100)
+        self.game.all_sfx["shaker_1"].set_volume(0.5 * self.game.sfx_global_volume/100)
+        self.game.all_sfx["clap_1"].set_volume(self.game.sfx_global_volume/100)    
     
-        clap = self.game.all_sfx["clap_2"]
-        kick = self.game.all_sfx["kick_2"]
-        shaker = self.game.all_sfx["shaker_2"]
+        clap = self.game.all_sfx["clap_1"]
+        kick = self.game.all_sfx["kick_1"]
+        shaker = self.game.all_sfx["shaker_1"]
         
         # First bar: player                         second bar: Guard
         self.drum_beat = [kick, None, shaker, None, clap, None, shaker, None]
@@ -221,8 +221,63 @@ class Level_1(Level):
         super().render()
 
 class Level_2(Level):
-    def __init__(self, game, png_map, png_entities, json_data, dialog_data, lvl_number) -> None:
-        super().__init__(game, png_map, png_entities, json_data, dialog_data, lvl_number)
+    def __init__(self, game, png_map, png_entities, json_data, dialog_data, level_number) -> None:
+        super().__init__(game, png_map, png_entities, json_data, dialog_data, level_number)
+
+        self.game.load_sfx("kick_2.wav", "snare_2.wav", "perc_2.wav")
+
+        self.game.all_sfx["kick_2"].set_volume(0.9 * self.game.sfx_global_volume/100)
+        self.game.all_sfx["snare_2"].set_volume(self.game.sfx_global_volume/100)
+        self.game.all_sfx["perc_2"].set_volume(0.3 * self.game.sfx_global_volume/100)    
+    
+        snare = self.game.all_sfx["snare_2"]
+        kick = self.game.all_sfx["kick_2"]
+        perc = self.game.all_sfx["perc_2"]
+        
+        # First bar: player                         second bar: Guard
+        self.drum_beat = [kick, None, perc, None, snare, None, perc, perc]
+
+        self.BPM = 152
+        self.speed = 20 / (30*self.game.MAX_FPS / self.BPM)
+        self.game.beat_counter = 0
+        
+
+        tilemap = Tilemap()
+
+        self.level_number = level_number
+
+        self.tiles, self.entities, self.dialogs, player_start_x, player_start_y, self.LEVEL_SIZE = tilemap.load_tiles_and_entities(game, self.speed*3, png_map, png_entities, self.json_data, dialog_data, level_number)
+
+        self.tiles_surface = pygame.Surface((self.LEVEL_SIZE))
+
+        self.tiles_surface.set_colorkey((0, 0, 0))
+        self.tiles_surface.fill((0, 0, 0))
+
+        self.entities_surface = pygame.Surface((self.LEVEL_SIZE))
+
+        self.entities_surface.set_colorkey((0, 0, 0))
+        self.entities_surface.fill((0, 0, 0))
+
+        self.guards = pygame.sprite.Group()
+        
+        if self.level_number == self.game.current_level:
+            self.game.player.level_init(player_start_x + 5, player_start_y + 5, self.speed*2, bool(self.json_data["jugador flip"] == "True"))
+            self.entities.add(self.game.player)
+
+        for entity in self.entities:
+            if entity.entity_name != "player" and entity.entity_name != "barrera" and entity.entity_name != "meta" and entity.entity_name != "npc" and entity.entity_name != "mesero" and  entity.entity_name != "guardia":
+                entity.calculate_push(self.entities)
+            elif entity.entity_name == "guardia":
+                if entity.spawn_turn == self.turn_counter:
+                    entity.active = True
+                    entity.create_maze(self.entities, self.game.player.rect)
+                self.guards.add(entity)
+
+        self.camera = Camera(self.game.player, self.tiles_surface, self.game)
+        self.camera_surface = pygame.Surface((self.game.SCREEN_SIZE))
+
+        self.camera_surface.set_colorkey((0, 0, 0))
+        self.camera_surface.fill((0, 0, 0))
 
     def update(self):
         super().update()

@@ -24,7 +24,7 @@ class Game_world(State):
             cutscene_1 = Cutscene_1(self.game)
             cutscene_1.enter_state()
 
-        if self.game.current_level == 5:
+        if self.game.current_level == 7:
             cutscene_2 = Cutscene_2(self.game)
             cutscene_2.enter_state()
 
@@ -41,17 +41,21 @@ class Game_world(State):
                        pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_tiles.png")),
                        pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_entities.png")), levels[2][0], levels[2][1], 2
             ),
-            3: Level_1(self.game,
+            3: Level_2(self.game,
                        pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_tiles.png")),
                        pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_entities.png")), levels[3][0], levels[3][1], 3
             ),
-            4: Level_1(self.game,
+            4: Level_2(self.game,
                        pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_tiles.png")),
                        pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_entities.png")), levels[4][0], levels[4][1], 4
             ),
-            5: Level_1(self.game,
+            5: Level_2(self.game,
                        pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_tiles.png")),
                        pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_entities.png")), levels[5][0], levels[5][1], 5
+            ),
+            6: Level_2(self.game,
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_6", "level_6_tiles.png")),
+                       pygame.image.load(os.path.join(self.game.level_directory, "level_6", "level_6_entities.png")), levels[6][0], levels[6][1], 6
             )
         }
         

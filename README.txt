@@ -9,8 +9,9 @@ Sigue el ritmo de la música y no te dejes atrapar.
 Llega a la puerta para avanzar al siguiente nivel.
 
 Controles:
-WASD ó Flechas de dirección -> Moverse
-Espacio -> Hablar/ Adelantar diálogo
-R -> Reiniciar nivel
+Flechas de dirección    -> Moverse al RITMO
+Espacio                 -> Hablar/ Adelantar diálogo
+R                       -> Reiniciar nivel
+Esc                     -> Saltar todo el diálogo
 
 Gracias por jugar!
