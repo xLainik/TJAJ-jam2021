@@ -6,7 +6,7 @@ from scr.config.config import entities_color_keys
 from scr.config.config import colours
 
 from scr.sprites.tile import Tile
-from scr.sprites.obstacle import Barrier, Table, Box, Guard, Waiter, NPC_0, NPC_2, Goal
+from scr.sprites.obstacle import Barrier, Table, Box, Guard, Waiter, NPC_0, NPC_1, NPC_2, Goal
 
 from scr.dialog import Dialog
 
@@ -28,7 +28,7 @@ class Tilemap():
         guard_counter = 1
         waiter_counter = 1
 
-        game.load_ani_tiles("piso")
+        game.load_ani_tiles("baldosa", "pista")
         game.load_animations("guardia azul", "guardia rojo", "mesero", "meta", "npc 2")
 
         
@@ -36,8 +36,10 @@ class Tilemap():
             for y in range(tilesmap_surface.get_height()):
                 for tile_name, rgb in tiles_color_keys.items():
                     if tile_name != "vacio" and tilesmap_surface.get_at((x,y)) == rgb:
-                        if tile_name == "piso":
-                            tiles.add(Tile([game.all_tiles["piso"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0)))
+                        if tile_name == "pista":
+                            tiles.add(Tile([game.all_tiles["pista"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0)))
+                        if tile_name == "baldosa":
+                            tiles.add(Tile([game.all_tiles["baldosa"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0)))
 
         for x in range(entities_surface.get_width()):
             for y in range(entities_surface.get_height()):
@@ -76,6 +78,8 @@ class Tilemap():
                             waiter_counter += 1
                         if entity_name == "npc 0": # Controles de movimiento
                             entities.add(NPC_0(pygame.image.load(os.path.join("scr", "assets", "images", "invisible.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0,0), "npc", json_data["npc 0 offset"], json_data["npc 0 radio vision"]))
+                        if entity_name == "npc 1": # Reiniciar nivel
+                            entities.add(NPC_1(pygame.image.load(os.path.join("scr", "assets", "images", "invisible.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0,0), "npc", json_data["npc 1 offset"], json_data["npc 1 radio vision"]))
                         if entity_name == "npc 2": # Camarero echando carro
                             flip = bool(json_data["npc 2 flip"] == "True")
                             entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_5"]], json_data["npc 2 radio vision"], json_data["npc 2 offset"], flip))

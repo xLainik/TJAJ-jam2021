@@ -546,7 +546,31 @@ class NPC_0(NPC): # Controles de moverse
     def draw(self, layer):
 ##        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
         if self.popup_active:
-            layer.blit(self.popup, (self.rect.x-2, self.rect.y-24))
+            layer.blit(self.popup, (self.rect.x+4, self.rect.y-40))
+
+    def check_action(self, player_rect):
+        if center_distance(self.rect, player_rect) < self.action_radius:
+            self.popup_active = True
+        else: self.popup_active = False
+
+class NPC_1(NPC): # Controles de moverse
+    def __init__(self, image, x, y, img_offset, entity_name, offset, action_radius):
+        super().__init__(image, x, y, img_offset, entity_name)
+
+        self.action_radius = action_radius
+
+        self.popup = pygame.image.load(os.path.join("scr", "assets", "images", "burbuja 1.png")).convert()
+
+        self.popup_active = False
+        
+        self.rect = pygame.Rect(x + offset[0], y + offset[0], 20, 20)
+
+        self.push_directions = {"left": False, "right": False, "down": False, "up": False}
+
+    def draw(self, layer):
+##        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
+        if self.popup_active:
+            layer.blit(self.popup, (self.rect.x-45, self.rect.y-85))
 
     def check_action(self, player_rect):
         if center_distance(self.rect, player_rect) < self.action_radius:

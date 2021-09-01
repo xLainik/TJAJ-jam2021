@@ -24,7 +24,7 @@ class Game_world(State):
             cutscene_1 = Cutscene_1(self.game)
             cutscene_1.enter_state()
 
-        if self.game.current_level == 2:
+        if self.game.current_level == 5:
             cutscene_2 = Cutscene_2(self.game)
             cutscene_2.enter_state()
 

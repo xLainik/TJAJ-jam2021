@@ -41,6 +41,8 @@ class Dialog():
 
         self.max_timer = list(self.dialog_queue.values())[-1][0]
 
+        self.skip_timer = 500
+
         with open(os.path.join("scr", "levels", "level_" + str(level_number), "level_" + str(level_number) + "_dialog_images", images_json), "r", encoding="utf-8") as dialog_img_json_file:
 
             json_file = json.load(dialog_img_json_file)
@@ -65,6 +67,9 @@ class Dialog():
 
         self.skip_arrow_img = resize(pygame.image.load(os.path.join("scr", "assets", "images", "saltar.png")), self.game.SCALE, 4)
         self.espacio_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 12, "ESPACIO", (255,149,0), True, 380 * self.game.SCALE, 240 * self.game.SCALE, False, self.game.SCALE)
+
+        self.esc_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 12, "ESC para saltar todo.", (255,149,0), True, 10 * self.game.SCALE, 10 * self.game.SCALE, False, self.game.SCALE)
+        self.esc_outline_txt = Text(self.game.high_res_canvas, os.path.join(self.game.font_directory,"hemi head bd it.ttf"), 12, "ESC para saltar todo.", (20, 20, 20), True, 11 * self.game.SCALE, 11 * self.game.SCALE, False, self.game.SCALE)
         
         self.current_line = False
         self.next_line = False
@@ -87,6 +92,8 @@ class Dialog():
             while self.timer < self.max_timer:
                 self.game.get_delta_time()
                 self.game.check_inputs()
+                if self.game.actions["escape"]:
+                    self.timer = self.max_timer
                 if self.timer < self.current_line[0]:
                     self.timer += self.game.delta_time
                 else:
@@ -130,14 +137,18 @@ class Dialog():
                 else:
                     pygame.draw.rect(self.game.high_res_canvas, (20,20,20), self.black_rect)
                     
-                # Skip button
+                # Next button
                 if self.timer >= self.current_line[0]:
                     if self.current_line[1] != "none":
                         pygame.draw.rect(self.game.high_res_canvas, (255,149,0), self.black_rect, width = (2 * self.game.SCALE))
                     self.espacio_txt.update()
                     self.game.high_res_canvas.blit(self.skip_arrow_img, (434 * self.game.SCALE, 240 * self.game.SCALE))
-                    
 
+                # Skip button
+                if self.max_timer > 300 and self.timer < self.skip_timer:
+                    self.esc_outline_txt.update()
+                    self.esc_txt.update()
+                    
                 self.game.screen.blit(self.game.high_res_canvas, (0,0))
 
                 pygame.display.update()
