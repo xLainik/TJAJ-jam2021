@@ -1,7 +1,11 @@
 {
     "jugador flip": "True",
-    "guardia 1 turno spawn": 2,
-    "guardia 1 radio vision": 70,
+    "guardia 1 turno spawn": 4,
+    "guardia 1 radio vision": 110,
     "guardia 1 offset": [0, 20],
-    "guardia 1 flip": "True"
+    "guardia 1 flip": "True",
+    "guardia 2 turno spawn": 0,
+    "guardia 2 radio vision": 70,
+    "guardia 2 offset": [0, 0],
+    "guardia 2 flip": "True"
 }

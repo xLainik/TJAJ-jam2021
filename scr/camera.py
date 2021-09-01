@@ -26,7 +26,6 @@ class Camera:
         if self.level_height + 1 < game.SCREEN_HEIGHT:
             self.vertical_scroll = False
             self.rect.centery = level_surface.get_rect().centery
-        
 
     def update(self, player):
 

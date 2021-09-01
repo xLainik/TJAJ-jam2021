@@ -315,9 +315,9 @@ class Guard(Obstacle):
                     add = ""
                     
                     timer = 0
-                    while timer < 100:
+                    while timer < 300:
                         moves = findEnd(self.maze, add, self.start_x, self.start_y)
-                        if moves != False: timer = 100
+                        if moves != False: timer = 300
                         add = nums.get()
                         for j in ["L", "R", "U", "D"]:
                             put = add + j

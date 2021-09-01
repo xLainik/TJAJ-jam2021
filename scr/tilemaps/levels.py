@@ -208,7 +208,7 @@ class Level_1(Level):
                     entity.create_maze(self.entities, self.game.player.rect)
                 self.guards.add(entity)
 
-        self.camera = Camera(self.game.player, self.tiles_surface, self.game)
+        self.camera = Camera(self.game.player, self.entities_surface, self.game)
         self.camera_surface = pygame.Surface((self.game.SCREEN_SIZE))
 
         self.camera_surface.set_colorkey((0, 0, 0))
