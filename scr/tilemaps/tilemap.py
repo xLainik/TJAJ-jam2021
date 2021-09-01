@@ -68,14 +68,17 @@ class Tilemap():
                                                                                                                                                                                           dialogs["dialog_4"]], spawn, radius, offset, speed, flip))
                             guard_counter += 1
                         if entity_name == "mesero vertical":
-                            direction = json_data["mesero " + str(waiter_counter) + " direccion"]
-                            entities.add(Waiter([game.all_animations["mesero"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "mesero", "vertical", direction, speed, flip))
+                            direction_v = json_data["mesero " + str(waiter_counter) + " direccion"]
+                            flip_v = bool(json_data["mesero " + str(waiter_counter) + " flip"] == "True")
+                            entities.add(Waiter([game.all_animations["mesero"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "mesero", "vertical", direction_v, speed, flip_v))
                             waiter_counter += 1
+##                            print(str(lvl_number), "vertical", str(x), str(y), direction_v)
                         if entity_name == "mesero horizontal":
-                            direction = json_data["mesero " + str(waiter_counter) + " direccion"]
-                            flip = bool(json_data["mesero " + str(waiter_counter) + " flip"] == "True")
-                            entities.add(Waiter([game.all_animations["mesero"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "mesero", "horizontal", direction, speed, flip))
+                            direction_h = json_data["mesero " + str(waiter_counter) + " direccion"]
+                            flip_h = bool(json_data["mesero " + str(waiter_counter) + " flip"] == "True")
+                            entities.add(Waiter([game.all_animations["mesero"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "mesero", "horizontal", direction_h, speed, flip_h))
                             waiter_counter += 1
+##                            print(str(lvl_number), "horizontal", str(x), str(y), direction_h)
                         if entity_name == "npc 0": # Controles de movimiento
                             entities.add(NPC_0(pygame.image.load(os.path.join("scr", "assets", "images", "invisible.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0,0), "npc", json_data["npc 0 offset"], json_data["npc 0 radio vision"]))
                         if entity_name == "npc 1": # Reiniciar nivel

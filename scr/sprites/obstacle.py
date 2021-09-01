@@ -251,6 +251,8 @@ class Guard(Obstacle):
 
         self.speed = speed
 
+        self.player_state = "never"
+
         self.spawn_turn = spawn
 
         self.active = False
@@ -293,14 +295,16 @@ class Guard(Obstacle):
 
     def enter_turn(self, entities, player_rect):
         if self.active:
-            
-            self.create_maze(entities, player_rect)
-
             self.circle_color = colours["light gray"]
             moves = True
             
-            if center_distance(self.rect, player_rect) < self.circle_radius:
+            if self.player_state != "escaped" and center_distance(self.rect, player_rect) <= self.circle_radius:
 
+                self.create_maze(entities, player_rect)
+                
+                if self.player_state == "never":
+                    self.player_state = "chase"
+                
                 if len(self.maze[0]) == 1:
                     for tile in self.maze:
                         if tile[0] == "#":
@@ -309,25 +313,36 @@ class Guard(Obstacle):
                     for tile in self.maze[0]:
                         if tile == "#":
                             moves = False
+                    
                 if moves == True:
                     nums = queue.Queue()
                     nums.put("")
                     add = ""
                     
                     timer = 0
-                    while timer < 300:
+                    while timer < 80:
                         moves = findEnd(self.maze, add, self.start_x, self.start_y)
-                        if moves != False: timer = 300
+                        if moves != False: timer = 80
                         add = nums.get()
                         for j in ["L", "R", "U", "D"]:
                             put = add + j
                             if valid(self.maze, put, self.start_x, self.start_y):
                                 nums.put(put)
                         timer += 1
+
+            else:
+                if self.player_state == "chase":
+                    self.player_state = "escaped"
+                    self.circle_radius = ((center_distance(self.rect, player_rect)//20) * 20) - 20
+                    
             if type(moves) == bool or len(moves) == 0:
                 self.current_ani = self.animations[0]
                 if moves == False:
                     self.circle_color = colours["green"]
+                    if center_distance(self.rect, player_rect) > self.circle_radius:
+                        if self.player_state == "chase":
+                            self.player_state = "escaped"
+                            self.circle_radius = ((center_distance(self.rect, player_rect)//20) * 20) - 20
                 self.moves = False
             else:
                 self.current_ani = self.animations[1]
@@ -480,7 +495,7 @@ class Waiter(Obstacle):
             hit_list = pygame.sprite.spritecollide(self, entities, False)
 
             for entity in hit_list:
-                if not(entity is self) and entity.entity_name != "player":
+                if not(entity is self):
                     if self.speed_x > 0:
                         self.rect.right = entity.rect.left
                         self.collision_directions["right"] = True
@@ -495,7 +510,7 @@ class Waiter(Obstacle):
             hit_list = pygame.sprite.spritecollide(self, entities, False)
             
             for entity in hit_list:
-                if not(entity is self) and entity.entity_name != "player":
+                if not(entity is self):
                     if self.speed_y > 0:
                         self.rect.bottom = entity.rect.top
                         self.collision_directions["bottom"] = True
