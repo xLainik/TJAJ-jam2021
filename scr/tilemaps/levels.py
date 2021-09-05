@@ -59,6 +59,7 @@ class Level():
                 self.game.play_beat = True
                 pygame.time.set_timer(self.game.BEAT_EVENT, int((60/self.BPM)*1000/4))
                 self.timer_active = True
+                self.melody_music.play(-1)
         
         if self.game.beat_counter == 3:
             # Enter the Guards turn
@@ -102,12 +103,15 @@ class Level():
 
         for key, dialog in self.dialogs.items():
             if dialog.active:
+                if self.game.player.dead:
+                    self.melody_music.stop()
                 dialog.update()
                 if self.game.player.dead:
                     break
 
         # Condición de perder
         if self.game.player.dead:
+            self.melody_music.stop()
             self.game.player.miss_beat = False
             self.game.enter_beat = False
             self.game.play_beat = False
@@ -161,9 +165,15 @@ class Level_1(Level):
 
         self.game.load_sfx("kick_1.wav", "shaker_1.wav", "clap_1.wav")
 
-        self.game.all_sfx["kick_1"].set_volume(self.game.sfx_global_volume/100)
+        self.game.load_music("melodia 1.ogg")
+
+        self.game.all_music["melodia 1"].set_volume(self.game.music_global_volume/100)
+
+        self.melody_music = self.game.all_music["melodia 1"]
+
+        self.game.all_sfx["kick_1"].set_volume(0.8 * self.game.sfx_global_volume/100)
         self.game.all_sfx["shaker_1"].set_volume(0.5 * self.game.sfx_global_volume/100)
-        self.game.all_sfx["clap_1"].set_volume(self.game.sfx_global_volume/100)    
+        self.game.all_sfx["clap_1"].set_volume(0.6 * self.game.sfx_global_volume/100)    
     
         clap = self.game.all_sfx["clap_1"]
         kick = self.game.all_sfx["kick_1"]
@@ -226,16 +236,22 @@ class Level_2(Level):
 
         self.game.load_sfx("kick_2.wav", "snare_2.wav", "perc_2.wav")
 
-        self.game.all_sfx["kick_2"].set_volume(0.9 * self.game.sfx_global_volume/100)
-        self.game.all_sfx["snare_2"].set_volume(self.game.sfx_global_volume/100)
-        self.game.all_sfx["perc_2"].set_volume(0.3 * self.game.sfx_global_volume/100)    
+        self.game.all_sfx["kick_2"].set_volume(0.8 * self.game.sfx_global_volume/100)
+        self.game.all_sfx["snare_2"].set_volume(0.8 * self.game.sfx_global_volume/100)
+        self.game.all_sfx["perc_2"].set_volume(0.2 * self.game.sfx_global_volume/100)    
     
         snare = self.game.all_sfx["snare_2"]
         kick = self.game.all_sfx["kick_2"]
         perc = self.game.all_sfx["perc_2"]
+
+        self.game.load_music("melodia 2.ogg")
+
+        self.game.all_music["melodia 2"].set_volume(self.game.music_global_volume/100)
+
+        self.melody_music = self.game.all_music["melodia 2"]
         
         # First bar: player                         second bar: Guard
-        self.drum_beat = [kick, None, perc, None, snare, None, perc, perc]
+        self.drum_beat = [kick, None, perc, None, snare, perc, None, perc]
 
         self.BPM = 152
         self.speed = 20 / (30*self.game.MAX_FPS / self.BPM)

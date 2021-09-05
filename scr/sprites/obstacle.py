@@ -3,7 +3,7 @@ import queue
 
 from scr.utility.bfs_pathfinding import findEnd, valid
 
-from scr.utility.useful import center_distance
+from scr.utility.useful import center_distance, point_distance
 
 from scr.config.config import colours
 
@@ -270,7 +270,7 @@ class Guard(Obstacle):
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
         self.maze = []
-        self.moves = False
+        self.move = False
 
         self.circle_color = colours["light gray"]
         self.circle_radius = radius
@@ -288,89 +288,128 @@ class Guard(Obstacle):
             if entity.rect.centerx in range(border_x[0], border_x[1] + 1) and entity.rect.centery in range(border_y[0], border_y[1] + 1):
                 if entity is self:
                     self.maze[(entity.rect.y - border_y[0])//20][(entity.rect.x - border_x[0])//20] = "O"
-                    self.start_y, self.start_x = (entity.rect.y - border_y[0])//20, (entity.rect.x - border_x[0])//20
+                    start_y, start_x = (entity.rect.y - border_y[0])//20, (entity.rect.x - border_x[0])//20
                 elif entity.entity_name == "player":
                     self.maze[round((entity.rect.y - border_y[0])/20)][round((entity.rect.x - border_x[0])/20)] = "X"
                 else: self.maze[round((entity.rect.y - border_y[0])/20)][round((entity.rect.x - border_x[0])/20)] = "#"
 
+    def select_move(self, entities, player_rect):
+
+        moves = [True, True, True, True] # right, left, down, up
+
+        # Player is right
+        if self.rect.left < player_rect.left - 5:
+            moves[1] = False
+        else: moves[0] = False
+
+        # Player is down
+        if self.rect.top < player_rect.top - 5:
+            moves[3] = False
+        else: moves[2] = False
+
+        for entity in entities:
+            if not(entity is self) and entity.entity_name != "player":
+                if (entity.rect.centerx in range(self.rect.centerx - 30, self.rect.centerx + 31)) and (entity.rect.centery in range(self.rect.centery - 30, self.rect.centery + 31)):
+                    # blocking is on left
+                    if entity.rect.collidepoint((self.rect.centerx - 20, self.rect.centery)):
+                        moves[1] = False
+                        # player is horizontally allign
+                        if self.rect.top - (player_rect.top - 5) < 10:
+                            moves[2], moves[3] = False, False
+                    # blocking is on right
+                    elif entity.rect.collidepoint((self.rect.centerx + 20, self.rect.centery)):
+                        moves[0] = False
+                        # player is horizontally allign
+                        if self.rect.top - (player_rect.top - 5) < 10:
+                            moves[2], moves[3] = False, False
+                    # blocking is on top
+                    elif entity.rect.collidepoint((self.rect.centerx, self.rect.centery - 20)):
+                        moves[3] = False
+                        # player is vertically allign
+                        if self.rect.x - (player_rect.x - 5) < 10:
+                            moves[0], moves[1] = False, False
+                    # blocking is on bottom
+                    elif entity.rect.collidepoint((self.rect.centerx, self.rect.centery + 20)):
+                        moves[2] = False
+                        # player is vertically allign
+                        if self.rect.x - (player_rect.x - 5) < 10:
+                            moves[0], moves[1] = False, False
+
+        right_dist, left_dist, down_dist, up_dist = 10000, 10000, 10000, 10000
+        
+        if moves[0]:
+            right_dist = point_distance(player_rect.center, (self.rect.centerx + 20, self.rect.centery))
+        elif moves[1]:
+            left_dist = point_distance(player_rect.center, (self.rect.centerx - 20, self.rect.centery))
+        if moves[2]:
+            down_dist = point_distance(player_rect.center, (self.rect.centerx, self.rect.centery + 20))
+        elif moves[3]:
+            up_dist = point_distance(player_rect.center, (self.rect.centerx, self.rect.centery - 20))
+
+        distances = [right_dist, left_dist, down_dist, up_dist]
+
+        distances.sort()
+
+        if moves[0] and distances[0] == right_dist:
+            return "R"
+        elif moves[1] and distances[0] == left_dist:
+            return "L"
+        elif moves[2] and distances[0] == down_dist:
+            return "D"
+        elif moves[3] and distances[0] == up_dist:
+            return "U"
+
+        return False
+                
+
     def enter_turn(self, entities, player_rect):
         if self.active:
             self.circle_color = colours["light gray"]
-            moves = True
+            self.move = False
             
             if self.player_state != "escaped" and center_distance(self.rect, player_rect) <= self.circle_radius:
 
-                self.create_maze(entities, player_rect)
+                self.move = self.select_move(entities, player_rect)
                 
-                if self.player_state == "never":
-                    self.player_state = "chase"
-                
-                if len(self.maze[0]) == 1:
-                    for tile in self.maze:
-                        if tile[0] == "#":
-                            moves = False
-                elif len(self.maze) == 1:
-                    for tile in self.maze[0]:
-                        if tile == "#":
-                            moves = False
-                    
-                if moves == True:
-                    nums = queue.Queue()
-                    nums.put("")
-                    add = ""
-                    
-                    timer = 0
-                    while timer < 80:
-                        moves = findEnd(self.maze, add, self.start_x, self.start_y)
-                        if moves != False: timer = 80
-                        add = nums.get()
-                        for j in ["L", "R", "U", "D"]:
-                            put = add + j
-                            if valid(self.maze, put, self.start_x, self.start_y):
-                                nums.put(put)
-                        timer += 1
-
             else:
                 if self.player_state == "chase":
                     self.player_state = "escaped"
                     self.circle_radius = ((center_distance(self.rect, player_rect)//20) * 20) - 20
                     
-            if type(moves) == bool or len(moves) == 0:
+            if self.move == False:
                 self.current_ani = self.animations[0]
-                if moves == False:
-                    self.circle_color = colours["green"]
-                    if center_distance(self.rect, player_rect) > self.circle_radius:
-                        if self.player_state == "chase":
-                            self.player_state = "escaped"
-                            self.circle_radius = ((center_distance(self.rect, player_rect)//20) * 20) - 20
-                self.moves = False
+                self.circle_color = colours["green"]
+                
+                if center_distance(self.rect, player_rect) > self.circle_radius:
+                    if self.player_state == "chase":
+                        self.player_state = "escaped"
+                        self.circle_radius = ((center_distance(self.rect, player_rect)//20) * 20) - 20
             else:
                 self.current_ani = self.animations[1]
-                self.moves = tuple(moves)
 
-                self.direction = moves[0]
+                self.direction = self.move
 
                 self.circle_color = colours["red"]
                 
-                if self.moves[0] == "R":
+                if self.move == "R":
                     self.speed_x = self.speed
                     self.moving = True
                     self.move_destination = self.rect.x + 20, self.rect.y
-                elif self.moves[0] == "L":
+                elif self.move == "L":
                     self.speed_x = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x - 20, self.rect.y
-                elif self.moves[0] == "D":
+                elif self.move == "D":
                     self.speed_y = self.speed
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y + 20
-                elif self.moves[0] == "U":
+                elif self.move == "U":
                     self.speed_y = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y - 20
 
     def update(self, entities, delta_time):
-        if self.moves != False:
+        if self.move != False:
             
             # grid movement
             if self.moving:
