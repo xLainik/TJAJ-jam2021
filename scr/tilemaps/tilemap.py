@@ -63,9 +63,10 @@ class Tilemap():
                             spawn = json_data["guardia " + str(guard_counter) + " turno spawn"]
                             radius = json_data["guardia " + str(guard_counter) + " radio vision"]
                             offset = json_data["guardia " + str(guard_counter) + " offset"]
+                            trail = json_data["guardia " + str(guard_counter) + " max trail"]
                             flip = bool(json_data["guardia " + str(guard_counter) + " flip"] == "True")
                             entities.add(Guard([game.all_animations["guardia azul"], game.all_animations["guardia rojo"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "guardia", [dialogs["dialog_0"], dialogs["dialog_1"],
-                                                                                                                                                                                          dialogs["dialog_4"]], spawn, radius, offset, speed, flip))
+                                                                                                                                                                                          dialogs["dialog_4"]], spawn, radius, offset, trail, speed, flip))
                             guard_counter += 1
                         if entity_name == "mesero vertical":
                             direction_v = json_data["mesero " + str(waiter_counter) + " direccion"]

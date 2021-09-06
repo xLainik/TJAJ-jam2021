@@ -244,14 +244,12 @@ class Box(Obstacle):
         layer.blit(self.image, (self.rect.x, self.rect.y))
 
 class Guard(Obstacle):
-    def __init__(self, image, x, y, img_offset, entity_name, dialogs, spawn, radius, offset, speed, flip):
+    def __init__(self, image, x, y, img_offset, entity_name, dialogs, spawn, radius, offset, max_trail, speed, flip):
         super().__init__(image, x, y, img_offset, entity_name)
 
         self.dialogs = dialogs
 
         self.speed = speed
-
-        self.player_state = "never"
 
         self.spawn_turn = spawn
 
@@ -260,7 +258,13 @@ class Guard(Obstacle):
         self.rect = pygame.Rect(x + offset[0], y + offset[1], 20, 20)
         self.x, self.y = float(self.rect.x), float(self.rect.y)
 
-        self.direction = "R"
+        self.player_state = "never"
+
+        self.player_pos = []
+        self.last_player_pos = self.rect.center
+        self.directions = []
+
+        self.max_trail = max_trail
 
         self.speed_x, self.speed_y = 0, 0
         self.moving = False
@@ -300,12 +304,23 @@ class Guard(Obstacle):
         # Player is right
         if self.rect.left < player_rect.left - 5:
             moves[1] = False
-        else: moves[0] = False
+        elif self.rect.left > player_rect.left - 5:
+            moves[0] = False
+        elif len(self.directions) > 0:
+            for direction in reversed(self.directions):
+                moves[0] = not(direction == "L")
+                moves[1] = not(direction == "R")
+        
 
         # Player is down
         if self.rect.top < player_rect.top - 5:
             moves[3] = False
-        else: moves[2] = False
+        elif self.rect.top > player_rect.top - 5:
+            moves[2] = False
+        elif len(self.directions) > 0:
+            for direction in reversed(self.directions):
+                moves[2] = not(direction == "U")
+                moves[3] = not(direction == "D")
 
         for entity in entities:
             if not(entity is self) and entity.entity_name != "player":
@@ -313,37 +328,25 @@ class Guard(Obstacle):
                     # blocking is on left
                     if entity.rect.collidepoint((self.rect.centerx - 20, self.rect.centery)):
                         moves[1] = False
-                        # player is horizontally allign
-                        if self.rect.top - (player_rect.top - 5) < 10:
-                            moves[2], moves[3] = False, False
                     # blocking is on right
                     elif entity.rect.collidepoint((self.rect.centerx + 20, self.rect.centery)):
                         moves[0] = False
-                        # player is horizontally allign
-                        if self.rect.top - (player_rect.top - 5) < 10:
-                            moves[2], moves[3] = False, False
                     # blocking is on top
                     elif entity.rect.collidepoint((self.rect.centerx, self.rect.centery - 20)):
                         moves[3] = False
-                        # player is vertically allign
-                        if self.rect.x - (player_rect.x - 5) < 10:
-                            moves[0], moves[1] = False, False
                     # blocking is on bottom
                     elif entity.rect.collidepoint((self.rect.centerx, self.rect.centery + 20)):
                         moves[2] = False
-                        # player is vertically allign
-                        if self.rect.x - (player_rect.x - 5) < 10:
-                            moves[0], moves[1] = False, False
 
         right_dist, left_dist, down_dist, up_dist = 10000, 10000, 10000, 10000
         
         if moves[0]:
             right_dist = point_distance(player_rect.center, (self.rect.centerx + 20, self.rect.centery))
-        elif moves[1]:
+        if moves[1]:
             left_dist = point_distance(player_rect.center, (self.rect.centerx - 20, self.rect.centery))
         if moves[2]:
             down_dist = point_distance(player_rect.center, (self.rect.centerx, self.rect.centery + 20))
-        elif moves[3]:
+        if moves[3]:
             up_dist = point_distance(player_rect.center, (self.rect.centerx, self.rect.centery - 20))
 
         distances = [right_dist, left_dist, down_dist, up_dist]
@@ -361,34 +364,50 @@ class Guard(Obstacle):
 
         return False
                 
-
     def enter_turn(self, entities, player_rect):
         if self.active:
+            
             self.circle_color = colours["light gray"]
             self.move = False
+
+            self.player_pos.append((player_rect.centerx, player_rect.centery))
+            if len(self.player_pos) > self.max_trail:
+                self.player_pos.pop(0)
             
-            if self.player_state != "escaped" and center_distance(self.rect, player_rect) <= self.circle_radius:
+            # Check obstacles that can block vision towards the player
+            if center_distance(self.rect, player_rect) <= self.circle_radius:
+                # Create the rectangular area between player and guard
+                border_x = min(self.rect.left, player_rect.left - 5), max(self.rect.right, player_rect.right + 5)
+                border_y = min(self.rect.top, player_rect.top - 5), max(self.rect.bottom, player_rect.bottom + 5)
 
+                self.player_state = "chase"
+
+                self.last_player_pos = player_rect.center
+
+                for entity in entities:
+                    if not(entity is self) and entity.entity_name != "player":
+                        if entity.rect.centerx in range(border_x[0], border_x[1] + 1) and entity.rect.centery in range(border_y[0], border_y[1] + 1):
+                            if len(self.player_pos) > 1:
+                                if entity.rect.clipline(self.rect.center, self.player_pos[0]) != () and entity.rect.clipline(self.rect.center, self.player_pos[-1]) != ():
+                                    self.player_state = "hidden"
+                                    break
+                            else:
+                                if entity.rect.clipline(self.rect.center, player_rect.center) != ():
+                                    self.player_state = "hidden"
+                                    break
+            else:
+                self.player_state = "outside"
+                self.player_pos = []
+                self.directions = []
+            
+            if self.player_state == "chase":
                 self.move = self.select_move(entities, player_rect)
-                
-            else:
-                if self.player_state == "chase":
-                    self.player_state = "escaped"
-                    self.circle_radius = ((center_distance(self.rect, player_rect)//20) * 20) - 20
-                    
-            if self.move == False:
-                self.current_ani = self.animations[0]
-                self.circle_color = colours["green"]
-                
-                if center_distance(self.rect, player_rect) > self.circle_radius:
-                    if self.player_state == "chase":
-                        self.player_state = "escaped"
-                        self.circle_radius = ((center_distance(self.rect, player_rect)//20) * 20) - 20
-            else:
+
+                self.directions.append(self.move)
+                if len(self.directions) > self.max_trail:
+                    self.directions.pop(0)
+
                 self.current_ani = self.animations[1]
-
-                self.direction = self.move
-
                 self.circle_color = colours["red"]
                 
                 if self.move == "R":
@@ -407,6 +426,17 @@ class Guard(Obstacle):
                     self.speed_y = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x, self.rect.y - 20
+            else:
+                self.current_ani = self.animations[0]
+                if self.player_state == "hidden":
+                    self.circle_color = colours["green"]
+                    self.player_pos = []
+                    self.directions = []
+
+        else:
+            self.player_pos.append((player_rect.centerx, player_rect.centery))
+            if len(self.player_pos) > self.max_trail:
+                self.player_pos.pop(0)
 
     def update(self, entities, delta_time):
         if self.move != False:
@@ -445,8 +475,18 @@ class Guard(Obstacle):
                
     def draw(self, layer):
         if self.active:
-            layer.blit(self.image, self.rect)
             pygame.draw.circle(layer, self.circle_color, self.rect.center, self.circle_radius, width = 3)
+            if self.player_state != "outside" and self.player_state != "never":
+                if len(self.player_pos) > 1:
+                    if point_distance(self.rect.center, self.player_pos[-1]) >= point_distance(self.player_pos[0], self.player_pos[-1]):
+                        pygame.draw.line(layer, colours["yellow"], self.rect.center, self.player_pos[0], width=2)
+                        pygame.draw.line(layer, colours["yellow"], self.player_pos[0], self.player_pos[-1], width=2)
+                    else:
+                        pygame.draw.line(layer, self.circle_color, self.rect.center, self.player_pos[-1], width=2)
+                else:
+                    pygame.draw.line(layer, self.circle_color, self.rect.center, self.last_player_pos, width=2)
+
+            layer.blit(self.image, self.rect)
 
 class Waiter(Obstacle):
     def __init__(self, image, x, y, img_offset, entity_name, orientation, direction, speed, flip):

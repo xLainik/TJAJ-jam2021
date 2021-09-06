@@ -3,5 +3,6 @@
     "guardia 1 turno spawn": 2,
     "guardia 1 radio vision": 70,
     "guardia 1 offset": [0, 20],
+    "guardia 1 max trail": 3,
     "guardia 1 flip": "True"
 }

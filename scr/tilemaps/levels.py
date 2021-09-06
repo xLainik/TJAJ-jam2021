@@ -87,7 +87,6 @@ class Level():
                 elif guard.spawn_turn == self.turn_counter:
                     guard.active = True
                     guard.create_maze(self.entities, self.game.player.rect)
-
             self.player_enter_turn = False
             
 
@@ -237,8 +236,8 @@ class Level_2(Level):
         self.game.load_sfx("kick_2.wav", "snare_2.wav", "perc_2.wav")
 
         self.game.all_sfx["kick_2"].set_volume(0.8 * self.game.sfx_global_volume/100)
-        self.game.all_sfx["snare_2"].set_volume(0.8 * self.game.sfx_global_volume/100)
-        self.game.all_sfx["perc_2"].set_volume(0.2 * self.game.sfx_global_volume/100)    
+        self.game.all_sfx["snare_2"].set_volume(self.game.sfx_global_volume/100)
+        self.game.all_sfx["perc_2"].set_volume(0.3 * self.game.sfx_global_volume/100)    
     
         snare = self.game.all_sfx["snare_2"]
         kick = self.game.all_sfx["kick_2"]

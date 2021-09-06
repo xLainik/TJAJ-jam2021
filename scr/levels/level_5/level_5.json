@@ -1,8 +1,9 @@
 {
     "jugador flip": "True",
     "guardia 1 turno spawn": 0,
-    "guardia 1 radio vision": 90,
+    "guardia 1 radio vision": 110,
     "guardia 1 offset": [0, 0],
+    "guardia 1 max trail": 4,
     "guardia 1 flip": "True",
     "mesero 1 direccion": "derecha",
     "mesero 2 direccion": "abajo",
@@ -10,8 +11,9 @@
     "mesero 1 flip": "True",
     "mesero 2 flip": "True",
     "mesero 3 flip": "True",
-    "guardia 2 turno spawn": 3,
+    "guardia 2 turno spawn": 2,
     "guardia 2 radio vision": 90,
     "guardia 2 offset": [0, 20],
+    "guardia 2 max trail": 5,
     "guardia 2 flip": "True"
 }

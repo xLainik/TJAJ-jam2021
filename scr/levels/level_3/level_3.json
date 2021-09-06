@@ -1,7 +1,8 @@
 {
     "jugador flip": "True",
-    "guardia 1 turno spawn": 3,
-    "guardia 1 radio vision": 90,
+    "guardia 1 turno spawn": 6,
+    "guardia 1 radio vision": 130,
     "guardia 1 offset": [0, 20],
+    "guardia 1 max trail": 6,
     "guardia 1 flip": "True"
 }

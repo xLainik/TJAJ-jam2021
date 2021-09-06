@@ -3,6 +3,7 @@
     "guardia 1 turno spawn": 4,
     "guardia 1 radio vision": 70,
     "guardia 1 offset": [0, 0],
+    "guardia 1 max trail": 3,
     "guardia 1 flip": "False",
     "mesero 1 direccion": "arriba",
     "mesero 1 flip": "True",
