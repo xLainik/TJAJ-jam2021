@@ -4,7 +4,7 @@ from scr.config.config import colours
 from scr.config.config import levels
 
 from scr.states.state import State
-from scr.tilemaps.levels import Level_1, Level_2
+from scr.tilemaps.levels import Level_1, Level_2, Level_3
 
 from scr.states.cutscenes import Cutscene_1, Cutscene_2
 
@@ -28,38 +28,57 @@ class Game_world(State):
             cutscene_2 = Cutscene_2(self.game)
             cutscene_2.enter_state()
 
-        self.levels = {
-            0: Level_1(self.game,
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_entities.png")), levels[0][0], levels[0][1], 0
-            ),
-            1: Level_1(self.game,
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_1", "level_1_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_1", "level_1_entities.png")), levels[1][0], levels[1][1], 1
-            ),
-            2: Level_1(self.game,
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_entities.png")), levels[2][0], levels[2][1], 2
-            ),
-            3: Level_2(self.game,
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_entities.png")), levels[3][0], levels[3][1], 3
-            ),
-            4: Level_2(self.game,
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_entities.png")), levels[4][0], levels[4][1], 4
-            ),
-            5: Level_2(self.game,
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_entities.png")), levels[5][0], levels[5][1], 5
-            ),
-            6: Level_2(self.game,
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_6", "level_6_tiles.png")),
-                       pygame.image.load(os.path.join(self.game.level_directory, "level_6", "level_6_entities.png")), levels[6][0], levels[6][1], 6
-            )
-        }
-        
-        self.change_level(self.levels[self.game.current_level])
+        if self.game.current_level in [1, 2]:
+            self.current_level = Level_1(self.game,
+                                         pygame.image.load(os.path.join(self.game.level_directory, "level_" + str(self.game.current_level), "level_" + str(self.game.current_level) + "_tiles.png")),
+                                         pygame.image.load(os.path.join(self.game.level_directory, "level_" + str(self.game.current_level), "level_" + str(self.game.current_level) + "_entities.png")),
+                                         levels[self.game.current_level][0], levels[self.game.current_level][1], self.game.current_level
+                                         )
+
+        if self.game.current_level in [3, 4]:
+            self.current_level = Level_3(self.game,
+                                         pygame.image.load(os.path.join(self.game.level_directory, "level_" + str(self.game.current_level), "level_" + str(self.game.current_level) + "_tiles.png")),
+                                         pygame.image.load(os.path.join(self.game.level_directory, "level_" + str(self.game.current_level), "level_" + str(self.game.current_level) + "_entities.png")),
+                                         levels[self.game.current_level][0], levels[self.game.current_level][1], self.game.current_level
+                                         )
+
+        if self.game.current_level in [5, 6]:
+            self.current_level = Level_2(self.game,
+                                         pygame.image.load(os.path.join(self.game.level_directory, "level_" + str(self.game.current_level), "level_" + str(self.game.current_level) + "_tiles.png")),
+                                         pygame.image.load(os.path.join(self.game.level_directory, "level_" + str(self.game.current_level), "level_" + str(self.game.current_level) + "_entities.png")),
+                                         levels[self.game.current_level][0], levels[self.game.current_level][1], self.game.current_level
+                                         )
+
+##        self.levels = {
+##            0: Level_1(self.game,
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_tiles.png")),
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_entities.png")), levels[0][0], levels[0][1], 0
+##            ),
+##            1: Level_1(self.game,
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_1", "level_1_tiles.png")),
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_1", "level_1_entities.png")), levels[1][0], levels[1][1], 1
+##            ),
+##            2: Level_3(self.game,
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_tiles.png")),
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_2", "level_2_entities.png")), levels[2][0], levels[2][1], 2
+##            ),
+##            3: Level_3(self.game,
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_tiles.png")),
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_3", "level_3_entities.png")), levels[3][0], levels[3][1], 3
+##            ),
+##            4: Level_3(self.game,
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_tiles.png")),
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_4", "level_4_entities.png")), levels[4][0], levels[4][1], 4
+##            ),
+##            5: Level_2(self.game,
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_tiles.png")),
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_5", "level_5_entities.png")), levels[5][0], levels[5][1], 5
+##            ),
+##            6: Level_2(self.game,
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_6", "level_6_tiles.png")),
+##                       pygame.image.load(os.path.join(self.game.level_directory, "level_6", "level_6_entities.png")), levels[6][0], levels[6][1], 6
+##            )
+##        }
         
         
     def change_level(self, new_level):

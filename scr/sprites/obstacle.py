@@ -600,17 +600,20 @@ class Waiter(Obstacle):
 
         if self.orientation == "horizontal":
             if self.collision_directions["left"] or self.collision_directions["right"]:
+                if abs(self.rect.x - self.move_destination[0]) > 8:
+                    self.speed_x *= -1
+                    if self.direction == "L": self.direction = "R"
+                    else: self.direction = "L"
                 self.move_destination = (round(self.rect.x/20) * 20), self.rect.y
-                self.speed_x *= -1
-                if self.direction == "L": self.direction = "R"
-                else: self.direction = "L"
 
         if self.orientation == "vertical":    
             if self.collision_directions["top"] or self.collision_directions["bottom"]:
+                if abs(self.rect.y - self.move_destination[1]) > 8:
+                    self.speed_y *= -1
+                    if self.direction == "D": self.direction = "U"
+                    else: self.direction = "D"
                 self.move_destination = self.rect.x, (round(self.rect.y/20) * 20)
-                self.speed_y *= -1
-                if self.direction == "D": self.direction = "U"
-                else: self.direction = "D"
+                
     
     def draw(self, layer):
         layer.blit(self.image, (self.rect.x, self.rect.y))

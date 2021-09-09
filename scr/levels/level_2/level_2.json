@@ -8,9 +8,9 @@
     "guardia 2 turno spawn": 3,
     "guardia 2 radio vision": 90,
     "guardia 2 offset": [0, 20],
-    "guardia 2 max trail": 3,
+    "guardia 2 max trail": 2,
     "guardia 2 flip": "True",
-    "npc 1 radio vision": 90,
+    "npc 1 radio vision": 130,
     "npc 1 offset": [0, 0]
     
 }
