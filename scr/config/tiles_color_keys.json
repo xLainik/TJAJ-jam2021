@@ -1,8 +1,11 @@
 {
     "vacio": [0, 0, 0],
     "baldosa": [107, 160, 191],
-    "pista": [230, 205, 105],
     "estante 1": [184, 170, 124],
     "estante 2": [20, 20, 20],
-    "estante 2 flip": [20, 20, 20]
+    "estante 2 flip": [20, 20, 20],
+    "muchedumbre": [47, 133, 200],
+    "pista amarilla": [230, 205, 105],
+    "pista verde": [105, 230, 108],
+    "pista morada": [175, 71, 222]
 }

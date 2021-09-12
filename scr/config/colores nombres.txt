@@ -1,12 +1,10 @@
-guardia 238, 24, 65
-angel 98, 184, 36
-celular 95, 95, 236
-sofía 250, 170, 67
+guardia 238, 24, 65 (rojo)
+angel 98, 184, 36 (verde)
+celular 95, 95, 236 (azul)
+sofía 250, 170, 67 (amarillo)
 
-
-amarillo 250, 170, 67
-rosa 255, 139, 151
-morado 202, 62, 203
-cyan 86, 207, 222
-marron claro 189, 56, 43
-verde claro 201, 22, 62
+Juan 189, 56, 43 (marron claro)
+Emma 201, 22, 62 (verde claro)
+Ariadna 86, 207, 222 (cyan)
+Saul 255, 139, 151 (rosa)
+Oscar 202, 62, 203 (morado)

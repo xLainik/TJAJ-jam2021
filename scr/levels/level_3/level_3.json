@@ -4,5 +4,8 @@
     "guardia 1 radio vision": 130,
     "guardia 1 offset": [0, 20],
     "guardia 1 max trail": 6,
-    "guardia 1 flip": "True"
+    "guardia 1 flip": "True",
+    "npc juan flip": "False",
+    "npc juan radio vision": 30,
+    "npc juan offset": [0, 0]
 }

@@ -1,0 +1,7 @@
+{
+    "0": [200, "ÁNGEL", [98, 184, 36], "Hey. Disculpa.", "¿Sabes como llegar a la mesa de ber?."],
+    "1": [400, "CAMARERO", [189, 56, 43], "Uff. Al final de toda la pista de baile, es demaciado larga.", "¿Por qué entraste por aquí?, es la vía más larga..."],
+    "2": [500, "ÁNGEL", [98, 184, 36], "Digamos que quiero empleo como bartender.", " "],
+    "3": [600, "CAMARERO", [189, 56, 43], "No te lo recomiendo.", " "],
+    "4": [700, " ", [70, 210, 20], "level_3", "dialog_5_images.json"]
+}

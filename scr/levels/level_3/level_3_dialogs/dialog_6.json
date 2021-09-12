@@ -1,0 +1,6 @@
+{
+    "0": [200, "ÁNGEL", [98, 184, 36], "¿Y por qué trabajas aquí si lo odias tanto?.", " "],
+    "1": [400, "CAMARERO", [189, 56, 43], "Y... ¿crees que no lo he pensado?.", "En realidad este trabajo tiene sus ventajas. Como la paga."],
+    "2": [500, "ÁNGEL", [98, 184, 36], "No puedo argumentar contra esa lógica.", " "],
+    "3": [1000, " ", [70, 210, 20], "level_3", "dialog_5_images.json"]
+}

@@ -9,5 +9,11 @@
     "guardia 2 radio vision": 90,
     "guardia 2 offset": [0, 0],
     "guardia 2 max trail": 5,
-    "guardia 2 flip": "True"
+    "guardia 2 flip": "True",
+    "npc emma flip": "False",
+    "npc emma radio vision": 30,
+    "npc emma offset": [0, 0],
+    "npc oscar flip": "False",
+    "npc oscar radio vision": 30,
+    "npc oscar offset": [0, 0]
 }

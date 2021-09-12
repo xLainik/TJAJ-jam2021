@@ -684,7 +684,7 @@ class NPC_1(NPC): # Controles de moverse
             self.popup_active = True
         else: self.popup_active = False
 
-class NPC_2(NPC): # Camarero echando carro
+class NPC_2(NPC): # Camarero Juan, Emma, Oscar
     def __init__(self, image, x, y, img_offset, entity_name, dialogs, action_radius, offset, flip):
         super().__init__(image, x, y, img_offset, entity_name)
 
@@ -692,18 +692,33 @@ class NPC_2(NPC): # Camarero echando carro
 
         self.action_radius = action_radius
 
+        self.popup = pygame.image.load(os.path.join("scr", "assets", "images", "burbuja 2.png")).convert()
+
+        self.current_dialog = 0
+
+        self.popup_active = False
+        
         self.dialogs = dialogs
         
         self.rect = pygame.Rect(x + offset[0], y + offset[1], 20, 20)
 
         self.push_directions = {"left": False, "right": False, "down": False, "up": False}
 
+    def enter_turn(self, entities, player_rect):
+        if (self.current_dialog < len(self.dialogs) - 1) and self.dialogs[self.current_dialog].already_played:
+                self.current_dialog += 1
+
     def check_action(self, player_rect):
         if center_distance(self.rect, player_rect) < self.action_radius:
-            self.dialogs[0].active = True
+            self.dialogs[self.current_dialog].active = True
+            self.popup_active = True
+            
         else:
-            self.dialogs[0].active = False
+            self.dialogs[self.current_dialog].active = False
+            self.popup_active = False
 
     def draw(self, layer):
         layer.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
-        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
+##        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)ç
+        if self.popup_active:
+            layer.blit(self.popup, (self.rect.x-22, self.rect.y - 50))

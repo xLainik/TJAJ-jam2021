@@ -1,0 +1,9 @@
+{
+    "0": [200, "ÁNGEL", [98, 184, 36], "¿Es que acaso este DJ no puede colocar otra canción diferente?.", " "],
+    "1": [300, "EMMA", [201, 22, 62], "No lo se. Yo acabo de llegar.", " "],
+    "2": [400, "ÁNGEL", [98, 184, 36], "Me parece muy cansino de su parte.", " "],
+    "3": [600, "EMMA", [201, 22, 62], "La verdad no me molesta.", "Si la canción es buena, no me cansaré de ella jamás."],
+    "4": [700, "ÁNGEL", [98, 184, 36], "Y...", "¿La que suena ahora es buena para ti?"],
+    "5": [800, "EMMA", [201, 22, 62], "Mmm...", "Aún no lo se. Luego te respondo."],
+    "6": [1000, " ", [70, 210, 20], "level_3", "dialog_5_images.json"]
+}

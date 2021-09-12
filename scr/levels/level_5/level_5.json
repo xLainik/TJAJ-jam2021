@@ -15,5 +15,8 @@
     "guardia 2 radio vision": 90,
     "guardia 2 offset": [0, 20],
     "guardia 2 max trail": 5,
-    "guardia 2 flip": "True"
+    "guardia 2 flip": "True",
+    "npc ariadna flip": "False",
+    "npc ariadna radio vision": 30,
+    "npc ariadna offset": [0, 0]
 }

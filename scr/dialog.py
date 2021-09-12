@@ -22,6 +22,9 @@ class Dialog():
         self.active = False
         self.timer = 0
 
+        self.done = False
+        self.already_played = False
+
         self.bg = bg
 
         if self.bg == False:
@@ -37,7 +40,7 @@ class Dialog():
         self.gameplay_screen = self.game.screen.copy()
         
         self.black_bg_img = pygame.Surface((game.SCREEN_WIDTH*game.SCALE, game.SCREEN_HEIGHT*game.SCALE))
-        self.black_bg_img.set_alpha(50)
+        self.black_bg_img.set_alpha(70)
 
         self.max_timer = list(self.dialog_queue.values())[-1][0]
 
@@ -88,6 +91,13 @@ class Dialog():
 
     def update(self):
         if (self.must_action and self.game.actions["space"]) or (self.must_action == False):
+
+            for key, item in self.game.all_music.items():
+                if key.split(" ")[0] == "melodia":
+                    item.set_volume(0.25 * self.game.music_global_volume/100)
+            for key, item in self.game.all_sfx.items():
+                if key.split(" ")[0] == "beat":
+                    item.set_volume(0.5 * self.game.sfx_global_volume/100)
             
             while self.timer < self.max_timer:
                 self.game.get_delta_time()
@@ -97,7 +107,7 @@ class Dialog():
                 if self.timer < self.current_line[0]:
                     self.timer += self.game.delta_time
                 else:
-                    if bool(self.game.actions["space"]) or self.current_line[1] == "none":
+                    if bool(self.game.actions["space"]):
                         if not(self.next_line[1] == " "):
                             self.current_line = self.next_line
                             self.next_line = self.dialog_queue[str(self.current_line_int + 1)]
@@ -153,8 +163,19 @@ class Dialog():
 
                 pygame.display.update()
                 self.game.clock.tick(self.game.MAX_FPS)
-                     
+
+            for key, item in self.game.all_music.items():
+                item.set_volume(self.game.music_global_volume/100)
+
+            for key, item in self.game.all_sfx.items():
+                item.set_volume(self.game.sfx_global_volume/100)
+            
 
             self.__init__(self.game, self.dialog_queue, self.dialog_name, self.level_number, self.images_json, self.must_action, self.bg)
+
+            self.done = True
+
+            self.already_played = True
+            
             self.game.high_res_canvas.fill((0,0,0))
 

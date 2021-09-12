@@ -1,0 +1,8 @@
+{
+    "0": [100, "ÁNGEL", [98, 184, 36], "Yo no soy un gran fan de lo juegos para móvil.", " "],
+    "1": [300, "OSCAR", [202, 62, 203], "Yo tampoco lo era en un principio.", "Pero la verdad hay alguno que otro bueno y que vale la pena..."],
+    "2": [400, "ÁNGEL", [98, 184, 36], "Espero que los buenos no tengan publicidad.", " "],
+    "3": [600, "OSCAR", [202, 62, 203], "¡No! Eso no.", "Eso ya es un sacrilegio al arte que representan los videojuegos."],
+    "4": [700, "ÁNGEL", [98, 184, 36], "Sí, creo que entiendo lo que dices.", " "],
+    "5": [1000, " ", [70, 210, 20], "level_4", "dialog_7_images.json"]
+}

@@ -1,0 +1,7 @@
+{
+    "0": [100, "EMMA", [201, 22, 62], "Si no te gusta lo que suena ahora,", "Entonces, ¿qué música te gusta?."],
+    "1": [300, "ÁNGEL", [98, 184, 36], "Creo que algo mucho más lento y contemplativo.", "Siento que me dará epilepsia en cualquier momento."],
+    "2": [400, "EMMA", [201, 22, 62], "Ya veo... No conozco ese género musical.", " "],
+    "3": [500, "ÁNGEL", [98, 184, 36], "Muy graciosa.", " "],
+    "4": [1000, " ", [70, 210, 20], "level_3", "dialog_5_images.json"]
+}

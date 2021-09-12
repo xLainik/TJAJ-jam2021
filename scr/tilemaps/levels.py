@@ -107,6 +107,18 @@ class Level():
                     self.beat_sfx.stop()
                     self.melody_music.stop()
                 dialog.update()
+                if dialog.done:
+                    self.beat_sfx.stop()
+                    self.melody_music.stop()
+                    pygame.time.set_timer(self.game.BEAT_EVENT, 0)
+                    self.game.beat_counter = 0
+                    for entity in self.entities:
+                        if entity.entity_name != "guardia":
+                            entity.enter_turn(self.entities, self.game.player.rect)
+                    self.game.player.moving = False
+                    self.timer_active = False
+                    dialog.done = False
+                    break
                 if self.game.player.dead:
                     break
 
