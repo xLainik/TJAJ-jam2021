@@ -40,17 +40,15 @@ class Tilemap():
                             tiles.add(Tile([game.all_tiles["pista"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0)))
                         if tile_name == "baldosa":
                             tiles.add(Tile([game.all_tiles["baldosa"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0)))
+                        if tile_name == "estante 1":
+                            tiles.add(Tile(pygame.image.load(os.path.join("scr", "assets", "images", "estante 1.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, -10)))
 
         for x in range(entities_surface.get_width()):
             for y in range(entities_surface.get_height()):
                 for entity_name, rgb in entities_color_keys.items():
                     if entity_name != "vacio" and entities_surface.get_at((x,y)) == rgb:
                         if entity_name == "barrera":
-                            image = pygame.image.load(os.path.join("scr", "assets", "images", "barrera.png"))
-                            image_copy = image.copy()
-                            image_copy.fill(colours["black"])
-                            image_copy.blit(image, (0,0))
-                            entities.add(Barrier(image_copy.convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "barrera"))
+                            entities.add(Barrier(pygame.image.load(os.path.join("scr", "assets", "images", "invisible.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "barrera"))
                         if entity_name == "jugador":
                             player_start_x = x * self.TILE_WIDTH
                             player_start_y = y * self.TILE_HEIGHT

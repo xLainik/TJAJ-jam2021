@@ -251,6 +251,8 @@ class Guard(Obstacle):
 
         self.speed = speed
 
+        self.flip = flip
+
         self.spawn_turn = spawn
 
         self.active = False
@@ -411,10 +413,12 @@ class Guard(Obstacle):
                 self.circle_color = colours["red"]
                 
                 if self.move == "R":
+                    self.flip = False
                     self.speed_x = self.speed
                     self.moving = True
                     self.move_destination = self.rect.x + 20, self.rect.y
                 elif self.move == "L":
+                    self.flip = True
                     self.speed_x = -self.speed
                     self.moving = True
                     self.move_destination = self.rect.x - 20, self.rect.y
@@ -486,7 +490,7 @@ class Guard(Obstacle):
                 else:
                     pygame.draw.line(layer, self.circle_color, self.rect.center, self.last_player_pos, width=2)
 
-            layer.blit(self.image, self.rect)
+            layer.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x - 2, self.rect.y - 10))
 
 class Waiter(Obstacle):
     def __init__(self, image, x, y, img_offset, entity_name, orientation, direction, speed, flip):
@@ -495,6 +499,8 @@ class Waiter(Obstacle):
         self.orientation = orientation
 
         self.speed = speed
+
+        self.flip = flip
 
         self.active = False
 
@@ -524,16 +530,20 @@ class Waiter(Obstacle):
 
         if self.orientation == "horizontal":
             if self.direction == "L":
+                self.flip = True
                 self.speed_x, self.speed_y = -self.speed, 0
                 self.move_destination = self.move_destination[0] - 20, self.move_destination[1]
             if self.direction == "R":
+                self.flip = False
                 self.speed_x, self.speed_y = self.speed, 0
                 self.move_destination = self.move_destination[0] + 20, self.move_destination[1]
         else:
             if self.direction == "U":
+                self.flip = False
                 self.speed_x, self.speed_y = 0, -self.speed
                 self.move_destination = self.move_destination[0], self.move_destination[1] - 20
             if self.direction == "D":
+                self.flip = True
                 self.speed_x, self.speed_y = 0, self.speed
                 self.move_destination = self.move_destination[0], self.move_destination[1] + 20
                 
@@ -616,7 +626,7 @@ class Waiter(Obstacle):
                 
     
     def draw(self, layer):
-        layer.blit(self.image, (self.rect.x, self.rect.y))
+        layer.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x - 4, self.rect.y - 11))
 
 class NPC(Obstacle):
     def __init__(self, image, x, y, img_offset, entity_name):
