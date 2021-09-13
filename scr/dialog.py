@@ -19,6 +19,8 @@ class Dialog():
         self.dialog_queue = dialog_queue
         # dict {[timer, talking name, talk name color, str(first line), str(second line)]} 
 
+        self.space_pressed = False
+        
         self.active = False
         self.timer = 0
 
@@ -91,7 +93,13 @@ class Dialog():
 
     def update(self):
         if (self.must_action and self.game.actions["space"]) or (self.must_action == False):
+            self.space_pressed = True
 
+        if self.space_pressed:
+
+            self.game.state_stack[-1].current_level.save_entities()
+
+            
             for key, item in self.game.all_music.items():
                 if key.split(" ")[0] == "melodia":
                     item.set_volume(0.25 * self.game.music_global_volume/100)
@@ -174,7 +182,6 @@ class Dialog():
             self.__init__(self.game, self.dialog_queue, self.dialog_name, self.level_number, self.images_json, self.must_action, self.bg)
 
             self.done = True
-
             self.already_played = True
             
             self.game.high_res_canvas.fill((0,0,0))

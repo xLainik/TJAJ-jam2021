@@ -25,6 +25,22 @@ class Level():
         self.player_turn = True
         self.player_enter_turn = False
         self.guards_enter_turn = False
+
+    def save_entities(self):
+##        for entity in self.entities:
+##            if entity.entity_name != "guardia" and entity.entity_name != "meta" and entity.entity_name != "barrera" and entity.entity_name != "npc":
+##                if entity.entity_name == "mesa" and entity.moving == True:
+##                    entity.standing = False
+##                    entity.push_directions = {"left": False, "right": False, "down": False, "up": False}
+##                entity.moving = False
+##                entity.speed_x, entity.speed_y = 0, 0
+##                entity.x = entity.rect.x = entity.move_destination[0]
+##                entity.y = entity.rect.y = entity.move_destination[1]
+                        
+        self.saved_entities = self.entities.copy()
+
+    def restore_entities(self):
+        self.entities = self.saved_entities.copy()
     
     def update(self):
 
@@ -106,18 +122,25 @@ class Level():
                 if self.game.player.dead:
                     self.beat_sfx.stop()
                     self.melody_music.stop()
+                # Saved the entities if needed ;)                
                 dialog.update()
                 if dialog.done:
+                    # Exit dialog
                     self.beat_sfx.stop()
                     self.melody_music.stop()
                     pygame.time.set_timer(self.game.BEAT_EVENT, 0)
                     self.game.beat_counter = 0
+                    self.player_enter_turn = False
+                    self.game.play_beat = False
                     for entity in self.entities:
                         if entity.entity_name != "guardia":
                             entity.enter_turn(self.entities, self.game.player.rect)
                     self.game.player.moving = False
                     self.timer_active = False
                     dialog.done = False
+                    
+                    self.restore_entities()
+                    
                     break
                 if self.game.player.dead:
                     break

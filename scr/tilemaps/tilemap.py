@@ -101,7 +101,7 @@ class Tilemap():
                             flip = bool(json_data["npc ariadna flip"] == "True")
                             entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_5"]], json_data["npc ariadna radio vision"], json_data["npc ariadna offset"], flip))
                         if entity_name == "npc saul": # Nivel 6
-                            flip = bool(json_data["npc oscar flip"] == "True")
+                            flip = bool(json_data["npc saul flip"] == "True")
                             entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_5"]], json_data["npc saul radio vision"], json_data["npc saul offset"], flip))
                         if entity_name == "meta":
                             entities.add(Goal([game.all_animations["meta"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "meta", game))
