@@ -2,6 +2,6 @@
     "0": [100, "SAÚL", [255, 139, 151], "Hey, mesero.", "Por aquí."],
     "1": [200, "ÁNGEL", [98, 184, 36], "¿? ¿? ¿?", "Lo siento, no trabajo aquí."],
     "2": [300, "SAÚL", [255, 139, 151], "Ah... ya veo.", "Me pareció que eras uno de ellos, corriendo de allá para acá."],
-    "3": [400, "ÁNGEL", [98, 184, 36], " ", "Lo siento, no trabajo aquí."],
+    "3": [400, "ÁNGEL", [98, 184, 36], " ", " "],
     "4": [1000, " ", [70, 210, 20], "level_6", "dialog_5_images.json"]
 }

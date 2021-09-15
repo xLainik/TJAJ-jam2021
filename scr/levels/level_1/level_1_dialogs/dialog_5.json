@@ -12,8 +12,8 @@
     "10": [1500, "none", [98, 184, 36], " ", " "],
     "11": [1640, "GUARDIA", [238, 24, 65], "¡¡Hey, tú!!", "¿¡A dónde crees que vas!?."],
     "12": [1820, "none", [98, 184, 36], " ", " "],
-    "13": [1910, "ÁNGEL", [98, 184, 36], "Genial. Si no termino preso, al menos habré hecho un buen", "ejercicio de piernas."],
-    "14": [1950, "ÁNGEL", [98, 184, 36], "Ahora sí.. ¡¡A correr!!.", " "],
+    "13": [1910, "ÁNGEL", [98, 184, 36], "(Genial. Si no termino detenido, al menos habré hecho un buen", "ejercicio de piernas.)"],
+    "14": [1950, "ÁNGEL", [98, 184, 36], "(Ahora sí.. ¡¡A correr!!)", " "],
     "15": [2050, "none", [98, 184, 36], " ", " "],
     "16": [3000, " ", [0, 0, 0], "level_1", "dialog_5_images.json"]
 }

@@ -1,7 +1,7 @@
 {
     "0": [100, "ÁNGEL", [98, 184, 36], "¿En una disco y tú con el móvil?.", " "],
-    "1": [300, "OSCAR", [202, 62, 203], "Estoy esperando a mi amigo que fue al baño.", "Mientras tanto juego un juego en el móvil."],
-    "2": [400, "ÁNGEL", [98, 184, 36], "¿Y qué juegas?", " "],
+    "1": [300, "OSCAR", [202, 62, 203], "Estoy esperando a mi amigo que fue al baño.", "Mientras tanto me echo una partida en el móvil."],
+    "2": [400, "ÁNGEL", [98, 184, 36], "¿Y a qué juegas?", " "],
     "3": [500, "OSCAR", [202, 62, 203], "Eh... Es un juego que cambia cada 10 segundos.", "Es-... es bastante adictivo, sí."],
     "4": [600, "ÁNGEL", [98, 184, 36], "Mmm... Suena interesante.", "Mientras no consuma mucho espacio, lo consideraré."],
     "5": [1000, " ", [70, 210, 20], "level_4", "dialog_7_images.json"]
