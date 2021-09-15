@@ -1,3 +1,7 @@
+Dance Your Way In v0.1
+
+Python 3.7.6 + Pygame 2.0.1
+
 Juego creado para "Tu juego a juicio Jam 2021".
 
 Integrantes del equipo:
