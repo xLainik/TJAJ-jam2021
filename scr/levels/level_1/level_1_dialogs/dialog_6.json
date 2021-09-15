@@ -8,7 +8,7 @@
     "6": [780, "ÁNGEL", [98, 184, 36], "Sí, algo así. Ajajaja. Estaba un poco perdido.", "Oye, me preguntaba si querrías bailar conmigo."],
     "7": [790, "SOFÍA", [250, 170, 67], "¿Contigo?. Claro, me encantaría.", " "],
     "8": [900, "SOFÍA", [250, 170, 67], " Por cierto, creo que tus amigos están por allá, aunque no se me", " ocurrió preguntarles por tí... Vaya despiste. Ajaja."],
-    "9": [970, "ÁNGEL", [98, 184, 36], "Jaja, en serio?. Luego hablaré con ellos... Ah, y antes que se me olvide: ten.", "Te traje estas flores, espero que te gusten."],
+    "9": [970, "ÁNGEL", [98, 184, 36], "Jaja, en serio?. Luego hablaré con ellos... Ah, y antes que se me olvide:", "Ten. Te traje estas flores, espero que te gusten."],
     "10": [1100, "none", [98, 184, 36], " ", " "],
     "11": [1180, "SOFÍA", [250, 170, 67], "Wowww. ¡Gracias!. Están precisosas.", "Disculpa, eh... Yo no te traje nada, es decir..."],
     "12": [1320, "ÁNGEL", [98, 184, 36], "¡Tranquila!.", "Ven. Basta de hablar y bailemos."],

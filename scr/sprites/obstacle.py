@@ -653,14 +653,14 @@ class NPC_0(NPC): # Controles de moverse
     def draw(self, layer):
 ##        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
         if self.popup_active:
-            layer.blit(self.popup, (self.rect.x+4, self.rect.y-40))
+            layer.blit(self.popup, (self.rect.x-12, self.rect.y-50))
 
     def check_action(self, player_rect):
         if center_distance(self.rect, player_rect) < self.action_radius:
             self.popup_active = True
         else: self.popup_active = False
 
-class NPC_1(NPC): # Controles de moverse
+class NPC_1(NPC): # Tecla de reiniciar nivel
     def __init__(self, image, x, y, img_offset, entity_name, offset, action_radius):
         super().__init__(image, x, y, img_offset, entity_name)
 
@@ -677,7 +677,7 @@ class NPC_1(NPC): # Controles de moverse
     def draw(self, layer):
 ##        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)
         if self.popup_active:
-            layer.blit(self.popup, (self.rect.x-45, self.rect.y-85))
+            layer.blit(self.popup, (self.rect.x-40, self.rect.y-52))
 
     def check_action(self, player_rect):
         if center_distance(self.rect, player_rect) < self.action_radius:
@@ -691,6 +691,8 @@ class NPC_2(NPC): # Camarero Juan, Emma, Oscar
         self.flip = flip
 
         self.action_radius = action_radius
+
+        self.img_offset = img_offset
 
         self.popup = pygame.image.load(os.path.join("scr", "assets", "images", "burbuja 2.png")).convert()
 
@@ -718,7 +720,7 @@ class NPC_2(NPC): # Camarero Juan, Emma, Oscar
             self.popup_active = False
 
     def draw(self, layer):
-        layer.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
+        layer.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x+self.img_offset[0], self.rect.y+self.img_offset[1]))
 ##        pygame.draw.circle(layer, colours["cyan"], self.rect.center, self.action_radius, width = 3)ç
         if self.popup_active:
             layer.blit(self.popup, (self.rect.x-22, self.rect.y - 50))

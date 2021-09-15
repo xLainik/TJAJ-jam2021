@@ -29,7 +29,7 @@ class Tilemap():
         waiter_counter = 1
 
         game.load_ani_tiles("baldosa", "muchedumbre", "pista amarilla", "pista verde", "pista morada")
-        game.load_animations("guardia azul", "guardia rojo", "mesero", "meta", "npc 2")
+        game.load_animations("guardia azul", "guardia rojo", "mesero", "meta", "npc juan", "npc emma", "npc oscar", "npc ariadna", "npc saul")
 
         
         for x in range(tilesmap_surface.get_width()):
@@ -90,19 +90,19 @@ class Tilemap():
                             entities.add(NPC_1(pygame.image.load(os.path.join("scr", "assets", "images", "invisible.png")).convert(), x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0,0), "npc", json_data["npc 1 offset"], json_data["npc 1 radio vision"]))
                         if entity_name == "npc juan": # Nivel 3
                             flip = bool(json_data["npc juan flip"] == "True")
-                            entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_5"], dialogs["dialog_6"]], json_data["npc juan radio vision"], json_data["npc juan offset"], flip))
+                            entities.add(NPC_2([game.all_animations["npc juan"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (3, -10), "npc", [dialogs["dialog_5"], dialogs["dialog_6"]], json_data["npc juan radio vision"], json_data["npc juan offset"], flip))
                         if entity_name == "npc emma": # Nivel 4
                             flip = bool(json_data["npc emma flip"] == "True")
-                            entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_5"], dialogs["dialog_6"]], json_data["npc emma radio vision"], json_data["npc emma offset"], flip))
+                            entities.add(NPC_2([game.all_animations["npc emma"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (-1, -12), "npc", [dialogs["dialog_5"], dialogs["dialog_6"]], json_data["npc emma radio vision"], json_data["npc emma offset"], flip))
                         if entity_name == "npc oscar": # Nivel 4
                             flip = bool(json_data["npc oscar flip"] == "True")
-                            entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_7"], dialogs["dialog_8"]], json_data["npc oscar radio vision"], json_data["npc oscar offset"], flip))
+                            entities.add(NPC_2([game.all_animations["npc oscar"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (-1, -12), "npc", [dialogs["dialog_7"], dialogs["dialog_8"]], json_data["npc oscar radio vision"], json_data["npc oscar offset"], flip))
                         if entity_name == "npc ariadna": # Nivel 5
                             flip = bool(json_data["npc ariadna flip"] == "True")
-                            entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_5"]], json_data["npc ariadna radio vision"], json_data["npc ariadna offset"], flip))
+                            entities.add(NPC_2([game.all_animations["npc ariadna"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (-1, -12), "npc", [dialogs["dialog_5"]], json_data["npc ariadna radio vision"], json_data["npc ariadna offset"], flip))
                         if entity_name == "npc saul": # Nivel 6
                             flip = bool(json_data["npc saul flip"] == "True")
-                            entities.add(NPC_2([game.all_animations["npc 2"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "npc", [dialogs["dialog_5"]], json_data["npc saul radio vision"], json_data["npc saul offset"], flip))
+                            entities.add(NPC_2([game.all_animations["npc saul"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (-2, -13), "npc", [dialogs["dialog_5"]], json_data["npc saul radio vision"], json_data["npc saul offset"], flip))
                         if entity_name == "meta":
                             entities.add(Goal([game.all_animations["meta"]], x * self.TILE_WIDTH, y * self.TILE_HEIGHT, (0, 0), "meta", game))
         return tiles, entities, dialogs, player_start_x, player_start_y, (tilesmap_surface.get_width() * self.TILE_WIDTH, tilesmap_surface.get_height() * self.TILE_HEIGHT)

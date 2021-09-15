@@ -6,7 +6,6 @@ from scr.states.state import State
 from scr.states.options_menu import Options_menu
 
 from scr.states.game_world import Game_world
-from scr.states.cutscenes import Cutscene_1, Cutscene_2
 
 from scr.utility.easying import easeOutBack
 
@@ -14,9 +13,9 @@ from scr.utility.resize_image import resize
 
 class Main_menu(State):
     """The main menu"""
-    def __init__(self, game):
+    def __init__(self, game, first_time = True):
         """Initialize the menu class."""
-        super().__init__(game)
+        super().__init__(game, first_time)
         
         self.load_sprites()
 
@@ -57,8 +56,9 @@ class Main_menu(State):
             if self.game.click:
                 self.game.all_sfx["menu_click"].play()
                 self.game.high_res_canvas.fill((0,0,0))
-                game_world = Game_world(self.game)
+                game_world = Game_world(self.game, True)
                 game_world.enter_state()
+                game_world.check_cutscenes()
         elif self.options_button.collidepoint(mx,my):
             if not(self.hover):
                 self.game.all_sfx["menu_hover"].play()
@@ -67,7 +67,7 @@ class Main_menu(State):
             if self.game.click:
                 self.game.all_sfx["menu_click"].play()
                 self.game.high_res_canvas.fill((0,0,0))
-                options = Options_menu(self.game)
+                options = Options_menu(self.game, True)
                 options.enter_state()
         else:
             self.hover = False
@@ -87,9 +87,6 @@ class Main_menu(State):
         
         self.game.high_res_canvas.blit(self.start_button_img, ((self.start_button.x-10), self.start_button.y))
         self.game.high_res_canvas.blit(self.options_button_img, ((self.options_button.x-10), self.options_button.y))
-
-##        pygame.draw.rect(self.game.game_canvas, colours["red"], self.start_button, width=3)
-##        pygame.draw.rect(self.game.game_canvas, colours["red"], self.options_button, width=3)
 
         self.start_txt.update(self.game.high_res_canvas, x = self.start_button.x + 80 * self.game.SCALE, scale = self.game.SCALE)
         self.options_txt.update(self.game.high_res_canvas, x = self.options_button.x + 79 * self.game.SCALE, scale = self.game.SCALE)        

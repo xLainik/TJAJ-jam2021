@@ -9,9 +9,9 @@ from scr.utility.resize_image import resize
 
 class Options_menu(State):
     """The main menu"""
-    def __init__(self, game):
+    def __init__(self, game, first_time = True):
         """Initialize the menu class."""
-        super().__init__(game)
+        super().__init__(game, first_time)
 
         self.game = game
 
@@ -149,7 +149,7 @@ class Options_menu(State):
                 self.game.game_canvas.fill(colours["black"])
                 self.game.state_stack[0].timer = 0
                 self.game.state_stack[0].load_sprites()
-                self.exit_state()
+                self.exit_state(True)
         else:
             self.hover = False
             self.back_to_menu_button_img = self.inactive_button_img

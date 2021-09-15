@@ -12,21 +12,15 @@ from scr.utility.easying import easeOutBack
 
 class Game_world(State):
     """The main menu"""
-    def __init__(self, game):
+    def __init__(self, game, first_time = True):
         """Initialize the menu class."""
-        super().__init__(game)
+        super().__init__(game, first_time)
 
         # JSON
         # 0 -> json_data init the level
         # 1 -> dict with all dialogs for the level
 
-        if self.game.current_level == 0:
-            cutscene_1 = Cutscene_1(self.game)
-            cutscene_1.enter_state()
-
-        if self.game.current_level == 7:
-            cutscene_2 = Cutscene_2(self.game)
-            cutscene_2.enter_state()
+        self.check_cutscenes()
 
         if self.game.current_level in [1, 2]:
             self.current_level = Level_1(self.game,
@@ -48,7 +42,7 @@ class Game_world(State):
                                          pygame.image.load(os.path.join(self.game.level_directory, "level_" + str(self.game.current_level), "level_" + str(self.game.current_level) + "_entities.png")),
                                          levels[self.game.current_level][0], levels[self.game.current_level][1], self.game.current_level
                                          )
-
+                        
 ##        self.levels = {
 ##            0: Level_1(self.game,
 ##                       pygame.image.load(os.path.join(self.game.level_directory, "level_0", "level_0_tiles.png")),
@@ -79,7 +73,17 @@ class Game_world(State):
 ##                       pygame.image.load(os.path.join(self.game.level_directory, "level_6", "level_6_entities.png")), levels[6][0], levels[6][1], 6
 ##            )
 ##        }
-        
+
+    def check_cutscenes(self):
+        if self.game.current_level == 0:
+            cutscene_1 = Cutscene_1(self.game, True)
+            cutscene_1.enter_state()
+        if self.game.current_level == 7:
+            cutscene_2 = Cutscene_2(self.game, True)
+            cutscene_2.enter_state()
+        if self.game.current_level == 8:
+            self.game.current_level = 0
+            self.game.shut_down()        
         
     def change_level(self, new_level):
         self.current_level = new_level

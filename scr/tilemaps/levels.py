@@ -16,7 +16,6 @@ class Level():
         
         self.json_data = json_data
         
-
         self.BPM, self.speed = 0, 0
 
         self.timer_active = False
@@ -145,7 +144,7 @@ class Level():
                 if self.game.player.dead:
                     break
 
-        # Condición de perder
+        # Condición de perder (o ganar)
         if self.game.player.dead:
             self.beat_sfx.stop()
             self.melody_music.stop()
@@ -304,7 +303,7 @@ class Level_2(Level):
                     entity.create_maze(self.entities, self.game.player.rect)
                 self.guards.add(entity)
 
-        self.camera = Camera(self.game.player, self.tiles_surface, self.game)
+        self.camera = Camera(self.game.player, self.entities_surface, self.game)
         self.camera_surface = pygame.Surface((self.game.SCREEN_SIZE))
 
         self.camera_surface.set_colorkey((0, 0, 0))

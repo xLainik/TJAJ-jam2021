@@ -79,6 +79,8 @@ class Game:
         self.game_loop()
 
     def restart(self):
+        print(self.current_level)
+        self.save_settings()
         self.__init__()
         self.new()
 
@@ -93,6 +95,9 @@ class Game:
     def update(self) -> None:
         """Updates the needed opponents according to the current game state with respect for the imputs recived."""
         self.state_stack[-1].update()
+
+##        if not(pygame.mouse.get_focused()):
+##            print("AIUDAAA")
 
     def render(self):
         """Renders the needed opponents according to the current game state."""
@@ -164,7 +169,7 @@ class Game:
 
     def load_first_state(self) -> None:
         """Loading the first state of the game."""
-        self.state_stack = [Main_menu(self)]
+        self.state_stack = [Main_menu(self, True)]
 
     def get_delta_time(self) -> None:
         """Getting the time used between frames. Used to calculate movement so its universal across frame rates."""
@@ -237,12 +242,8 @@ class Game:
         self.sound_directory = os.path.join(self.asset_directory, "sounds")
         self.sfx_directory = os.path.join(self.sound_directory, "sfx")
         self.music_directory = os.path.join(self.sound_directory, "music")
-        
-    def shut_down(self) -> None:
-        """Completley shutting down the game."""
-        self.playing = False
-        self.running = False
 
+    def save_settings(self) -> None:
         # Saving some settings and progress before closing the game
 
         with open(os.path.join("scr", "config", "options.json"), "r") as options_json_file:
@@ -258,6 +259,13 @@ class Game:
         with open(os.path.join("scr","config", "options.json"), "w") as options_json_file:
             json.dump(new_options, options_json_file)
             options_json_file.close()
+        
+    def shut_down(self) -> None:
+        """Completley shutting down the game."""
+        self.playing = False
+        self.running = False
+
+        self.save_settings()
         
         pygame.display.quit()
         pygame.quit()

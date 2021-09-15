@@ -10,9 +10,9 @@ from scr.utility.resize_image import resize
 
 class Cutscene_1(State):
     """The main menu"""
-    def __init__(self, game):
+    def __init__(self, game, first_time = True):
         """Initialize the menu class."""
-        super().__init__(game)
+        super().__init__(game, first_time)
 
         self.game = game
 
@@ -29,7 +29,7 @@ class Cutscene_1(State):
 
         # Empezar juego
         self.game.current_level = 1
-        self.exit_state()
+        self.exit_state(True)
             
     def render(self):
         """Render the menu state."""
@@ -38,9 +38,9 @@ class Cutscene_1(State):
         
 class Cutscene_2(State):
     """The main menu"""
-    def __init__(self, game):
+    def __init__(self, game, first_time = True):
         """Initialize the menu class."""
-        super().__init__(game)
+        super().__init__(game, first_time)
 
         self.game = game
 
@@ -54,10 +54,10 @@ class Cutscene_2(State):
     def update(self):
         """Update the menu state."""
         self.dialog.update()
-
-        # Reiniciar juego y cerrar:
-        self.game.current_level = 0
-        self.game.restart()       
+        # Salir
+        self.game.current_level = 8
+        self.exit_state(True)
+               
             
     def render(self):
         """Render the menu state."""

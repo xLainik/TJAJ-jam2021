@@ -10,9 +10,9 @@ from scr.utility.resize_image import resize
 
 class Pause(State):
     """The main menu"""
-    def __init__(self, game):
+    def __init__(self, game, first_time = True):
         """Initialize the menu class."""
-        super().__init__(game)
+        super().__init__(game, first_time)
         
         self.load_sprites()
 

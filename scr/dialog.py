@@ -47,7 +47,7 @@ class Dialog():
         self.max_timer = list(self.dialog_queue.values())[-1][0]
 
         self.skip_timer = 500
-
+        
         with open(os.path.join("scr", "levels", "level_" + str(level_number), "level_" + str(level_number) + "_dialog_images", images_json), "r", encoding="utf-8") as dialog_img_json_file:
 
             json_file = json.load(dialog_img_json_file)
@@ -95,17 +95,18 @@ class Dialog():
         if (self.must_action and self.game.actions["space"]) or (self.must_action == False):
             self.space_pressed = True
 
-        if self.space_pressed:
+        if (self.space_pressed and self.game.beat_counter == 7) or (self.must_action == False):
 
-            self.game.state_stack[-1].current_level.save_entities()
+            if self.game.current_level in [1, 2, 3, 4, 5, 6]:
+                self.game.state_stack[-1].current_level.save_entities()
 
-            
-            for key, item in self.game.all_music.items():
-                if key.split(" ")[0] == "melodia":
-                    item.set_volume(0.25 * self.game.music_global_volume/100)
-            for key, item in self.game.all_sfx.items():
-                if key.split(" ")[0] == "beat":
-                    item.set_volume(0.5 * self.game.sfx_global_volume/100)
+                
+                for key, item in self.game.all_music.items():
+                    if key.split(" ")[0] == "melodia":
+                        item.set_volume(0.25 * self.game.music_global_volume/100)
+                for key, item in self.game.all_sfx.items():
+                    if key.split(" ")[0] == "beat":
+                        item.set_volume(0.5 * self.game.sfx_global_volume/100)
             
             while self.timer < self.max_timer:
                 self.game.get_delta_time()
@@ -172,11 +173,14 @@ class Dialog():
                 pygame.display.update()
                 self.game.clock.tick(self.game.MAX_FPS)
 
-            for key, item in self.game.all_music.items():
-                item.set_volume(self.game.music_global_volume/100)
+            # Finish
 
-            for key, item in self.game.all_sfx.items():
-                item.set_volume(self.game.sfx_global_volume/100)
+            if self.game.current_level in [1, 2, 3, 4, 5, 6]:
+                for key, item in self.game.all_music.items():
+                    item.set_volume(self.game.music_global_volume/100)
+
+                for key, item in self.game.all_sfx.items():
+                    item.set_volume(self.game.sfx_global_volume/100)
             
 
             self.__init__(self.game, self.dialog_queue, self.dialog_name, self.level_number, self.images_json, self.must_action, self.bg)

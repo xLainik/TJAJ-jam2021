@@ -1,5 +1,9 @@
 {
-    "0": [100, "ARIADNA", [86, 207, 222], "Ten estas flores y vete.", " "],
-    "1": [200, "ÁNGEL", [98, 184, 36], "Oki doki!", " "],
-    "2": [1000, " ", [70, 210, 20], "level_5", "dialog_5_images.json"]
+    "0": [200, "ÁNGEL", [98, 184, 36], "Oye, ¿Cuál crees que sería la mejor manera de disculparte por", "llegar tarde a un sitio?."],
+    "1": [300, "ARIADNA", [86, 207, 222], "A mi me funcionó llevar flores.", "Ten, te regalo estas que traje extras."],
+    "2": [400, "ÁNGEL", [98, 184, 36], "Wow, gracias. Qué amable eres.", " "],
+    "3": [500, "ÁNGEL", [98, 184, 36], "Pero... ¿Por qué me las das a mí?", " "],
+    "4": [700, "ARIADNA", [86, 207, 222], "Compré de más. Digamos que el vendedor supo empatizar conmigo", "tan bien como yo estoy empatizando contigo ahora jeje."],
+    "5": [800, "ÁNGEL", [98, 184, 36], "Ajaja. Eso me sucede todo el tiempo.", "Bueno, estoy apurado como imaginarás. ¡Adiós!"],
+    "6": [2000, " ", [70, 210, 20], "level_5", "dialog_5_images.json"]
 }

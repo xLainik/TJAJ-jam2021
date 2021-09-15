@@ -1,7 +1,9 @@
 class State:
-    def __init__(self, game) -> None:
+    def __init__(self, game, first_time):
         self.game = game
-        self.previous_state = None        
+
+        if first_time:
+            self.previous_state = None
 
     def update(self):
         pass
@@ -11,11 +13,22 @@ class State:
     def enter_state(self):
         if len(self.game.state_stack) > 0:
             self.previous_state = self.game.state_stack[-1]
+##            print("previous state", self.previous_state)
         self.game.transition_timer = 50
-        self.game.state_stack.append(self)        
+        self.game.state_stack.append(self)
 
-    def exit_state(self, restart = False):
+##        print("entering state, state stack is:")
+##        print(self.game.state_stack)
+##        print(self.game.current_level)
+
+    def exit_state(self, restart):
         if restart:
-            self.previous_state.__init__(self.game)
+##            print("Restarting:", self.previous_state)
+            self.previous_state.__init__(self.game, False)
+            
         self.game.transition_timer = 50        
         self.game.state_stack.pop()
+
+##        print("EXITING state, state stack is:")
+##        print(self.game.state_stack)
+##        print(self.game.current_level)
